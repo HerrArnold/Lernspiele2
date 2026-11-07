@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#FAF1D9">
+<meta name="description" content="Lernsafari Klasse 3b: Aufgaben des Tages, aktuelle Lernspiele und Archiv">
+<title>Lernsafari – Klasse 3b</title>
+<link rel="stylesheet" href="assets/safari.css">
+<script defer src="assets/daily-data.js"></script>
+<script defer src="assets/safari.js"></script>
+</head>
+<body>
+<header class="site-header" id="main-header">
+ <div class="header-inner">
+  <div class="logo-group">
+   <a href="lernportale.html" class="header-flamingo" aria-label="Zu den Lernportalen" title=""><img src="assets/flamingo-zwinkernd.png" alt="Zwinkernder Flamingo"></a>
+   <span class="site-title">Willkommen auf der <em>Lernsafari!</em></span>
+  </div>
+  <nav class="top-nav" aria-label="Hauptnavigation">
+   <a class="nav-link" data-route="aufgaben" href="#aufgaben">Aufgaben des Tages</a>
+   <div class="nav-dropdown" id="dropdown">
+    <a class="nav-trigger" data-route="aktuelle" href="#aktuelle" id="nav-current" aria-haspopup="true" aria-controls="subject-menu">Aktuelle Lernspiele ▾</a>
+    <div class="nav-drop-panel" id="subject-menu">
+     <a href="#aktuelle">Alle Fächer anzeigen</a>
+     <a data-subject="allgemein" href="#aktuelle--allgemein">Allgemein</a>
+     <a data-subject="deutsch" href="#aktuelle--deutsch">Deutsch</a>
+     <a data-subject="englisch" href="#aktuelle--englisch">Englisch</a>
+     <a data-subject="mathe" href="#aktuelle--mathe">Mathe</a>
+     <a data-subject="musik" href="#aktuelle--musik">Musik</a>
+     <a data-subject="nmg" href="#aktuelle--nmg">NMG</a>
+    </div>
+   </div>
+   <a class="nav-link" data-route="archiv" href="#archiv">Lernspiele Archiv</a>
+  </nav>
+ </div>
+</header>
+<main class="shell">
+ <section class="view" id="view-aufgaben">
+  <div class="today-layout">
+   <aside class="meerkat-panel">
+    <div class="speech">Probiere die Aufgaben des Tages zu lösen!</div>
+    <div class="secret-wrap">
+     <button type="button" class="secret-image" id="meerkat-secret" aria-label="Erdmännchen"><img class="meerkat-figure" src="assets/erdmaennchen-denkend.png" alt="Nachdenkliches Erdmännchen"></button>
+     <div class="secret-box" id="secret-box" hidden><input id="secret-input" type="password" maxlength="12" autocomplete="off" aria-label="Code"></div>
+    </div>
+   </aside>
+   <div class="today-panel">
+    <section class="today-head">
+     <div class="today-meta"><span class="today-label" id="today-label"></span><span class="day-pill" id="day-pill"></span></div>
+     <h2 id="today-theme"></h2>
+     <p id="today-intro"></p>
+     <div class="progress-label"><span>Deine Tagesaufgaben</span><span id="daily-progress">0 von 4 Aufgaben geschafft</span></div>
+     <div class="progress-track"><span class="progress-fill" id="daily-progress-bar"></span></div>
+    </section>
+    <div class="preview-note" id="preview-notice" hidden><span>Wochenvorschau</span><button id="return-today" type="button">Zur heutigen Aufgabe</button></div>
+    <div id="daily-tasks"></div>
+   </div>
+  </div>
+ </section>
+ <section class="view" id="view-aktuelle" hidden>
+  <div class="section-heading"><span class="eyebrow">Zum Üben und Entdecken</span><h1>Aktuelle Lernspiele</h1><p>Wähle ein Fach und dann dein Lernspiel aus.</p></div>
+  <div id="subject-list" class="subject-list"></div>
+ </section>
+ <section class="view" id="view-archiv" hidden>
+  <div class="section-heading"><span class="eyebrow">Schon entdeckt</span><h1>Lernspiele Archiv</h1><p>Hier werden später Lernspiele gesammelt, die nicht mehr aktuell sind. Neue Archivierungen stehen jeweils zuoberst.</p></div>
+  <div id="archive-list" class="subject-list"></div>
+ </section>
+ <footer class="footer">Klasse 3b · Hakuna Matata · Jeden Tag Neues entdecken</footer>
+</main>
+<div class="week-overlay" id="week-panel" hidden role="dialog" aria-modal="true" aria-label="Wochenaufgaben">
+ <div class="week-content"><div class="week-head"><h2>Die sieben Aufgabenserien</h2><button type="button" id="close-week" class="close-week" aria-label="Schliessen">×</button></div><div class="week-list" id="week-list"></div></div>
+</div>
+</body>
+</html>

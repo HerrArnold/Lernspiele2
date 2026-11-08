@@ -45,3 +45,12 @@
 /* Ganzes Tier sichtbar, ohne ungewollten Zuschnitt. */
 .animal-photo-wrap .animal-photo{object-fit:contain!important;background:#26353c}
 .memory-card .memory-back img{object-fit:contain!important;background:#dfe5e3}
+
+/* Agenda: gelber Zeitraum, sichere Klickflächen und Datumsfelder */
+.agenda-event{width:100%;border:1px solid transparent;text-align:left;font:inherit;font-weight:700;cursor:default}
+.agenda-event.free{background:#f9df73;color:#332b12;border-color:#debb41}
+.agenda-event.clickable{cursor:pointer}
+.agenda-event.clickable:hover{outline:2px solid #f38aa9;outline-offset:1px}
+.agenda-restore{width:100%;border-radius:9px;border:1px solid #85a3ad;background:#2d4249;color:#f5e4eb;padding:6px 4px;font:inherit;font-size:11px;margin:5px 0;cursor:pointer}
+.agenda-modal[hidden]{display:none!important}
+@media(max-width:550px){.agenda-dialog{max-height:90vh;overflow-y:auto}.agenda-formrow{grid-template-columns:1fr}}

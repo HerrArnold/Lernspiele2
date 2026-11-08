@@ -62,7 +62,7 @@ function dayIndex(iso){
 function prettyDate(iso){return new Intl.DateTimeFormat('de-CH',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'Europe/Zurich'}).format(new Date(`${iso}T12:00:00Z`))}
 function viewShow(view){
  const available=['aufgaben','aktuelle','archiv','lernportale','tiere','agenda','advent','admin'];
- if(view==='agenda'&&!(window.SafariLogin?.auth()&&window.SafariLogin.auth().role==='child')){location.hash='#aufgaben';view='aufgaben'}
+ if(['agenda','advent'].includes(view)&&!(window.SafariLogin?.auth()||siteState.adminUnlocked)){location.hash='#aufgaben';view='aufgaben'}
  if(view==='admin'&&!siteState.adminUnlocked){location.hash='#aufgaben';view='aufgaben'}
  siteState.route=view;
  available.forEach(id=>{$('view-'+id).hidden=id!==view});
@@ -132,6 +132,7 @@ function renderTask(dayIdx,i){const ex=days[dayIdx].exercises[i],s=session(dayId
 function renderToday(force=false){let iso=daySwiss();let newIdx=dayIndex(iso);if(siteState.previewIndex!==null)newIdx=siteState.previewIndex;
  if(!force&&siteState.dayIndex===newIdx&&siteState.renderedDate===iso)return;
  siteState.dayIndex=newIdx;siteState.renderedDate=iso;
+ window.SafariNumberDay?.render(newIdx===null?iso:(siteState.previewIndex!==null?days[newIdx].date:iso));
  const isPreview=siteState.previewIndex!==null;
  if(newIdx===null){
   $('today-label').textContent=prettyDate(iso);$('today-theme').textContent='Neue Aufgaben folgen';
@@ -290,7 +291,7 @@ function initAdmin(){
  pass.addEventListener('keydown',async e=>{
    if(e.key!=='Enter')return;e.preventDefault();
    const value=pass.value;pass.value='';pass.disabled=true;
-   try{await window.SafariLogin.adminUnlock(value);siteState.adminUnlocked=true;box.hidden=true;location.hash='#admin';route()}
+   try{await window.SafariLogin.adminUnlock(value);siteState.adminUnlocked=true;window.SafariAgenda?.updateNav();box.hidden=true;location.hash='#admin';route()}
    catch(err){pass.classList.add('invalid');pass.title=err.message;setTimeout(()=>pass.classList.remove('invalid'),700)}
    finally{pass.disabled=false}
  });
@@ -303,11 +304,12 @@ function initAdmin(){
  // A user account (even a child's) does not grant access. The separate
  // admin session expires server-side after three hours.
  let token=null;try{token=sessionStorage.getItem('lernsafari-admin-token-v2')}catch(_){}
- const returnToAdmin=location.hash==='#admin';
- if(token){window.SafariLogin.verifyAdmin().then(()=>{siteState.adminUnlocked=true;if(returnToAdmin){location.hash='#admin';route()}}).catch(()=>{try{sessionStorage.removeItem('lernsafari-admin-token-v2')}catch(_){}siteState.adminUnlocked=false})}
+ const returnToAdmin=location.hash==='#admin';const returnToProtected=['#agenda','#advent'].includes(location.hash);const requestedProtectedHash=location.hash;
+ if(token){window.SafariLogin.verifyAdmin().then(()=>{siteState.adminUnlocked=true;window.SafariAgenda?.updateNav();if(returnToAdmin){location.hash='#admin';route()}else if(returnToProtected){location.hash=requestedProtectedHash;route()}}).catch(()=>{try{sessionStorage.removeItem('lernsafari-admin-token-v2')}catch(_){}siteState.adminUnlocked=false;window.SafariAgenda?.updateNav();if(['#agenda','#advent'].includes(location.hash))location.hash='#aufgaben'})}
 }
 
-function init(){window.addEventListener('safari-auth-change',()=>{window.SafariAgenda?.updateNav();if(siteState.dayIndex!==null){siteState.sessions.clear();renderToday(true)}if(siteState.route==='admin')renderClassReport();if(siteState.route==='agenda')route();});recordLocalVisit();initAdmin();renderSubjects();initNavigation();initSecret();initWeek();renderToday(true);$('daily-tasks').addEventListener('click',handleTasks);$('daily-tasks').addEventListener('change',handleChanges);$('daily-tasks').addEventListener('input',handleChanges);
+window.SafariSite={isAdminUnlocked:()=>siteState.adminUnlocked};
+function init(){window.addEventListener('safari-auth-change',()=>{window.SafariAgenda?.updateNav();if(siteState.dayIndex!==null){siteState.sessions.clear();renderToday(true)}if(siteState.route==='admin')renderClassReport();if(siteState.route==='agenda'||siteState.route==='advent')route();});recordLocalVisit();initAdmin();renderSubjects();initNavigation();initSecret();initWeek();renderToday(true);$('daily-tasks').addEventListener('click',handleTasks);$('daily-tasks').addEventListener('change',handleChanges);$('daily-tasks').addEventListener('input',handleChanges);
  setInterval(()=>{const iso=daySwiss();if(iso!==siteState.renderedDate)renderToday(true)},1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderToday()});}
 window.addEventListener('DOMContentLoaded',init);
 })();

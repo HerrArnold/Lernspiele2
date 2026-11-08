@@ -21,3 +21,8 @@
 .memory-card.open .memory-front,.memory-card.done .memory-front{opacity:0}
 .memory-card.open .memory-back,.memory-card.done .memory-back{opacity:1}
 @media(max-width:800px){.memory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Versteckte Reiter duerfen auch bei CSS display-Regeln nie erscheinen. */
+.top-nav [hidden]{display:none!important}
+
+.animal-photo-wrap{min-width:0;display:flex;flex-direction:column;gap:7px}.animal-photo-wrap .animal-photo{object-fit:cover;min-height:350px;height:420px;width:100%}.photo-credit{color:#f3b4ca;font-size:12px;text-decoration:underline}.memory-panel .feature-head h2{color:#f38aa9}.memory-card .memory-back img{object-fit:cover}.memory-grid{grid-template-columns:repeat(5,minmax(0,1fr));max-width:900px}.memory-card{aspect-ratio:1/1}.memory-card .memory-back strong{overflow-wrap:anywhere}@media(max-width:720px){.memory-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.animal-photo-wrap .animal-photo{height:auto;aspect-ratio:4/3}}

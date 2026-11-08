@@ -10,9 +10,9 @@
 <script defer src="assets/analytics-config.js"></script>
 <script defer src="assets/daily-data.js"></script>
 <script defer src="assets/login-config.js?v=2"></script>
-<script defer src="assets/login.js?v=4"></script>
-<script defer src="assets/safari.js?v=4"></script>
-<link rel="stylesheet" href="assets/lernsafari-dark.css?v=4"><link rel="stylesheet" href="assets/tierwelt.css?v=1"><script defer src="assets/tierwelt-data.js?v=1"></script><script defer src="assets/tierwelt.js?v=1"></script><script defer src="assets/agenda.js?v=1"></script></head>
+<script defer src="assets/login.js?v=7"></script>
+<script defer src="assets/safari.js?v=8"></script><link rel="stylesheet" href="assets/zahl-des-tages.css?v=2"><script defer src="assets/zahl-des-tages.js?v=2"></script>
+<link rel="stylesheet" href="assets/lernsafari-dark.css?v=4"><link rel="stylesheet" href="assets/tierwelt.css?v=7"><script defer src="assets/tierwelt-data.js?v=7"></script><script defer src="assets/tierwelt.js?v=7"></script><script defer src="assets/agenda.js?v=7"></script></head>
 <body>
 <header class="site-header" id="main-header">
  <div class="header-inner">
@@ -38,7 +38,7 @@
    <a class="nav-link" data-route="lernportale" href="#lernportale">Lernportale</a>
    <a class="nav-link" data-route="tiere" href="#tiere">Tiere</a>
    <a class="nav-link" data-route="agenda" id="nav-agenda" href="#agenda" hidden>Agenda</a>
-   <a class="nav-link" data-route="advent" href="#advent">Adventskalender</a>
+   <a class="nav-link" data-route="advent" id="nav-advent" href="#advent" hidden>Adventskalender</a>
   </nav>
  </div>
 </header>
@@ -53,6 +53,7 @@
     </div>
    </aside>
    <div class="today-panel">
+    <section id="zahl-des-tages" class="zdt-shell" aria-label="Zahl des Tages"></section>
     <section class="today-head">
      <div class="today-meta"><span class="today-label" id="today-label"></span><span class="day-pill" id="day-pill"></span></div>
      <h2 id="today-theme"></h2>

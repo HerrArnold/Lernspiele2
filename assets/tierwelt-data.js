@@ -11,9 +11,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Reptil",
   "image": "login-tiere/Chamaeleon.webp",
   "cardImage": "tiersticker/chamaeleon.png",
-  "photo": "tiersticker/chamaeleon.png",
-  "text": "Chamäleon lebt in Afrika und Madagaskar. Es mag Bäume und Büsche. Oft frisst es Insekten. Es kann seine Augen einzeln bewegen. Mit seiner langen Zunge fängt es Beute. Es braucht Bäume und Verstecke. Darum ist Chamäleon ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Chamäleon steht: Mit seiner langen Zunge fängt es Beute"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Chamaeleo%20chamaeleon.jpg?width=900",
+  "text": "Die Zehen sind wie kleine Greifzangen. So hält sich das Chamäleon gut an Ästen fest. Es bewegt sich oft ganz langsam. Seine Hautfarbe verändert sich auch durch Licht und Stimmung. Ein Chamäleon kann nach vorne und hinten schauen, ohne den Kopf zu drehen. Manche Arten legen Eier in die Erde.",
+  "textQuestion": "Im Text über Chamäleon steht: Mit seiner langen Zunge fängt es Beute",
+  "readingQuiz": {
+   "ask": "Wozu helfen ihm die Zehen?",
+   "correct": "Zum Festhalten an Ästen",
+   "wrong": [
+    "Zum Graben tiefer Seen",
+    "Zum Schwimmen mit Flossen",
+    "Zum Bauen eines Nestes"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Chamaeleo_chamaeleon.jpg",
+  "readingQuiz2": {
+   "ask": "Warum bewegen sich Chamäleons oft sehr langsam?",
+   "correct": "Sie klettern vorsichtig und unauffällig",
+   "wrong": [
+    "Sie haben keine Beine",
+    "Weil sie unter Wasser leben",
+    "Damit sie ein Nest bauen"
+   ]
+  }
  },
  {
   "id": "elefant",
@@ -27,9 +46,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Elefant.webp",
   "cardImage": "tiersticker/elefant.png",
-  "photo": "tiersticker/elefant.png",
-  "text": "Elefant lebt in Afrika südlich der Sahara. Es mag Savannen und Wälder. Oft frisst es Gras, Blätter und Rinde. Sein Rüssel ist Nase und Greifhand zugleich. Elefanten leben in Familiengruppen. Sie brauchen viel Platz und Wasser. Darum ist Elefant ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Elefant steht: Elefanten leben in Familiengruppen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/African%20Elephant%20from%20Amboseli.jpg?width=900",
+  "text": "Ein Elefant kann mit seinen grossen Ohren Wärme abgeben. Junge Elefanten bleiben lange bei ihrer Mutter. Die älteste Elefantenkuh führt oft die Familie an. Elefanten sprechen mit tiefen Lauten miteinander. Einige dieser Laute können wir Menschen kaum hören. Mit Staub und Schlamm schützen sie ihre Haut.",
+  "textQuestion": "Im Text über Elefant steht: Elefanten leben in Familiengruppen",
+  "readingQuiz": {
+   "ask": "Warum breitet ein Elefant die Ohren aus?",
+   "correct": "Um Wärme abzugeben",
+   "wrong": [
+    "Um zu fliegen",
+    "Um Fische anzulocken",
+    "Um seine Jungen zu tragen"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:African_Elephant_from_Amboseli.jpg",
+  "readingQuiz2": {
+   "ask": "Wer führt oft eine Elefantenfamilie an?",
+   "correct": "Eine ältere Elefantenkuh",
+   "wrong": [
+    "Der jüngste Elefant",
+    "Ein Löwe",
+    "Ein fremdes Zebra"
+   ]
+  }
  },
  {
   "id": "eidechse",
@@ -43,9 +81,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Reptil",
   "image": "login-tiere/Eidechse.webp",
   "cardImage": "tiersticker/eidechse.png",
-  "photo": "tiersticker/eidechse.png",
-  "text": "Eidechse lebt in Viele Gebiete Afrikas. Es mag Warme Steine, Büsche und Grasflächen. Oft frisst es Insekten und Spinnen. Sie hat Schuppen und vier Beine. In der Sonne wärmt sie ihren Körper. Sie braucht Verstecke und ruhige Orte. Darum ist Eidechse ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Eidechse steht: In der Sonne wärmt sie ihren Körper"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Photo%20of%20Agama%20lizard.jpg?width=900",
+  "text": "Viele Eidechsen legen Eier. Bei Gefahr rennen sie schnell in ein Versteck. Manche Arten können den Schwanz abwerfen. Der Feind schaut dann auf den zappelnden Schwanz. Die Eidechse hat Zeit zu fliehen. Später wächst oft ein kürzerer Schwanz nach.",
+  "textQuestion": "Im Text über Eidechse steht: In der Sonne wärmt sie ihren Körper",
+  "readingQuiz": {
+   "ask": "Was können manche Eidechsen bei Gefahr abwerfen?",
+   "correct": "Den Schwanz",
+   "wrong": [
+    "Alle vier Beine",
+    "Die Augen",
+    "Die Zunge"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Photo_of_Agama_lizard.jpg",
+  "readingQuiz2": {
+   "ask": "Was geschieht manchmal nach dem Abwerfen des Schwanzes?",
+   "correct": "Ein kürzerer Schwanz wächst nach",
+   "wrong": [
+    "Die Eidechse bekommt Flügel",
+    "Die Eidechse wird ein Fisch",
+    "Die Beine fallen ab"
+   ]
+  }
  },
  {
   "id": "honigdachs",
@@ -59,9 +116,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Honigdachs.webp",
   "cardImage": "tiersticker/honigdachs.png",
-  "photo": "tiersticker/honigdachs.png",
-  "text": "Honigdachs lebt in Savannen und trockene Wälder Afrikas. Es mag Grasland, Buschland und Wälder. Oft frisst es Insekten, kleine Tiere und Honig. Er hat kurze Beine und starke Krallen. Er kann gut graben und ist sehr mutig. Er braucht sichere Verstecke. Darum ist Honigdachs ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Honigdachs steht: Er kann gut graben und ist sehr mutig"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Mellivora%20capensis.jpg?width=900",
+  "text": "Ein Honigdachs hat eine besonders feste Haut. Er kann Bienenstöcke aufbrechen. Seine Krallen helfen ihm auch beim Suchen von Tieren im Boden. Er ist meist allein unterwegs. Honigdachse sind oft nachts aktiv. Sie können auch Schlangen fressen.",
+  "textQuestion": "Im Text über Honigdachs steht: Er kann gut graben und ist sehr mutig",
+  "readingQuiz": {
+   "ask": "Wofür helfen dem Honigdachs die kräftigen Krallen?",
+   "correct": "Zum Graben im Boden",
+   "wrong": [
+    "Zum Rudern auf dem See",
+    "Zum Fliegen",
+    "Zum Bau von Flügeln"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Mellivora_capensis.jpg",
+  "readingQuiz2": {
+   "ask": "Wann sind Honigdachse oft unterwegs?",
+   "correct": "In der Nacht",
+   "wrong": [
+    "Immer nur mittags",
+    "Nur bei Schnee",
+    "Nur an Regentagen"
+   ]
+  }
  },
  {
   "id": "antilope",
@@ -75,9 +151,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Antilope.webp",
   "cardImage": "tiersticker/antilope.png",
-  "photo": "tiersticker/antilope.png",
-  "text": "Antilope lebt in Savannen Afrikas. Es mag Grasland und Buschland. Oft frisst es Gräser und Blätter. Sie hat lange Beine und oft Hörner. Viele Antilopen laufen sehr schnell. Sie braucht offene Wege und Wasser. Darum ist Antilope ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Antilope steht: Viele Antilopen laufen sehr schnell"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Aepyceros%20melampus.jpg?width=900",
+  "text": "Antilopen sind nicht alle gleich gross. Viele können in weiten Sprüngen fliehen. Sie haben gute Augen und Ohren. In einer Herde warnen sich die Tiere bei Gefahr. Manche Antilopen sind vor allem in der Dämmerung aktiv. Ihre Jungtiere verstecken sich zu Beginn oft im Gras.",
+  "textQuestion": "Im Text über Antilope steht: Viele Antilopen laufen sehr schnell",
+  "readingQuiz": {
+   "ask": "Warum ist eine Herde für Antilopen hilfreich?",
+   "correct": "Die Tiere können sich vor Gefahr warnen",
+   "wrong": [
+    "Sie bauen gemeinsam Nester",
+    "Sie können dadurch fliegen",
+    "Alle Tiere schlafen im Wasser"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Aepyceros_melampus.jpg",
+  "readingQuiz2": {
+   "ask": "Was hilft einer Antilope, Gefahren rechtzeitig zu entdecken?",
+   "correct": "Gute Augen und Ohren",
+   "wrong": [
+    "Ein langer Rüssel",
+    "Eine harte Schale",
+    "Ein Netz aus Seide"
+   ]
+  }
  },
  {
   "id": "doktorfisch",
@@ -91,9 +186,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Fisch",
   "image": "login-tiere/Doktorfisch.webp",
   "cardImage": "tiersticker/doktorfisch.png",
-  "photo": "tiersticker/doktorfisch.png",
-  "text": "Doktorfisch lebt in Tropische Küsten Ostafrikas. Es mag Korallenriffe im Meer. Oft frisst es Algen. Er ist ein Fisch mit flachem Körper. Am Schwanz hat er scharfe Dornen. Sauberes Meer und gesunde Riffe helfen ihm. Darum ist Doktorfisch ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Doktorfisch steht: Am Schwanz hat er scharfe Dornen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Acanthurus%20leucosternon%20R%C3%A9union.jpg?width=900",
+  "text": "Doktorfische haben nahe beim Schwanz eine scharfe Klinge. Darum heissen sie Doktorfische. Die Klinge hilft ihnen, Feinde abzuwehren. Viele schwimmen tagsüber zwischen Korallen. Beim Fressen putzen manche Arten Algen von Steinen ab. So bleibt im Riff mehr Platz für andere Lebewesen.",
+  "textQuestion": "Im Text über Doktorfisch steht: Am Schwanz hat er scharfe Dornen",
+  "readingQuiz": {
+   "ask": "Wozu dient die scharfe Klinge am Schwanz?",
+   "correct": "Zur Abwehr von Feinden",
+   "wrong": [
+    "Zum Schneiden von Holz",
+    "Zum Graben in Erde",
+    "Zum Trinken"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Acanthurus_leucosternon_R%C3%A9union.jpg",
+  "readingQuiz2": {
+   "ask": "Was passiert, wenn Doktorfische Algen abweiden?",
+   "correct": "Im Riff entsteht mehr Platz für andere Lebewesen",
+   "wrong": [
+    "Der Sand wird zu Eis",
+    "Die Fische bekommen Beine",
+    "Das Meer wird zu einem Fluss"
+   ]
+  }
  },
  {
   "id": "libelle",
@@ -107,9 +221,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Insekt",
   "image": "login-tiere/Libelle.webp",
   "cardImage": "tiersticker/libelle.png",
-  "photo": "tiersticker/libelle.png",
-  "text": "Libelle lebt in Afrika an Seen und Flüssen. Es mag Teiche, Bäche und Ufer. Oft frisst es Kleine Insekten. Sie hat vier durchsichtige Flügel. Ihre Jungen leben zuerst im Wasser. Sauberes Wasser ist wichtig. Darum ist Libelle ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Libelle steht: Ihre Jungen leben zuerst im Wasser"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Orthetrum%20chrysostigma.jpg?width=900",
+  "text": "Eine Libelle kann in der Luft fast stehen bleiben. Sie kann schnell wenden und auch rückwärts fliegen. Ihre grossen Augen sehen Bewegungen sehr gut. Eine junge Libelle heisst Larve. Die Larve jagt kleine Tiere unter Wasser. Erst später verwandelt sie sich in ein fliegendes Insekt.",
+  "textQuestion": "Im Text über Libelle steht: Ihre Jungen leben zuerst im Wasser",
+  "readingQuiz": {
+   "ask": "Wo lebt eine junge Libelle als Larve?",
+   "correct": "Unter Wasser",
+   "wrong": [
+    "In einer Baumhöhle",
+    "Nur auf Wolken",
+    "Tief in der Wüste"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Orthetrum_chrysostigma.jpg",
+  "readingQuiz2": {
+   "ask": "Was können Libellen beim Fliegen besonders gut?",
+   "correct": "Fast stehen bleiben und schnell wenden",
+   "wrong": [
+    "Grosse Steine tragen",
+    "Ohne Flügel schwimmen",
+    "Unter der Erde graben"
+   ]
+  }
  },
  {
   "id": "leopard",
@@ -123,9 +256,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Leopard.webp",
   "cardImage": "tiersticker/leopard.png",
-  "photo": "tiersticker/leopard.png",
-  "text": "Leopard lebt in Savannen und Wälder Afrikas. Es mag Bäume, Büsche und Grasland. Oft frisst es Kleine und mittelgrosse Tiere. Sein Fell hat dunkle Flecken. Er kann mit Beute auf einen Baum klettern. Er braucht Rückzugsorte und Beutetiere. Darum ist Leopard ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Leopard steht: Er kann mit Beute auf einen Baum klettern"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Leopard%20%28Panthera%20pardus%20pardus%29%20Kruger.jpg?width=900",
+  "text": "Leoparden sind oft in der Dämmerung unterwegs. Ihre Flecken helfen ihnen, im Schatten zu verschwinden. Sie können sehr leise schleichen. Ihre kräftigen Hinterbeine helfen beim Springen. Ein Leopard lebt meist allein. Manchmal legt er seine Beute auf einen hohen Ast, damit andere Tiere sie nicht stehlen.",
+  "textQuestion": "Im Text über Leopard steht: Er kann mit Beute auf einen Baum klettern",
+  "readingQuiz": {
+   "ask": "Warum bringt ein Leopard Beute manchmal auf einen Baum?",
+   "correct": "Damit andere Tiere sie nicht stehlen",
+   "wrong": [
+    "Damit die Beute fliegen lernt",
+    "Damit der Baum schneller wächst",
+    "Damit die Beute nass wird"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Leopard_%28Panthera_pardus_pardus%29_Kruger.jpg",
+  "readingQuiz2": {
+   "ask": "Wobei helfen dem Leoparden die Flecken?",
+   "correct": "Beim Verstecken im Schatten",
+   "wrong": [
+    "Beim Atmen unter Wasser",
+    "Beim Bauen eines Netzes",
+    "Beim Trinken mit einem Rüssel"
+   ]
+  }
  },
  {
   "id": "maki",
@@ -139,9 +291,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Maki.webp",
   "cardImage": "tiersticker/maki.png",
-  "photo": "tiersticker/maki.png",
-  "text": "Maki lebt in Madagaskar. Es mag Wälder auf der grossen Insel Madagaskar. Oft frisst es Früchte, Blätter und Insekten. Viele Makis haben einen langen Schwanz. Viele Arten leben nur auf Madagaskar. Ihre Wälder müssen erhalten bleiben. Darum ist Maki ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Maki steht: Viele Arten leben nur auf Madagaskar"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Ring-Tailed%20Lemur.jpg?width=900",
+  "text": "Makis zählen zu den Halbaffen. Viele Arten sind nur auf Madagaskar zu finden. Kattas halten den gestreiften Schwanz oft hoch, wenn sie laufen. So können sich die Tiere in der Gruppe besser sehen. Sie wärmen sich gern gemeinsam in der Morgensonne. Zum Suchen von Futter klettern sie auch auf den Boden.",
+  "textQuestion": "Im Text über Maki steht: Viele Arten leben nur auf Madagaskar",
+  "readingQuiz": {
+   "ask": "Warum halten Kattas ihren Schwanz beim Laufen hoch?",
+   "correct": "Damit sie sich in der Gruppe besser sehen",
+   "wrong": [
+    "Damit sie fliegen können",
+    "Damit der Schwanz leuchtet",
+    "Damit sie im Wasser atmen"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Ring-Tailed_Lemur.jpg",
+  "readingQuiz2": {
+   "ask": "Wo leben viele Maki-Arten weltweit?",
+   "correct": "Nur auf Madagaskar",
+   "wrong": [
+    "Nur im Nordpolarmeer",
+    "Nur in der Schweiz",
+    "Nur in Australien"
+   ]
+  }
  },
  {
   "id": "mandrill",
@@ -155,9 +326,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Mandrill.webp",
   "cardImage": "tiersticker/mandrill.png",
-  "photo": "tiersticker/mandrill.png",
-  "text": "Mandrill lebt in Regenwälder Zentralafrikas. Es mag Dichte tropische Wälder. Oft frisst es Früchte, Samen und kleine Tiere. Das Männchen hat auffällige Farben im Gesicht. Mandrills suchen oft am Boden nach Nahrung. Sie brauchen grosse, geschützte Wälder. Darum ist Mandrill ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Mandrill steht: Mandrills suchen oft am Boden nach Nahrung"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/The%20Mandrill.jpg?width=900",
+  "text": "Mandrills leben in grossen Gruppen. Manchmal sind sehr viele Tiere zusammen unterwegs. Die Jungen spielen miteinander. Mit Rufen und Gesichtsausdrücken sprechen sie miteinander. Männliche Mandrills sind oft viel grösser als Weibchen. Wenn sie bedroht werden, zeigen sie manchmal ihre langen Eckzähne.",
+  "textQuestion": "Im Text über Mandrill steht: Mandrills suchen oft am Boden nach Nahrung",
+  "readingQuiz": {
+   "ask": "Wie verständigen sich Mandrills untereinander?",
+   "correct": "Mit Rufen und Gesichtsausdrücken",
+   "wrong": [
+    "Mit geschriebenen Briefen",
+    "Mit Trompeten aus Holz",
+    "Nur mit ihren Schwänzen"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:The_Mandrill.jpg",
+  "readingQuiz2": {
+   "ask": "Was tun junge Mandrills häufig in der Gruppe?",
+   "correct": "Sie spielen miteinander",
+   "wrong": [
+    "Sie bauen Boote",
+    "Sie fliegen zu Blüten",
+    "Sie schwimmen zum Meeresgrund"
+   ]
+  }
  },
  {
   "id": "nektarvogel",
@@ -171,9 +361,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Vogel",
   "image": "login-tiere/Nektarvogel.webp",
   "cardImage": "tiersticker/nektarvogel.png",
-  "photo": "tiersticker/nektarvogel.png",
-  "text": "Nektarvogel lebt in Viele Regionen Afrikas. Es mag Blütenreiche Wälder und Gärten. Oft frisst es Nektar und kleine Insekten. Er hat oft einen langen, gebogenen Schnabel. Mit dem Schnabel erreicht er tiefen Nektar. Viele Blüten und Pflanzen helfen ihm. Darum ist Nektarvogel ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Nektarvogel steht: Mit dem Schnabel erreicht er tiefen Nektar"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Nectarinia%20famosa%20%28Malachite%20Sunbird%29.jpg?width=900",
+  "text": "Nektarvögel sind sehr klein und beweglich. Sie fliegen von Blüte zu Blüte. Dabei bleibt manchmal Blütenstaub an ihrem Körper hängen. So helfen sie Pflanzen bei der Bestäubung. Einige Männchen haben schillernde Federn. Anders als Kolibris setzen sich viele Nektarvögel zum Trinken auf eine Blüte.",
+  "textQuestion": "Im Text über Nektarvogel steht: Mit dem Schnabel erreicht er tiefen Nektar",
+  "readingQuiz": {
+   "ask": "Wie helfen Nektarvögel den Pflanzen?",
+   "correct": "Sie tragen Blütenstaub weiter",
+   "wrong": [
+    "Sie graben tiefe Tunnel",
+    "Sie fressen alle Blätter",
+    "Sie bauen Töpfe aus Erde"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Nectarinia_famosa_%28Malachite_Sunbird%29.jpg",
+  "readingQuiz2": {
+   "ask": "Was ist am Gefieder mancher Nektarvogel-Männchen besonders?",
+   "correct": "Es schillert in vielen Farben",
+   "wrong": [
+    "Es besteht aus Blättern",
+    "Es ist immer ganz weiss",
+    "Es ist aus Stein"
+   ]
+  }
  },
  {
   "id": "nilpferd",
@@ -187,9 +396,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Nilpferd.webp",
   "cardImage": "tiersticker/nilpferd.png",
-  "photo": "tiersticker/nilpferd.png",
-  "text": "Nilpferd lebt in Afrika südlich der Sahara. Es mag Flüsse, Seen und Ufer. Oft frisst es Gras. Es ist sehr schwer und lebt oft im Wasser. Nachts frisst es Gras an Land. Saubere Flüsse und ruhige Ufer sind wichtig. Darum ist Nilpferd ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Nilpferd steht: Nachts frisst es Gras an Land"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Hippopotamus%20%28Hippopotamus%20amphibious%29.jpg?width=900",
+  "text": "Nilpferde können ihren Atem unter Wasser mehrere Minuten lang anhalten. Die Augen und Ohren sitzen weit oben am Kopf. So können sie fast ganz untertauchen und trotzdem schauen. Ihre Haut trocknet schnell aus. Darum bleiben sie tagsüber oft im Wasser. Ein Nilpferd kann an Land überraschend schnell laufen.",
+  "textQuestion": "Im Text über Nilpferd steht: Nachts frisst es Gras an Land",
+  "readingQuiz": {
+   "ask": "Warum sitzen die Augen des Nilpferds so weit oben?",
+   "correct": "Damit es auch beim Untertauchen sehen kann",
+   "wrong": [
+    "Damit es fliegen kann",
+    "Damit es unter der Erde hören kann",
+    "Damit es besser auf Bäume klettern kann"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Hippopotamus_%28Hippopotamus_amphibious%29.jpg",
+  "readingQuiz2": {
+   "ask": "Warum bleiben Nilpferde tagsüber häufig im Wasser?",
+   "correct": "Damit die Haut nicht austrocknet",
+   "wrong": [
+    "Damit sie fliegen lernen",
+    "Damit sie Nester bauen",
+    "Damit sie Gras im Wasser anbauen"
+   ]
+  }
  },
  {
   "id": "nashorn",
@@ -203,9 +431,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Nashorn.webp",
   "cardImage": "tiersticker/nashorn.png",
-  "photo": "tiersticker/nashorn.png",
-  "text": "Nashorn lebt in Teile Afrikas. Es mag Savannen und Buschland. Oft frisst es Gras oder Blätter, je nach Art. Es hat dicke Haut und ein oder zwei Hörner. Nashörner können trotz ihrer Grösse schnell laufen. Sie sind durch Wilderei stark bedroht. Darum ist Nashorn ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Nashorn steht: Nashörner können trotz ihrer Grösse schnell laufen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/White%20rhinoceros.jpg?width=900",
+  "text": "Ein Nashorn hat ein sehr gutes Gehör. Es kann Gerüche gut wahrnehmen. Dafür sieht es nicht besonders scharf. Manche Nashörner wälzen sich gern im Schlamm. Der Schlamm kühlt die Haut und hilft gegen lästige Insekten. Ein Nashornbaby bleibt lange bei seiner Mutter.",
+  "textQuestion": "Im Text über Nashorn steht: Nashörner können trotz ihrer Grösse schnell laufen",
+  "readingQuiz": {
+   "ask": "Warum wälzt sich ein Nashorn im Schlamm?",
+   "correct": "Um die Haut zu kühlen und Insekten fernzuhalten",
+   "wrong": [
+    "Um schneller fliegen zu können",
+    "Um Fische zu fangen",
+    "Um ein Nest zu bauen"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:White_rhinoceros.jpg",
+  "readingQuiz2": {
+   "ask": "Welcher Sinn ist bei Nashörnern besonders gut?",
+   "correct": "Der Geruchssinn",
+   "wrong": [
+    "Das Lesen von Schrift",
+    "Das Erkennen von Farben im Dunkeln",
+    "Das Hören von Musik unter Wasser"
+   ]
+  }
  },
  {
   "id": "okapi",
@@ -219,9 +466,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Okapi.webp",
   "cardImage": "tiersticker/okapi.png",
-  "photo": "tiersticker/okapi.png",
-  "text": "Okapi lebt in Demokratische Republik Kongo. Es mag Dichte Regenwälder. Oft frisst es Blätter, Knospen und Früchte. Seine Beine haben Streifen wie beim Zebra. Das Okapi gehört zur Familie der Giraffen. Es braucht ungestörte Regenwälder. Darum ist Okapi ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Okapi steht: Das Okapi gehört zur Familie der Giraffen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Okapi%20%28Okapia%20johnstoni%29.jpg?width=900",
+  "text": "Das Okapi wurde von Forschenden erst vor gut hundert Jahren wissenschaftlich beschrieben. Es lebt sehr versteckt. Mit seinen grossen Ohren hört es Geräusche im Wald. Seine lange Zunge kann sogar die eigenen Ohren erreichen. Die Streifen an seinen Beinen helfen den Jungtieren, ihrer Mutter im Wald zu folgen. Okapis leben meist allein.",
+  "textQuestion": "Im Text über Okapi steht: Das Okapi gehört zur Familie der Giraffen",
+  "readingQuiz": {
+   "ask": "Wozu sind die Streifen an den Beinen des Okapis hilfreich?",
+   "correct": "Jungtiere können der Mutter im Wald folgen",
+   "wrong": [
+    "Sie helfen ihm beim Fliegen",
+    "Sie zeigen die Wassertemperatur",
+    "Sie machen den Schwanz länger"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Okapi_%28Okapia_johnstoni%29.jpg",
+  "readingQuiz2": {
+   "ask": "Wozu braucht das Okapi seine grossen Ohren?",
+   "correct": "Um Geräusche im Wald gut zu hören",
+   "wrong": [
+    "Um wie ein Vogel zu fliegen",
+    "Um im Boden zu graben",
+    "Um Wasser zu schöpfen"
+   ]
+  }
  },
  {
   "id": "rochen",
@@ -235,9 +501,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Fisch",
   "image": "login-tiere/Rochen.webp",
   "cardImage": "tiersticker/rochen.png",
-  "photo": "tiersticker/rochen.png",
-  "text": "Rochen lebt in Meere rund um Afrika. Es mag Meeresboden und Küstenwasser. Oft frisst es Muscheln, Krebse und kleine Fische. Sein Körper ist breit und flach. Er schwimmt mit Bewegungen seiner grossen Flossen. Sauberes Meer schützt seinen Lebensraum. Darum ist Rochen ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Rochen steht: Er schwimmt mit Bewegungen seiner grossen Flossen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Manta%20ray.jpg?width=900",
+  "text": "Rochen gehören zu den Knorpelfischen. Ihr Skelett ist nicht aus festen Knochen aufgebaut. Viele Arten verstecken sich unter Sand. Ihre Augen liegen oft oben auf dem Körper. Auf der Unterseite befindet sich das Maul. Manche Rochen können mit besonderen Sinnesorganen ihre Beute im Sand finden.",
+  "textQuestion": "Im Text über Rochen steht: Er schwimmt mit Bewegungen seiner grossen Flossen",
+  "readingQuiz": {
+   "ask": "Wo liegt bei vielen Rochen das Maul?",
+   "correct": "Auf der Unterseite des Körpers",
+   "wrong": [
+    "Ganz hinten am Schwanz",
+    "Auf dem Rücken",
+    "Direkt auf der Flosse"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Manta_ray.jpg",
+  "readingQuiz2": {
+   "ask": "Woraus besteht das Skelett eines Rochens?",
+   "correct": "Aus Knorpel",
+   "wrong": [
+    "Aus Holz",
+    "Aus Glas",
+    "Aus Federn"
+   ]
+  }
  },
  {
   "id": "seepferdchen",
@@ -251,9 +536,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Fisch",
   "image": "login-tiere/Seepferdchen.webp",
   "cardImage": "tiersticker/seepferdchen.png",
-  "photo": "tiersticker/seepferdchen.png",
-  "text": "Seepferdchen lebt in Küsten Afrikas. Es mag Seegraswiesen und ruhige Küsten. Oft frisst es Kleine Krebstiere. Es schwimmt aufrecht und hat einen gebogenen Hals. Beim Seepferdchen trägt das Männchen die Eier. Seegras und sauberes Meer sind wichtig. Darum ist Seepferdchen ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Seepferdchen steht: Beim Seepferdchen trägt das Männchen die Eier"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Seahorse.jpg?width=900",
+  "text": "Ein Seepferdchen hält sich mit dem Schwanz an Wasserpflanzen fest. So wird es nicht so leicht weggespült. Es hat keine grossen Schwanzflossen wie viele andere Fische. Kleine Flossen bewegen es langsam vorwärts. Zum Fressen saugt es winzige Beutetiere durch sein langes Maul ein. Seepferdchen können ihre Farbe etwas verändern.",
+  "textQuestion": "Im Text über Seepferdchen steht: Beim Seepferdchen trägt das Männchen die Eier",
+  "readingQuiz": {
+   "ask": "Womit hält sich ein Seepferdchen an Pflanzen fest?",
+   "correct": "Mit seinem Schwanz",
+   "wrong": [
+    "Mit einer langen Zunge",
+    "Mit seinen Krallen",
+    "Mit acht Beinen"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Seahorse.jpg",
+  "readingQuiz2": {
+   "ask": "Wie bewegt sich das Seepferdchen vorwärts?",
+   "correct": "Mit kleinen Flossen",
+   "wrong": [
+    "Mit vier Beinen",
+    "Mit grossen Flügeln",
+    "Mit einem Geweih"
+   ]
+  }
  },
  {
   "id": "gorilla",
@@ -267,9 +571,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Gorilla.webp",
   "cardImage": "tiersticker/gorilla.png",
-  "photo": "tiersticker/gorilla.png",
-  "text": "Gorilla lebt in Regenwälder Zentralafrikas. Es mag Dichte Wälder. Oft frisst es Blätter, Stängel und Früchte. Er hat kräftige Arme und dunkles Fell. Gorillas leben in Familiengruppen. Wälder und Schutz vor Wilderei helfen ihnen. Darum ist Gorilla ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Gorilla steht: Gorillas leben in Familiengruppen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Gorilla.jpg?width=900",
+  "text": "Gorillas sind meist friedliche Tiere. Sie kümmern sich gut um ihre Jungen. Der erwachsene Anführer hat oft silbergraue Haare auf dem Rücken. Darum nennt man ihn Silberrücken. Gorillas können mit Lauten und Gesten miteinander sprechen. Nachts bauen sie sich oft einen Schlafplatz aus Blättern und Zweigen.",
+  "textQuestion": "Im Text über Gorilla steht: Gorillas leben in Familiengruppen",
+  "readingQuiz": {
+   "ask": "Wie nennt man ein erwachsenes Gorillamännchen mit silbernem Rücken?",
+   "correct": "Silberrücken",
+   "wrong": [
+    "Goldschwanz",
+    "Blaukamm",
+    "Rotkopf"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Gorilla.jpg",
+  "readingQuiz2": {
+   "ask": "Was bauen sich Gorillas für die Nacht?",
+   "correct": "Einen Schlafplatz aus Blättern und Zweigen",
+   "wrong": [
+    "Ein Haus aus Ziegeln",
+    "Ein Nest unter Wasser",
+    "Eine Burg aus Eis"
+   ]
+  }
  },
  {
   "id": "flamingo",
@@ -283,9 +606,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Vogel",
   "image": "tierbilder/flamingo.png",
   "cardImage": "tiersticker/flamingo.png",
-  "photo": "tiersticker/flamingo.png",
-  "text": "Flamingo lebt in Salzseen und Lagunen Afrikas. Es mag Flache Seen und Feuchtgebiete. Oft frisst es Kleine Krebstiere und Algen. Er hat lange Beine und ein rosa Gefieder. Mit seinem gebogenen Schnabel filtert er Futter aus dem Wasser. Saubere Seen und ungestörte Brutplätze helfen. Darum ist Flamingo ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Flamingo steht: Mit seinem gebogenen Schnabel filtert er Futter aus dem Wasser"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Greater%20Flamingo%20RWD2.jpg?width=900",
+  "text": "Flamingos leben oft in grossen Gruppen. Die rosa Farbe kommt von Stoffen in ihrer Nahrung. Junge Flamingos sind zuerst grau. Ihre langen Beine helfen beim Waten im Wasser. Manchmal stehen sie auf nur einem Bein. Beim Fressen halten sie den Kopf oft kopfüber ins Wasser.",
+  "textQuestion": "Im Text über Flamingo steht: Mit seinem gebogenen Schnabel filtert er Futter aus dem Wasser",
+  "readingQuiz": {
+   "ask": "Welche Farbe haben junge Flamingos zuerst?",
+   "correct": "Grau",
+   "wrong": [
+    "Dunkelblau",
+    "Violett",
+    "Leuchtendgrün"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Greater_Flamingo_RWD2.jpg",
+  "readingQuiz2": {
+   "ask": "Wo hält der Flamingo beim Fressen den Kopf oft hin?",
+   "correct": "Kopfüber ins Wasser",
+   "wrong": [
+    "Unter einen Stein",
+    "In eine Baumhöhle",
+    "In tiefen Sand"
+   ]
+  }
  },
  {
   "id": "erdmaennchen",
@@ -299,9 +641,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "tierbilder/erdmaennchen.png",
   "cardImage": "tiersticker/erdmaennchen.png",
-  "photo": "tiersticker/erdmaennchen.png",
-  "text": "Erdmännchen lebt in Südliches Afrika. Es mag Trockene Savannen und Wüstenränder. Oft frisst es Insekten, Spinnen und kleine Tiere. Es steht oft aufrecht und schaut sich um. Ein Tier hält Wache, während andere fressen. Es braucht Erdhöhlen und sichere Flächen. Darum ist Erdmännchen ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Erdmännchen steht: Ein Tier hält Wache, während andere fressen"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Meerkat%20%282%29.JPG?width=900",
+  "text": "Erdmännchen leben in Familiengruppen. Sie schlafen gemeinsam in unterirdischen Bauen. Mit ihren Krallen graben sie neue Gänge. Die Jungen lernen von älteren Tieren das Jagen. Bei Gefahr gibt die Wache einen Warnruf. Dann verschwinden alle schnell in einem sicheren Loch.",
+  "textQuestion": "Im Text über Erdmännchen steht: Ein Tier hält Wache, während andere fressen",
+  "readingQuiz": {
+   "ask": "Was passiert, wenn die Erdmännchen-Wache warnt?",
+   "correct": "Alle flüchten in sichere Löcher",
+   "wrong": [
+    "Alle klettern auf hohe Bäume",
+    "Alle springen ins Meer",
+    "Alle beginnen zu fliegen"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Meerkat_%282%29.JPG",
+  "readingQuiz2": {
+   "ask": "Wer zeigt jungen Erdmännchen, wie man jagt?",
+   "correct": "Ältere Tiere",
+   "wrong": [
+    "Fische im Meer",
+    "Giraffen",
+    "Schmetterlinge"
+   ]
+  }
  },
  {
   "id": "warzenschwein",
@@ -315,9 +676,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "tierbilder/warzenschwein.png",
   "cardImage": "tiersticker/warzenschwein.png",
-  "photo": "tiersticker/warzenschwein.png",
-  "text": "Warzenschwein lebt in Savannen Afrikas. Es mag Grasland und Buschland. Oft frisst es Gras, Wurzeln und Knollen. Es hat grosse Hauer und Warzen im Gesicht. Beim Rennen hält es den Schwanz hoch. Es braucht Futter und Erdhöhlen als Schutz. Darum ist Warzenschwein ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Warzenschwein steht: Beim Rennen hält es den Schwanz hoch"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Warthog%20phacochoerus%20africanus%20male.jpg?width=900",
+  "text": "Warzenschweine können beim Fressen auf den Vorderknien stehen. So kommen sie gut an kurzes Gras. Ihre Knie haben dafür eine feste Haut. Bei Gefahr laufen sie schnell davon. Oft nutzen sie verlassene Höhlen anderer Tiere. Wenn sie sich in eine Höhle zurückziehen, gehen sie manchmal rückwärts hinein.",
+  "textQuestion": "Im Text über Warzenschwein steht: Beim Rennen hält es den Schwanz hoch",
+  "readingQuiz": {
+   "ask": "Wie fressen Warzenschweine oft das kurze Gras?",
+   "correct": "Auf den Vorderknien",
+   "wrong": [
+    "Mit den Hinterbeinen in der Luft",
+    "Hängend an einem Ast",
+    "Schwimmend im Wasser"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Warthog_phacochoerus_africanus_male.jpg",
+  "readingQuiz2": {
+   "ask": "Wie ziehen sich Warzenschweine manchmal in eine Höhle zurück?",
+   "correct": "Rückwärts",
+   "wrong": [
+    "Fliegend",
+    "Schwimmend",
+    "Auf dem Kopf stehend"
+   ]
+  }
  },
  {
   "id": "loewe",
@@ -331,9 +711,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Loewe.webp",
   "cardImage": "tiersticker/loewe.png",
-  "photo": "tiersticker/loewe.png",
-  "text": "Löwe lebt in Savannen Afrikas. Es mag Grasland und offene Buschgebiete. Oft frisst es Andere Säugetiere. Männchen haben oft eine grosse Mähne. Löwen leben häufig zusammen in Rudeln. Sie brauchen genügend Beute und Platz. Darum ist Löwe ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Löwe steht: Löwen leben häufig zusammen in Rudeln"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/African-lion.jpg?width=900",
+  "text": "In einem Löwenrudel leben oft mehrere Löwinnen mit ihren Jungen. Die Löwinnen gehen häufig gemeinsam auf die Jagd. Löwen können sehr laut brüllen. Ihr Gebrüll ist über weite Strecken zu hören. An heissen Tagen liegen sie viele Stunden im Schatten. Junge Löwen üben beim Spielen das Jagen.",
+  "textQuestion": "Im Text über Löwe steht: Löwen leben häufig zusammen in Rudeln",
+  "readingQuiz": {
+   "ask": "Was üben junge Löwen beim Spielen?",
+   "correct": "Das Jagen",
+   "wrong": [
+    "Das Fliegen",
+    "Das Eierlegen",
+    "Das Bauen von Bienenwaben"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:African-lion.jpg",
+  "readingQuiz2": {
+   "ask": "Woran erkennt man einen brüllenden Löwen auch aus der Ferne?",
+   "correct": "An seinem lauten Gebrüll",
+   "wrong": [
+    "An seinem Pfeifen wie ein Vogel",
+    "An seinen Glocken",
+    "An seinem Bellen wie ein Hund"
+   ]
+  }
  },
  {
   "id": "schildkroete",
@@ -347,9 +746,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Reptil",
   "image": "tierbilder/schildkroete.svg",
   "cardImage": "tiersticker/schildkroete.png",
-  "photo": "tiersticker/schildkroete.svg",
-  "text": "Schildkröte lebt in Viele Gebiete Afrikas. Es mag Je nach Art Savannen, Wälder oder Gewässer. Oft frisst es Pflanzen und manchmal kleine Tiere. Sie trägt einen harten Panzer. Landschildkröten ziehen Kopf und Beine oft ein. Sie braucht sichere Wege und passende Nahrung. Darum ist Schildkröte ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Schildkröte steht: Landschildkröten ziehen Kopf und Beine oft ein"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/African%20Spurred%20Tortoise%20001.jpg?width=900",
+  "text": "Eine Afrikanische Spornschildkröte kann sehr alt werden. Sie lebt an trockenen Orten. In der Mittagshitze sucht sie Schatten oder gräbt eine Höhle. Der Panzer wächst mit dem Tier mit. Eine Landschildkröte kann ihren Panzer nicht ausziehen. Ihre kräftigen Beine helfen ihr beim Graben.",
+  "textQuestion": "Im Text über Schildkröte steht: Landschildkröten ziehen Kopf und Beine oft ein",
+  "readingQuiz": {
+   "ask": "Was macht eine Afrikanische Spornschildkröte bei grosser Hitze?",
+   "correct": "Sie sucht Schatten oder eine Höhle",
+   "wrong": [
+    "Sie fliegt in den Süden",
+    "Sie wirft ihren Panzer ab",
+    "Sie taucht ins tiefe Meer"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:African_Spurred_Tortoise_001.jpg",
+  "readingQuiz2": {
+   "ask": "Was stimmt über den Panzer einer Landschildkröte?",
+   "correct": "Er wächst mit ihr mit",
+   "wrong": [
+    "Sie kann ihn wie eine Jacke ausziehen",
+    "Er ist aus Papier",
+    "Sie wirft ihn jede Woche ab"
+   ]
+  }
  },
  {
   "id": "zebra",
@@ -363,9 +781,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "tierbilder/zebra.svg",
   "cardImage": "tiersticker/zebra.png",
-  "photo": "tiersticker/zebra.svg",
-  "text": "Zebra lebt in Savannen Afrikas. Es mag Grasland und offene Landschaften. Oft frisst es Gras. Jedes Zebra hat ein eigenes Streifenmuster. Zebras leben oft in Herden. Sie brauchen Gras, Wasser und Platz. Darum ist Zebra ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Zebra steht: Zebras leben oft in Herden"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Plains%20zebra%20%28Equus%20quagga%29.jpg?width=900",
+  "text": "Zebras erkennen einander an Geruch, Stimme und Aussehen. Die Fohlen können bald nach der Geburt stehen. Das ist wichtig, wenn die Herde weiterzieht. Die Tiere warnen sich gegenseitig vor Feinden. Zebras benutzen auch ihre Ohren, um ihre Stimmung zu zeigen. Eine Herde kann gemeinsam vor Löwen fliehen.",
+  "textQuestion": "Im Text über Zebra steht: Zebras leben oft in Herden",
+  "readingQuiz": {
+   "ask": "Warum können Zebrafohlen schon früh stehen?",
+   "correct": "Damit sie mit der Herde mitgehen können",
+   "wrong": [
+    "Damit sie Blätter vom Baum pflücken",
+    "Damit sie ein Nest bauen",
+    "Damit sie tauchen können"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Plains_zebra_%28Equus_quagga%29.jpg",
+  "readingQuiz2": {
+   "ask": "Wie warnen sich Zebras untereinander?",
+   "correct": "Mit Lauten und ihrer Körpersprache",
+   "wrong": [
+    "Mit geschriebenen Briefen",
+    "Mit Feuerwerk",
+    "Mit Taschenlampen"
+   ]
+  }
  },
  {
   "id": "giraffe",
@@ -379,9 +816,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "tierbilder/giraffe.svg",
   "cardImage": "tiersticker/giraffe.png",
-  "photo": "tiersticker/giraffe.svg",
-  "text": "Giraffe lebt in Savannen Afrikas. Es mag Savannen mit Bäumen. Oft frisst es Blätter, besonders von Akazien. Sie hat einen sehr langen Hals. Mit ihrer langen Zunge erreicht sie Blätter. Sie braucht Bäume und Platz. Darum ist Giraffe ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Giraffe steht: Mit ihrer langen Zunge erreicht sie Blätter"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Giraffe%20giraffa%20camelopardalis.jpg?width=900",
+  "text": "Giraffen haben trotz ihres langen Halses nur sieben Halswirbel. Das ist so viel wie beim Menschen. Sie können mit ihrer Zunge Dornen an Pflanzen umgehen. Beim Trinken spreizen sie die Vorderbeine weit auseinander. Giraffen schlafen oft nur kurz. Schon kleine Giraffenbabys sind sehr gross.",
+  "textQuestion": "Im Text über Giraffe steht: Mit ihrer langen Zunge erreicht sie Blätter",
+  "readingQuiz": {
+   "ask": "Wie viele Halswirbel hat eine Giraffe?",
+   "correct": "Sieben",
+   "wrong": [
+    "Dreissig",
+    "Einen",
+    "Hundert"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Giraffe_giraffa_camelopardalis.jpg",
+  "readingQuiz2": {
+   "ask": "Was macht eine Giraffe beim Trinken oft mit den Vorderbeinen?",
+   "correct": "Sie spreizt sie weit auseinander",
+   "wrong": [
+    "Sie hebt beide in die Luft",
+    "Sie zieht sie ganz ein",
+    "Sie legt sie auf den Rücken"
+   ]
+  }
  },
  {
   "id": "frosch",
@@ -395,9 +851,28 @@ window.SAFARI_ANIMALS=[
   "kind": "Amphibie",
   "image": "tierbilder/frosch.svg",
   "cardImage": "tiersticker/frosch.png",
-  "photo": "tiersticker/frosch.svg",
-  "text": "Frosch lebt in Viele Gebiete Afrikas. Es mag Feuchte Orte an Wasserstellen. Oft frisst es Insekten und kleine Tiere. Er hat starke Hinterbeine zum Springen. Viele Frösche legen Eier ins Wasser. Saubere Teiche sind wichtig. Darum ist Frosch ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Frosch steht: Viele Frösche legen Eier ins Wasser"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/African%20Bullfrog.jpg?width=900",
+  "text": "Afrikanische Grabfrösche können lange Trockenzeiten überstehen. Sie vergraben sich dann in der Erde. Nach starkem Regen kommen sie wieder hervor. Die Kaulquappen entwickeln sich im Wasser. Bei einigen Arten bewacht das Männchen die Jungen. Frösche atmen nicht nur mit der Lunge, sondern auch durch die Haut.",
+  "textQuestion": "Im Text über Frosch steht: Viele Frösche legen Eier ins Wasser",
+  "readingQuiz": {
+   "ask": "Wie übersteht der Afrikanische Grabfrosch lange Trockenzeiten?",
+   "correct": "Er vergräbt sich in der Erde",
+   "wrong": [
+    "Er baut ein Nest aus Federn",
+    "Er fliegt davon",
+    "Er lebt dann im Meer"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:African_Bullfrog.jpg",
+  "readingQuiz2": {
+   "ask": "Was geschieht nach starkem Regen mit dem Grabfrosch?",
+   "correct": "Er kommt aus der Erde hervor",
+   "wrong": [
+    "Er bekommt Federn",
+    "Er verwandelt sich in eine Spinne",
+    "Er fliegt in die Berge"
+   ]
+  }
  },
  {
   "id": "spinne",
@@ -411,8 +886,27 @@ window.SAFARI_ANIMALS=[
   "kind": "Spinnentier",
   "image": "tierbilder/spinne.svg",
   "cardImage": "tiersticker/spinne.png",
-  "photo": "tiersticker/spinne.svg",
-  "text": "Spinne lebt in Viele Lebensräume Afrikas. Es mag Grasland, Bäume, Häuser und Wüsten. Oft frisst es Insekten und kleine Tiere. Sie hat acht Beine. Manche Spinnen bauen Netze. Sie hilft, Insekten in Schach zu halten. Darum ist Spinne ein spannendes Tier im Lebensraum Afrika.",
-  "textQuestion": "Im Text über Spinne steht: Manche Spinnen bauen Netze"
+  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Nephila%20senegalensis%20Santiago%20Cape%20Verde.jpg?width=900",
+  "text": "Viele Spinnen können Seide herstellen. Daraus bauen sie Fäden und manchmal Netze. In Afrika leben auch grosse Radnetzspinnen. Die Netze fangen kleine fliegende Insekten. Nicht jede Spinne baut ein Fangnetz. Manche Spinnen schleichen sich direkt an ihre Beute heran.",
+  "textQuestion": "Im Text über Spinne steht: Manche Spinnen bauen Netze",
+  "readingQuiz": {
+   "ask": "Woraus bestehen die Fangfäden einer Spinne?",
+   "correct": "Aus Spinnenseide",
+   "wrong": [
+    "Aus Holz",
+    "Aus Gras",
+    "Aus Stein"
+   ]
+  },
+  "photoSource": "https://commons.wikimedia.org/wiki/File:Nephila_senegalensis_Santiago_Cape_Verde.jpg",
+  "readingQuiz2": {
+   "ask": "Bauen alle Spinnen ein Fangnetz?",
+   "correct": "Nein, manche jagen auch ohne Netz",
+   "wrong": [
+    "Ja, sogar unter Wasser aus Holz",
+    "Ja, aus Stein",
+    "Ja, alle haben das gleiche Netz"
+   ]
+  }
  }
 ];

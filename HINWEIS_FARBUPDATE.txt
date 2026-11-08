@@ -1,0 +1,12 @@
+LernSafari – Darkmode-Farbupdate, 08.11.2026
+
+Ausgangsversion: LS_D26_11_08_DARKMODE.zip
+
+Änderungen:
+- Tierbild „Hakuna Matata“ wieder als dezenter, stark abgedunkelter Seitenhintergrund sichtbar.
+- Bereichsüberschriften „Aktuelle Lernspiele“, „Lernspiele Archiv“ und „Lernportale“ einheitlich auf Anthrazit mit flamingorosa Titel und hell-schiefergrauem Beschreibungstext.
+- Fachboxen: Allgemein Schiefergrau, Deutsch Rot, Englisch Gelb, Mathe Blau, Musik Weiss, NMG Grün.
+- Titel der Fachboxen jeweils kontrastreich in Weiss oder dunklem Schnabelgrau.
+- Spielkarten sowie deren Vorschauflächen bleiben dunkles Schnabelgrau.
+
+Keine Änderungen an den Lernspielregeln, Cloudflare Worker oder Datenbank.

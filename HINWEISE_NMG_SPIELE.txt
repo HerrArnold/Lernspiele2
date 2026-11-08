@@ -1,0 +1,49 @@
+LERN SAFARI – NEUE NMG-SPIELE
+===========================
+
+Neu im Fach NMG:
+  1. Verschiedene Rabenvögel (2 Teile)
+  2. Lebensraum der Vögel (2 Teile)
+  3. Federtypen (2 Teile)
+  4. Teste dein Wissen NMG (3 Teile, 18 Aufgaben)
+
+Keine Herzen, keine Highscores. Einzelne Antworten werden bei angemeldetem
+Kinderkonto ueber die bestehende /game-attempt-Schnittstelle protokolliert.
+Dafuer ist kein neuer Worker und keine neue D1-Migration noetig, wenn die
+letzte private Telemetrie-Aktualisierung bereits installiert ist.
+
+Hochladen:
+  Entpacktes Gesamtpaket in das Stammverzeichnis des GitHub-Repositorys
+  hochladen. Die vorhandenen Dateien der Hauptseite bleiben erhalten.
+  Zuerst in Lernspiele2 testen, dann auf die Hauptseite bringen.
+
+WICHTIG – FOTOS
+===============
+Die zehn Rabenvogel-Fotos sind externe Bilddateien; sie werden von den jeweiligen
+Anbieterseiten geladen. Verbindungsprobleme oder Hotlink-Schutz koennen
+Bilder blockieren. Die Bilder sind nicht Bestandteil dieser ZIP-Datei.
+Die oben genannte Quellenangabe bedeutet nicht automatisch eine Lizenz fuer
+Wiederverwendung. Bitte vor oeffentlicher Veroeffentlichung pruefen, ob die
+Bildanbieter eine Einbindung auf einer oeffentlichen Webseite gestatten.
+Fuer eine dauerhafte, urheberrechtlich saubere Version werden idealerweise
+Bilder mit nachweisbarer Lizenz (z.B. CC BY mit Namensnennung) lokal gehostet.
+
+Bild-URLs und Anbieter stehen in assets/nmg-data.js.
+
+Quellen fuer Sachinformationen:
+https://www.vogelwarte.ch/de/ratgeber/rabenvoegel-in-landwirtschaftlichen-kulturen/
+https://www.vogelwarte.ch/de/voegel-der-schweiz/
+https://www.vogelwarte.ch/de/voegel-der-schweiz/eichelhaeher/
+https://www.vogelwarte.ch/de/voegel-der-schweiz/elster/
+https://www.vogelwarte.ch/de/voegel-der-schweiz/kolkrabe/
+https://www.birdlife.at/voegel/alpendohle/
+https://monticola.org/alpenkraehenprojekt/vorstellung-der-art/
+
+Die Federn in assets/federn/ sind eigens erstellte einfache SVG-Illustrationen.
+
+Fuenf Update-Regeln weiterhin gueltig:
+  - Keine unbeauftragten Datenloeschungen.
+  - Alte Spielkennungen bleiben erhalten.
+  - Jedes neue Spiel hat eine eindeutige Kennung.
+  - Datenbank-Aenderungen nur gezielt und rueckwaertskompatibel.
+  - Sicherung und Test der Backup-Webseite vor grosseren Aenderungen.

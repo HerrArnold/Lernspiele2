@@ -431,7 +431,7 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "login-tiere/Nashorn.webp",
   "cardImage": "tiersticker/nashorn.png",
-  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/White%20rhinoceros.jpg?width=900",
+  "photo": "tierfotos/nashorn.webp",
   "text": "Ein Nashorn hat ein sehr gutes Gehör. Es kann Gerüche gut wahrnehmen. Dafür sieht es nicht besonders scharf. Manche Nashörner wälzen sich gern im Schlamm. Der Schlamm kühlt die Haut und hilft gegen lästige Insekten. Ein Nashornbaby bleibt lange bei seiner Mutter.",
   "textQuestion": "Im Text über Nashorn steht: Nashörner können trotz ihrer Grösse schnell laufen",
   "readingQuiz": {
@@ -443,7 +443,7 @@ window.SAFARI_ANIMALS=[
     "Um ein Nest zu bauen"
    ]
   },
-  "photoSource": "https://commons.wikimedia.org/wiki/File:White_rhinoceros.jpg",
+  "photoSource": "",
   "readingQuiz2": {
    "ask": "Welcher Sinn ist bei Nashörnern besonders gut?",
    "correct": "Der Geruchssinn",
@@ -452,7 +452,9 @@ window.SAFARI_ANIMALS=[
     "Das Erkennen von Farben im Dunkeln",
     "Das Hören von Musik unter Wasser"
    ]
-  }
+  },
+  "photoCredit": "",
+  "photoLicense": ""
  },
  {
   "id": "okapi",
@@ -641,7 +643,7 @@ window.SAFARI_ANIMALS=[
   "kind": "Säugetier",
   "image": "tierbilder/erdmaennchen.png",
   "cardImage": "tiersticker/erdmaennchen.png",
-  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Meerkat%20%282%29.JPG?width=900",
+  "photo": "tierfotos/erdmaennchen.webp",
   "text": "Erdmännchen leben in Familiengruppen. Sie schlafen gemeinsam in unterirdischen Bauen. Mit ihren Krallen graben sie neue Gänge. Die Jungen lernen von älteren Tieren das Jagen. Bei Gefahr gibt die Wache einen Warnruf. Dann verschwinden alle schnell in einem sicheren Loch.",
   "textQuestion": "Im Text über Erdmännchen steht: Ein Tier hält Wache, während andere fressen",
   "readingQuiz": {
@@ -653,7 +655,7 @@ window.SAFARI_ANIMALS=[
     "Alle beginnen zu fliegen"
    ]
   },
-  "photoSource": "https://commons.wikimedia.org/wiki/File:Meerkat_%282%29.JPG",
+  "photoSource": "",
   "readingQuiz2": {
    "ask": "Wer zeigt jungen Erdmännchen, wie man jagt?",
    "correct": "Ältere Tiere",
@@ -662,7 +664,9 @@ window.SAFARI_ANIMALS=[
     "Giraffen",
     "Schmetterlinge"
    ]
-  }
+  },
+  "photoCredit": "",
+  "photoLicense": ""
  },
  {
   "id": "warzenschwein",
@@ -851,7 +855,7 @@ window.SAFARI_ANIMALS=[
   "kind": "Amphibie",
   "image": "tierbilder/frosch.svg",
   "cardImage": "tiersticker/frosch.png",
-  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/African%20Bullfrog.jpg?width=900",
+  "photo": "tierfotos/frosch.webp",
   "text": "Afrikanische Grabfrösche können lange Trockenzeiten überstehen. Sie vergraben sich dann in der Erde. Nach starkem Regen kommen sie wieder hervor. Die Kaulquappen entwickeln sich im Wasser. Bei einigen Arten bewacht das Männchen die Jungen. Frösche atmen nicht nur mit der Lunge, sondern auch durch die Haut.",
   "textQuestion": "Im Text über Frosch steht: Viele Frösche legen Eier ins Wasser",
   "readingQuiz": {
@@ -863,7 +867,7 @@ window.SAFARI_ANIMALS=[
     "Er lebt dann im Meer"
    ]
   },
-  "photoSource": "https://commons.wikimedia.org/wiki/File:African_Bullfrog.jpg",
+  "photoSource": "",
   "readingQuiz2": {
    "ask": "Was geschieht nach starkem Regen mit dem Grabfrosch?",
    "correct": "Er kommt aus der Erde hervor",
@@ -872,7 +876,9 @@ window.SAFARI_ANIMALS=[
     "Er verwandelt sich in eine Spinne",
     "Er fliegt in die Berge"
    ]
-  }
+  },
+  "photoCredit": "",
+  "photoLicense": ""
  },
  {
   "id": "spinne",
@@ -886,7 +892,7 @@ window.SAFARI_ANIMALS=[
   "kind": "Spinnentier",
   "image": "tierbilder/spinne.svg",
   "cardImage": "tiersticker/spinne.png",
-  "photo": "https://commons.wikimedia.org/wiki/Special:FilePath/Nephila%20senegalensis%20Santiago%20Cape%20Verde.jpg?width=900",
+  "photo": "tierfotos/spinne.webp",
   "text": "Viele Spinnen können Seide herstellen. Daraus bauen sie Fäden und manchmal Netze. In Afrika leben auch grosse Radnetzspinnen. Die Netze fangen kleine fliegende Insekten. Nicht jede Spinne baut ein Fangnetz. Manche Spinnen schleichen sich direkt an ihre Beute heran.",
   "textQuestion": "Im Text über Spinne steht: Manche Spinnen bauen Netze",
   "readingQuiz": {
@@ -898,7 +904,7 @@ window.SAFARI_ANIMALS=[
     "Aus Stein"
    ]
   },
-  "photoSource": "https://commons.wikimedia.org/wiki/File:Nephila_senegalensis_Santiago_Cape_Verde.jpg",
+  "photoSource": "",
   "readingQuiz2": {
    "ask": "Bauen alle Spinnen ein Fangnetz?",
    "correct": "Nein, manche jagen auch ohne Netz",
@@ -907,6 +913,8 @@ window.SAFARI_ANIMALS=[
     "Ja, aus Stein",
     "Ja, alle haben das gleiche Netz"
    ]
-  }
+  },
+  "photoCredit": "",
+  "photoLicense": ""
  }
 ];

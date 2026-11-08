@@ -19,6 +19,8 @@ const paths={
   ['Schach gegen den Computer','schach-computer.html','preview-schach-computer.svg','Spiele eine echte Partie gegen den Computer']
  ],
  Musik:[
+  ['SayHi: Singen','sayhi-singen.html','preview-sayhi-singen.svg','Musikvideo anschauen und mit Liedtext mitsingen'],
+  ['SayHi: Tanz','sayhi-tanz.html','preview-sayhi-tanz.svg','Die Tanzschritte mit Video üben'],
   ['Solmisationsleiter','solmisationsleiter.html','preview-solmisationsleiter.webp','Silben ordnen und Farben finden'],
   ['Solmisationsspiel','solmisationsspiel.html','preview-solmi.webp','Do liegt auf C'],
   ['Solmisationsspiel schwer','solmisationsspiel-profi.html','preview-solmi-profi.webp','Do liegt auf verschiedenen Tönen'],

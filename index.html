@@ -11,8 +11,8 @@
 <script defer src="assets/daily-data.js"></script>
 <script defer src="assets/login-config.js?v=2"></script>
 <script defer src="assets/login.js?v=7"></script>
-<script defer src="assets/safari.js?v=10"></script><link rel="stylesheet" href="assets/zahl-des-tages.css?v=10"><script defer src="assets/zahl-des-tages.js?v=10"></script>
-<link rel="stylesheet" href="assets/lernsafari-dark.css?v=10"><link rel="stylesheet" href="assets/tierwelt.css?v=7"><script defer src="assets/tierwelt-data.js?v=7"></script><script defer src="assets/tierwelt.js?v=7"></script><script defer src="assets/agenda.js?v=10"></script></head>
+<script defer src="assets/safari.js?v=10"></script><link rel="stylesheet" href="assets/zahl-des-tages.css?v=11"><script defer src="assets/zahl-des-tages.js?v=11"></script>
+<link rel="stylesheet" href="assets/lernsafari-dark.css?v=10"><link rel="stylesheet" href="assets/tierwelt.css?v=11"><script defer src="assets/tierwelt-data.js?v=11"></script><script defer src="assets/tierwelt.js?v=11"></script><script defer src="assets/agenda.js?v=10"></script></head>
 <body>
 <header class="site-header" id="main-header">
  <div class="header-inner">
@@ -49,11 +49,12 @@
     <div class="today-mascot"><img src="assets/flamingo-zahl-des-tages.webp" alt="Flamingo mit der Tafel: Zahl des Tages 324"></div>
     <div id="zdt-example" class="today-example"></div>
    </section>
-   <section id="zahl-des-tages" class="zdt-shell" aria-label="Zahl des Tages"></section>
    <section class="today-joke" aria-label="Warzenschwein-Witz">
-    <img src="assets/warzenschwein-hungrig.webp" alt="Ein hungriges Warzenschwein leckt sich die Lippen">
+    <button type="button" class="number-plan-secret" id="number-plan-open" aria-label="Warzenschwein" title="Warzenschwein"><img src="assets/warzenschwein-hungrig.webp" alt="Ein hungriges Warzenschwein leckt sich die Lippen"></button>
     <div class="today-bubble">Zahl des Tages? <span>Und was ist das Menü des Tages?</span></div>
    </section>
+   <section id="zahl-des-tages" class="zdt-shell" aria-label="Zahl des Tages"></section>
+
    <section class="today-meerkat-intro" aria-label="Die anderen Tagesaufgaben">
     <div class="secret-wrap today-meerkat-figure">
      <button type="button" class="secret-image" id="meerkat-secret" aria-label="Erdmännchen"><img class="meerkat-figure" src="assets/erdmaennchen-denkend.png" alt="Nachdenkliches Erdmännchen"></button>
@@ -126,6 +127,12 @@
 <div id="login-dialog" class="login-shade" hidden role="dialog" aria-modal="true" aria-labelledby="login-title"><div class="login-card"><button type="button" id="login-close" class="login-close" aria-label="Schliessen">×</button><h2 id="login-title">Auf der LernSafari anmelden</h2><p>Melde dich mit deinem Tiernamen an, damit deine Erfolge gespeichert werden.</p><form id="login-form"><label for="login-username">Benutzername</label><input id="login-username" name="username" autocomplete="username" required><label for="login-password">Passwort</label><input id="login-password" type="password" name="password" autocomplete="current-password" required><button type="submit" class="login-submit">Anmelden</button><p id="login-message" role="status"></p></form></div></div>
 <div class="week-overlay" id="week-panel" hidden role="dialog" aria-modal="true" aria-label="Wochenaufgaben">
  <div class="week-content"><div class="week-head"><h2>Aufgabenserien – Vorschau</h2><button type="button" id="close-week" class="close-week" aria-label="Schliessen">×</button></div><p class="week-hint">Geplante Woche und Reserveaufgaben (alle ohne Wiederholung)</p><div class="week-list" id="week-list"></div></div>
+</div>
+<div class="number-plan-overlay" id="number-plan-overlay" hidden aria-modal="true" role="dialog" aria-label="Zahlenplanung">
+ <div class="number-plan-dialog"><button type="button" class="number-plan-close" id="number-plan-close" aria-label="Schliessen">✕</button>
+ <div id="number-plan-login"><h2>Zahlenplanung</h2><p>Gib den Code ein.</p><label for="number-plan-pin">Code</label><input id="number-plan-pin" type="password" inputmode="numeric" maxlength="10" autocomplete="off"><button id="number-plan-unlock" type="button">Öffnen</button></div>
+ <div id="number-plan-content" hidden><h2>Zahlen des Tages bis Weihnachten</h2><p>Du kannst die Zahlen von Montag bis Freitag ändern. Am Wochenende gilt die Freitagszahl.</p><div id="number-plan-grid"></div></div>
+ <p class="number-plan-message" id="number-plan-message" role="status"></p></div>
 </div>
 </body>
 </html>

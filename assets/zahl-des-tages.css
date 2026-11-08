@@ -100,3 +100,20 @@
 @media(max-width:730px){.zdt-artitems.h{grid-template-columns:repeat(5,minmax(0,1fr));max-width:350px}.zdt-artitems.h .zdt-artitem{width:100%;height:auto;aspect-ratio:1}.zdt-artitems.t{grid-auto-columns:minmax(0,120px)}.zdt-artitems.e{grid-template-columns:repeat(5,22px) 10px repeat(5,22px);gap:4px}.zdt-artitems.e .zdt-artitem{width:22px;height:22px}.zdt-artrow{grid-template-columns:1fr}}
 
 .zdt-decomp label small{font-size:12px;color:#f8c8da;font-weight:650}.zdt-decomp label{flex-basis:130px}.zdt-decomp label .zdt-input{appearance:textfield}
+
+.number-plan-secret{background:transparent;border:0;cursor:pointer;padding:0;margin:0;display:block;flex:0 0 auto}
+.number-plan-secret img{display:block;width:100%;height:auto;max-height:310px;object-fit:contain}
+.number-plan-overlay[hidden],#number-plan-login[hidden],#number-plan-content[hidden]{display:none!important}
+.number-plan-overlay{position:fixed;inset:0;z-index:5000;background:#05080bc9;display:grid;place-items:center;padding:14px}
+.number-plan-dialog{background:#263238;color:#f3f7f8;border:2px solid #798992;border-radius:20px;padding:22px;width:min(100%,700px);max-height:85vh;overflow-y:auto;box-shadow:0 18px 55px #000b;position:relative}
+.number-plan-dialog h2{color:#f5acc5;margin:0 0 12px}
+.number-plan-close{position:absolute;right:12px;top:10px;background:#3c4a52;color:#fff;border:1px solid #899aa2;border-radius:9px;padding:7px 12px;cursor:pointer}
+.number-plan-dialog label{display:block;color:#edf3f5;font-weight:750;margin-bottom:5px}
+.number-plan-dialog input{background:#f5f6f4!important;color:#21323b!important;border:2px solid #899aa2;border-radius:9px;padding:11px;font:inherit;width:100%;max-width:260px}
+.number-plan-dialog button:not(.number-plan-close){font:inherit;font-weight:800;background:#5a8064;color:#fff;border:0;border-radius:10px;padding:10px 15px;cursor:pointer}
+.number-plan-dialog button:disabled{opacity:.6;cursor:wait}
+.number-plan-row{display:grid;grid-template-columns:minmax(80px,1fr) 120px 110px minmax(80px,1.2fr);gap:8px;align-items:center;border-bottom:1px solid #4e5c63;padding:10px 0}
+.number-plan-row label{margin:0}.number-plan-row input{width:100%;min-width:0}
+.number-plan-row span{font-size:13px;color:#f6bad0}.number-plan-message{color:#f6bad0;font-weight:800;margin:10px 0}
+.number-plan-warning{padding:10px 16px;border-radius:12px;background:#55373d!important;color:#fff!important;font-weight:700}
+@media(max-width:650px){.number-plan-row{grid-template-columns:1fr 85px 85px}.number-plan-row span{grid-column:1/-1}.number-plan-dialog{padding:15px}}

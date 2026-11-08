@@ -2,7 +2,7 @@
 'use strict';
 (()=>{
 const $=id=>document.getElementById(id), MAX=1000;
-let activeDate='',number=0,state=null,dragGroup=null,dragMode=true;
+let activeDate='',number=0,state=null,dragGroup=null,dragMode=true,renderRequest=0;
 const digits=(n)=>[Math.floor(n/1000),Math.floor(n%1000/100),Math.floor(n%100/10),n%10];
 const digitsWord=['null','eins','zwei','drei','vier','fünf','sechs','sieben','acht','neun'];
 const teens=['zehn','elf','zwölf','dreizehn','vierzehn','fünfzehn','sechzehn','siebzehn','achtzehn','neunzehn'];
@@ -22,7 +22,7 @@ function learningDate(iso){
 }
 function hashDate(iso){let hash=2166136261;for(const char of 'LernSafari-Klasse3b-'+iso){hash^=char.charCodeAt(0);hash=Math.imul(hash,16777619)}return (hash>>>0)%MAX+1}
 function newState(){return {word:'',parity:'',place:[0,0,0,0],decomp:['','','',''],art:{h:Array(10).fill(false),t:Array(10).fill(false),e:Array(10).fill(false)},line:null,checked:{}}}
-function key(){let who='anonym';try{who=window.SafariLogin?.auth()?.username||'anonym'}catch(_){}return 'lernsafari-numberday-v1:'+activeDate+':'+who}
+function key(){let who='anonym';try{who=window.SafariLogin?.auth()?.username||'anonym'}catch(_){}return 'lernsafari-numberday-v2:'+activeDate+':'+number+':'+who}
 function save(){try{localStorage.setItem(key(),JSON.stringify(state))}catch(_){}}
 function invalidate(id){delete state.checked[id];markFeedback(id,false,'');updateProgress();save()}
 function restore(){let raw;try{raw=JSON.parse(localStorage.getItem(key()))}catch(_){};if(!raw||!Array.isArray(raw.place)||!raw.art)return newState();const s=newState();if(typeof raw.word==='string')s.word=raw.word.slice(0,100);if(typeof raw.parity==='string')s.parity=raw.parity;if(raw.place.length===4)s.place=raw.place.map(x=>Math.max(0,Math.min(9,Number(x)||0)));if(Array.isArray(raw.decomp)&&raw.decomp.length===4)s.decomp=raw.decomp.map(x=>String(x??''));for(const k of ['h','t','e'])if(Array.isArray(raw.art[k])&&raw.art[k].length===10)s.art[k]=raw.art[k].map(Boolean);s.line=raw.line===null||raw.line===undefined?null:Math.max(0,Math.min(1000,Number(raw.line)||0));s.checked=raw.checked||{};return s}
@@ -51,7 +51,28 @@ function solvedExample(){
  </div></aside>`;
 }
 function section(id,title,description,content){return `<section class="zdt-task" data-step="${id}"><h3>${title}</h3><p>${description}</p>${content}<button type="button" class="zdt-check" data-check-step="${id}">Prüfen</button><span class="zdt-feedback" data-feedback="${id}" aria-live="polite"></span></section>`}
-function render(date){const host=$('zahl-des-tages');if(!host)return;const nextDate=/^20\d{2}-\d{2}-\d{2}$/.test(date)?date:new Date().toISOString().slice(0,10);const dateForNumber=learningDate(nextDate);if(activeDate===dateForNumber&&host.hasChildNodes())return;activeDate=dateForNumber;number=hashDate(activeDate);state=restore();
+function apiBase(){return String(window.LERNSAFARI_BACKEND_URL||'https://lernsafari-api.ergohd02.workers.dev').replace(/\/+$/,'');}
+async function render(date){
+ const host=$('zahl-des-tages');if(!host)return;
+ const nextDate=/^20\d{2}-\d{2}-\d{2}$/.test(date)?date:new Date().toISOString().slice(0,10),day=learningDate(nextDate),id=++renderRequest;
+ host.setAttribute('aria-busy','true');
+ try{
+  const res=await fetch(apiBase()+'/number-day?date='+encodeURIComponent(day),{cache:'no-store'});
+  if(!res.ok)throw Error('Aktualisierung nicht erreichbar');
+  const info=await res.json();if(!Number.isInteger(info.number)||info.number<1||info.number>1000)throw Error('Zahl ungültig');
+  if(id!==renderRequest)return;
+  renderCore(day,info.number);
+  document.getElementById('zdt-connect-warning')?.remove();
+ }catch(err){
+  if(id!==renderRequest)return;
+  renderCore(day,hashDate(day));
+  if(!document.getElementById('zdt-connect-warning'))host.insertAdjacentHTML('afterbegin','<p id="zdt-connect-warning" class="number-plan-warning">Die Verbindung zur gespeicherten Zahlenplanung fehlt. Du siehst vorläufig die ursprüngliche Zahl. Bitte später neu laden.</p>');
+ }finally{if(id===renderRequest)host.removeAttribute('aria-busy')}
+}
+function renderCore(dateForNumber,loadedNumber){
+ const host=$('zahl-des-tages');if(!host)return;
+ if(activeDate===dateForNumber&&number===loadedNumber&&host.hasChildNodes())return;
+ activeDate=dateForNumber;number=loadedNumber;state=restore();
  const thousandNumber=digits(number);const ds=['T','H','Z','E'];
  const exampleHost=$('zdt-example');if(exampleHost)exampleHost.innerHTML=solvedExample();
  host.innerHTML=`<div class="zdt-header"><div><h2>🔢 Zahl des Tages</h2><p>Entdecke die Zahl! Prüfe jede Aufgabe einzeln.</p></div><span class="zdt-progress" id="zdt-progress">0 von 6 Aufgaben</span></div><div class="zdt-number" aria-label="Zahl des Tages: ${number}">${number}</div><div class="zdt-tasks">
@@ -79,6 +100,42 @@ function checkStep(id){const [t,h,z,e]=digits(number);let ok=false;let actual=''
 function wire(){const host=$('zahl-des-tages');host.querySelectorAll('[data-check-step]').forEach(b=>b.onclick=()=>checkStep(b.dataset.checkStep));$('zdt-word').addEventListener('input',e=>{state.word=e.target.value;invalidate('word')});host.querySelectorAll('[name=zdt-parity]').forEach(r=>r.onchange=()=>{state.parity=r.value;invalidate('parity')});host.querySelectorAll('[data-pchange]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.pchange),n=Number(b.dataset.step);state.place[i]=Math.max(0,Math.min(i===0?1:9,state.place[i]+n));renderDots();invalidate('place')});host.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{state.place[Number(b.dataset.clear)]=0;renderDots();invalidate('place')});host.querySelectorAll('[data-decomp]').forEach(el=>el.oninput=()=>{state.decomp[Number(el.dataset.decomp)]=el.value;invalidate('decomp')});
  host.querySelectorAll('[data-art]').forEach(btn=>{btn.addEventListener('pointerdown',e=>{if(e.button!==0&&e.pointerType==='mouse')return;e.preventDefault();dragGroup=btn.dataset.art;dragMode=!state.art[dragGroup][Number(btn.dataset.i)];paintItem(dragGroup,Number(btn.dataset.i),dragMode);try{btn.setPointerCapture(e.pointerId)}catch(_){}});btn.addEventListener('pointerenter',e=>{if(dragGroup===btn.dataset.art)paintItem(dragGroup,Number(btn.dataset.i),dragMode)});btn.addEventListener('click',e=>{if(e.detail===0)paintItem(btn.dataset.art,Number(btn.dataset.i))})});
  host.addEventListener('pointermove',e=>{if(!dragGroup||!e.buttons)return;const target=document.elementFromPoint(e.clientX,e.clientY)?.closest('[data-art]');if(target?.dataset.art===dragGroup)paintItem(dragGroup,Number(target.dataset.i),dragMode)});window.addEventListener('pointerup',()=>dragGroup=null);const line=$('zdt-line');line.addEventListener('click',setLine);line.addEventListener('keydown',e=>{if(['ArrowRight','ArrowUp','ArrowLeft','ArrowDown'].includes(e.key)){e.preventDefault();state.line=Math.max(0,Math.min(1000,(state.line===null?500:state.line)+(e.key==='ArrowRight'||e.key==='ArrowUp'?10:-10)));updateLine();invalidate('line')}})}
+
+let planToken='';
+function planNotice(text){const node=$('number-plan-message');if(node)node.textContent=text;}
+function openPlan(){const root=$('number-plan-overlay');if(!root)return;root.hidden=false;$('number-plan-content').hidden=true;$('number-plan-login').hidden=false;planNotice('');$('number-plan-pin').value='';$('number-plan-pin').focus();}
+function closePlan(){const root=$('number-plan-overlay');if(root)root.hidden=true;planToken='';}
+async function unlockPlan(){
+ const pin=$('number-plan-pin').value.trim();
+ if(!/^\d{4,10}$/.test(pin)){planNotice('Bitte den vierstelligen Code eingeben.');return}
+ const btn=$('number-plan-unlock');btn.disabled=true;planNotice('Code wird geprüft …');
+ try{const res=await fetch(apiBase()+'/number-plan-unlock',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pin})});const data=await res.json();if(!res.ok)throw Error(data.error||'Code stimmt nicht');planToken=data.token;$('number-plan-pin').value='';$('number-plan-login').hidden=true;$('number-plan-content').hidden=false;await showPlan();}
+ catch(err){planNotice(err.message)}finally{btn.disabled=false}
+}
+async function showPlan(){
+ planNotice('Zahlen werden geladen …');
+ const res=await fetch(apiBase()+'/number-plan',{headers:{'X-Safari-Number-Plan':planToken},cache:'no-store'}),data=await res.json();
+ if(!res.ok)throw Error(data.error||'Zahlen konnten nicht geladen werden');
+ const fmt=new Intl.DateTimeFormat('de-CH',{weekday:'short',day:'numeric',month:'numeric',timeZone:'UTC'});
+ const grid=$('number-plan-grid');grid.innerHTML=data.days.map(d=>`<div class="number-plan-row"><label for="plan-${d.date}">${fmt.format(new Date(d.date+'T12:00:00Z'))}</label><input type="number" id="plan-${d.date}" min="1" max="1000" step="1" value="${d.number}" inputmode="numeric"><button type="button" data-save-plan="${d.date}">Speichern</button><span aria-live="polite" data-plan-feedback="${d.date}"></span></div>`).join('');
+ grid.querySelectorAll('[data-save-plan]').forEach(button=>button.onclick=()=>savePlanDay(button));planNotice('Jeder Tag kann einzeln geändert werden.');
+}
+async function savePlanDay(button){
+ const date=button.dataset.savePlan,input=$('plan-'+date),value=Number(input.value),feedback=document.querySelector(`[data-plan-feedback="${date}"]`);
+ if(!Number.isInteger(value)||value<1||value>1000){feedback.textContent='Bitte 1 bis 1000 eingeben.';return}
+ button.disabled=true;feedback.textContent='Speichert …';
+ try{const res=await fetch(apiBase()+'/number-plan',{method:'POST',headers:{'content-type':'application/json','X-Safari-Number-Plan':planToken},body:JSON.stringify({date,number:value})});const data=await res.json();if(!res.ok)throw Error(data.error||'Fehler');feedback.textContent='✓ Gespeichert';if(date===activeDate){activeDate='';render(date)}}
+ catch(err){feedback.textContent='Nicht gespeichert: '+err.message}finally{button.disabled=false}
+}
+function initPlan(){
+ $('number-plan-open')?.addEventListener('click',openPlan);$('number-plan-close')?.addEventListener('click',closePlan);
+ $('number-plan-overlay')?.addEventListener('click',e=>{if(e.target.id==='number-plan-overlay')closePlan()});
+ $('number-plan-unlock')?.addEventListener('click',unlockPlan);
+ $('number-plan-pin')?.addEventListener('keydown',e=>{if(e.key==='Enter')unlockPlan()});
+ window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('number-plan-overlay')?.hidden)closePlan()});
+}
+document.addEventListener('DOMContentLoaded',initPlan);
+
 window.SafariNumberDay={render};
 window.addEventListener('safari-auth-change',()=>{if(activeDate){state=restore();const d=activeDate;activeDate='';render(d)}});
 })();

@@ -30,3 +30,18 @@
 /* Bei den vier neuen Tierfotos bleibt das ganze Motiv sichtbar. */
 .animal-photo.photo-uncropped{object-fit:contain;background:#29343a}
 .memory-card .memory-back img[src*="/erdmaennchen.webp"]{object-fit:contain}
+
+.animal-spelling-start{margin-top:22px}
+.spelling-photo{display:block;max-width:100%;width:min(100%,520px);height:320px;object-fit:contain;background:#263238;border-radius:16px;margin:12px auto}
+.spelling-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:end}
+#spell-article{border:1px solid #72818a;border-radius:14px;padding:12px;min-width:0}
+#spell-article legend{color:#f6b4c9;font-weight:800;padding:0 5px}
+#spell-article label{display:inline-flex;align-items:center;gap:5px;margin:5px 10px 5px 0;color:#fff;font-weight:700}
+.spelling-name{display:grid;gap:7px;font-weight:800;color:#f6b4c9}
+.spelling-name input{width:100%;min-width:0;padding:12px;border:2px solid #9fafb4;border-radius:9px;background:#f6f7f5!important;color:#263238!important;font:inherit}
+.spelling-feedback{font-weight:800;color:#f9c8d9!important}
+@media(max-width:650px){.spelling-row{grid-template-columns:1fr}.spelling-photo{height:230px}}
+
+/* Ganzes Tier sichtbar, ohne ungewollten Zuschnitt. */
+.animal-photo-wrap .animal-photo{object-fit:contain!important;background:#26353c}
+.memory-card .memory-back img{object-fit:contain!important;background:#dfe5e3}

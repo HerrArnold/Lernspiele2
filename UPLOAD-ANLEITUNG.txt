@@ -1,9 +1,0 @@
-LERN­SAFARI – GITHUB-PAGES-UPLOAD
-
-1. NUR den gesamten Inhalt dieser Website-ZIP im GitHub-Repository Lernspiele2 ins Hauptverzeichnis legen.
-2. Die Ordner assets/ und spiele/ sowie index.html und lernportale.html beibehalten.
-3. Cloudflare Web Analytics ist vorbereitet. Der Token ist im öffentlichen assets/analytics-config.js enthalten; das ist bei diesem Tracking-Snippet normal.
-4. Der Cloudflare-D1-Login-Server ist ein SEPARATER Download. Die Website speichert ohne dessen Einrichtung keine Benutzerergebnisse.
-5. Nach dem Einrichten des Workers seine vollständige HTTPS-URL in assets/login-config.js einsetzen und die Datei erneut hochladen.
-6. Die private SQL-Einrichtungsdatei und die Tier-Loginzettel niemals in ein öffentliches GitHub-Repository hochladen.
-7. Schülerpasswörter und Lernprotokolle sind vertraulich. Vor dem Live-Einsatz Schul-Datenschutzvorgaben und Zugriffsschutz klären.

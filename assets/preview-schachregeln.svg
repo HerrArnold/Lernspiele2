@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+<rect width="640" height="360" rx="36" fill="#f7efd8"/>
+<rect x="34" y="34" width="570" height="292" rx="24" fill="#fff8ea" stroke="#eadfc8"/>
+<text x="56" y="78" font-family="Arial" font-size="34" font-weight="700" fill="#5a6d40">Schachregeln</text>
+<text x="56" y="112" font-family="Arial" font-size="18" fill="#7b664d">Weiss beginnt · Schach · Schachmatt · Rochade · En passant</text>
+<g font-family="Arial" font-size="22" font-weight="700">
+<rect x="56" y="140" width="160" height="50" rx="14" fill="#eaf4e7"/><text x="76" y="172" fill="#35633f">Weiss beginnt</text>
+<rect x="56" y="203" width="160" height="50" rx="14" fill="#fff0d8"/><text x="95" y="235" fill="#8a5b15">Schach</text>
+<rect x="56" y="266" width="160" height="40" rx="14" fill="#ffe4e4"/><text x="84" y="292" fill="#9a3434">Schachmatt</text>
+</g>
+<g transform="translate(320,74)">
+<rect width="240" height="240" rx="22" fill="#fff" stroke="#eadfc8"/>
+<g>
+<rect x="16" y="16" width="26" height="26" fill="#f4e7c6"/><rect x="42" y="16" width="26" height="26" fill="#c49d68"/><rect x="68" y="16" width="26" height="26" fill="#f4e7c6"/><rect x="94" y="16" width="26" height="26" fill="#c49d68"/><rect x="120" y="16" width="26" height="26" fill="#f4e7c6"/><rect x="146" y="16" width="26" height="26" fill="#c49d68"/><rect x="172" y="16" width="26" height="26" fill="#f4e7c6"/><rect x="198" y="16" width="26" height="26" fill="#c49d68"/>
+</g>
+<g><rect x="16" y="42" width="26" height="26" fill="#c49d68"/><rect x="42" y="42" width="26" height="26" fill="#f4e7c6"/><rect x="68" y="42" width="26" height="26" fill="#c49d68"/><rect x="94" y="42" width="26" height="26" fill="#f4e7c6"/><rect x="120" y="42" width="26" height="26" fill="#c49d68"/><rect x="146" y="42" width="26" height="26" fill="#f4e7c6"/><rect x="172" y="42" width="26" height="26" fill="#c49d68"/><rect x="198" y="42" width="26" height="26" fill="#f4e7c6"/></g>
+<g><rect x="16" y="68" width="26" height="26" fill="#f4e7c6"/><rect x="42" y="68" width="26" height="26" fill="#c49d68"/><rect x="68" y="68" width="26" height="26" fill="#f4e7c6"/><rect x="94" y="68" width="26" height="26" fill="#c49d68"/><rect x="120" y="68" width="26" height="26" fill="#f4e7c6"/><rect x="146" y="68" width="26" height="26" fill="#c49d68"/><rect x="172" y="68" width="26" height="26" fill="#f4e7c6"/><rect x="198" y="68" width="26" height="26" fill="#c49d68"/></g>
+<g><rect x="16" y="94" width="26" height="26" fill="#c49d68"/><rect x="42" y="94" width="26" height="26" fill="#f4e7c6"/><rect x="68" y="94" width="26" height="26" fill="#c49d68"/><rect x="94" y="94" width="26" height="26" fill="#f4e7c6"/><rect x="120" y="94" width="26" height="26" fill="#c49d68"/><rect x="146" y="94" width="26" height="26" fill="#f4e7c6"/><rect x="172" y="94" width="26" height="26" fill="#c49d68"/><rect x="198" y="94" width="26" height="26" fill="#f4e7c6"/></g>
+<g><rect x="16" y="120" width="26" height="26" fill="#f4e7c6"/><rect x="42" y="120" width="26" height="26" fill="#c49d68"/><rect x="68" y="120" width="26" height="26" fill="#f4e7c6"/><rect x="94" y="120" width="26" height="26" fill="#c49d68"/><rect x="120" y="120" width="26" height="26" fill="#f4e7c6"/><rect x="146" y="120" width="26" height="26" fill="#c49d68"/><rect x="172" y="120" width="26" height="26" fill="#f4e7c6"/><rect x="198" y="120" width="26" height="26" fill="#c49d68"/></g>
+<g><rect x="16" y="146" width="26" height="26" fill="#c49d68"/><rect x="42" y="146" width="26" height="26" fill="#f4e7c6"/><rect x="68" y="146" width="26" height="26" fill="#c49d68"/><rect x="94" y="146" width="26" height="26" fill="#f4e7c6"/><rect x="120" y="146" width="26" height="26" fill="#c49d68"/><rect x="146" y="146" width="26" height="26" fill="#f4e7c6"/><rect x="172" y="146" width="26" height="26" fill="#c49d68"/><rect x="198" y="146" width="26" height="26" fill="#f4e7c6"/></g>
+<g><rect x="16" y="172" width="26" height="26" fill="#f4e7c6"/><rect x="42" y="172" width="26" height="26" fill="#c49d68"/><rect x="68" y="172" width="26" height="26" fill="#f4e7c6"/><rect x="94" y="172" width="26" height="26" fill="#c49d68"/><rect x="120" y="172" width="26" height="26" fill="#f4e7c6"/><rect x="146" y="172" width="26" height="26" fill="#c49d68"/><rect x="172" y="172" width="26" height="26" fill="#f4e7c6"/><rect x="198" y="172" width="26" height="26" fill="#c49d68"/></g>
+<g><rect x="16" y="198" width="26" height="26" fill="#c49d68"/><rect x="42" y="198" width="26" height="26" fill="#f4e7c6"/><rect x="68" y="198" width="26" height="26" fill="#c49d68"/><rect x="94" y="198" width="26" height="26" fill="#f4e7c6"/><rect x="120" y="198" width="26" height="26" fill="#c49d68"/><rect x="146" y="198" width="26" height="26" fill="#f4e7c6"/><rect x="172" y="198" width="26" height="26" fill="#c49d68"/><rect x="198" y="198" width="26" height="26" fill="#f4e7c6"/></g>
+<text x="145" y="108" font-size="38">♔</text><text x="171" y="82" font-size="38">♖</text><text x="171" y="108" font-size="38">♜</text><text x="119" y="82" font-size="38">♙</text>
+<circle cx="185" cy="55" r="7" fill="#4c935d"/><circle cx="145" cy="55" r="7" fill="#4c935d"/>
+</g>
+</svg>

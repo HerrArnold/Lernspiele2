@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f8efdf">
+<title>Schach gegen den Computer – Lernsafari</title>
+<link rel="stylesheet" href="../assets/game-theme.css">
+<link rel="stylesheet" href="../assets/highscore.css">
+<script defer src="../assets/analytics-config.js"></script>
+<style>
+:root{--green:#5a7a43;--pink:#d85c8f;--brown:#73533a;--line:#e2d4bd;--board-light:#f4e7c6;--board-dark:#c49d68;--good:#397f4d;--warn:#b26e1d;--bad:#ae4343}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:linear-gradient(180deg,#fcf7eb,#f3ebd6);color:#2d2a26}.shell{max-width:1260px;margin:0 auto;padding:16px 18px 28px}.hero{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}.hero h1{margin:0;color:#4b6137;font-size:clamp(29px,3vw,42px)}.hero p{margin:8px 0 0;color:#6a583f;font-size:18px}.stats{display:flex;gap:10px;flex-wrap:wrap}.pill{background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 14px;font-weight:800}.layout{display:grid;grid-template-columns:340px 1fr 320px;gap:18px;margin-top:18px}.card{background:rgba(255,255,255,.94);border:1px solid #eadfc8;border-radius:24px;box-shadow:0 12px 36px rgba(90,76,34,.08);padding:16px}.card h2{margin:0 0 12px;color:#566a3a}.setup label{display:block;font-weight:800;color:#5f4c35;margin-bottom:6px}.setup select{width:100%;padding:11px 12px;border-radius:14px;border:1px solid #d9ccb5;background:#fff;font:inherit;margin-bottom:12px}.btn{border:0;border-radius:14px;padding:11px 16px;font:inherit;font-weight:800;cursor:pointer}.btn-primary{background:#5a7a43;color:#fff}.btn-secondary{background:#fff;border:1px solid #daccb4;color:#58472f}.status{font-weight:800;min-height:26px}.status.check{color:var(--bad)}.status.turn{color:#5d6f41}.small{font-size:14px;color:#786651;line-height:1.45}.board-wrap{display:flex;justify-content:center;align-items:flex-start}.board{width:min(100%,640px);display:grid;grid-template-columns:repeat(8,1fr);border:8px solid #a97d49;border-radius:20px;overflow:hidden;box-shadow:0 14px 32px rgba(56,45,25,.24)}.sq{aspect-ratio:1/1;border:0;padding:0;display:grid;place-items:center;position:relative;font-size:min(5.8vw,46px);font-weight:800;cursor:pointer}.light{background:var(--board-light)}.dark{background:var(--board-dark)}.coord::after{content:attr(data-coord);position:absolute;right:5px;bottom:4px;font-size:10px;color:rgba(30,22,14,.55)}.selected{outline:4px solid #ff7ab4;outline-offset:-4px}.target::before{content:"";width:20px;height:20px;border-radius:50%;background:rgba(61,139,87,.82);position:absolute}.capture::before{content:"";position:absolute;inset:8px;border-radius:50%;border:4px solid rgba(174,67,67,.9)}.checksq{background:#ffc7c7!important}.move-list{max-height:250px;overflow:auto;border:1px solid #ebdfc4;border-radius:16px;padding:10px;background:#fffdf7}.move-line{padding:6px 4px;border-bottom:1px dashed #eadfc8;font-size:14px}.move-line:last-child{border-bottom:0}.analysis-list{display:grid;gap:8px}.tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:800;margin-right:6px}.tag.good{background:#e5f4e8;color:#35633f}.tag.warn{background:#fff0d8;color:#8a5b15}.tag.bad{background:#ffe4e4;color:#9a3434}.info-box{border:1px solid #eadfc8;background:#fffaf0;border-radius:16px;padding:10px 12px;margin-top:10px}.startup-note{margin-top:10px;background:#faf4e4;border-radius:16px;padding:12px}.hidden{display:none!important}@media(max-width:1100px){.layout{grid-template-columns:1fr}.board{max-width:620px}.board-wrap{order:-1}}@media(max-width:640px){.shell{padding:14px 10px 24px}.sq{font-size:31px}}
+</style>
+</head>
+<body>
+<div class="safari-exit-bar"><span>Lernsafari</span><a href="../index.html#aktuelle">✕ Spiel beenden</a></div>
+<main class="shell">
+  <section class="hero">
+    <div><h1>Schach gegen den Computer</h1><p>Wähle deine Farbe und eine Stärke. Dann spiele eine echte Partie mit legalen Zügen.</p></div>
+    <div class="stats"><div class="pill" id="progress">Richtig: 0</div><div class="pill" id="state-pill">Noch keine Partie</div></div>
+  </section>
+
+  <section class="layout">
+    <aside class="card setup">
+      <h2>Partie starten</h2>
+      <label for="difficulty">Computer-Stärke</label>
+      <select id="difficulty"><option value="1">Leicht</option><option value="2" selected>Mittel</option><option value="3">Schwer</option></select>
+      <label for="color">Deine Farbe</label>
+      <select id="color"><option value="w" selected>Weiss</option><option value="b">Schwarz</option></select>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-primary" id="start-btn" type="button">Neue Partie</button><button class="btn btn-secondary" id="reset-btn" type="button">Gleiche Einstellungen</button></div>
+      <div class="startup-note small">Wenn du eine eigene Figur antippst, werden alle legalen Züge markiert. Illegale Züge sind nicht möglich. Stehst du im Schach, wird dein König rot markiert.</div>
+      <div class="info-box"><div class="status turn" id="status">Wähle die Einstellungen und starte eine Partie.</div><div class="small" id="substatus"></div></div>
+      <div class="info-box"><strong>Spielstand</strong><div class="small" id="score-explain">Punkte gibt es für starke oder gute eigene Züge. Siege zählen extra.</div></div>
+    </aside>
+
+    <section class="card board-wrap"><div class="board" id="board"></div></section>
+
+    <aside class="card">
+      <h2>Analyse</h2>
+      <div class="small">Nach jeder Partie siehst du starke Züge und grössere Fehler.</div>
+      <div class="info-box"><strong>Zugliste</strong><div class="move-list" id="move-list"></div></div>
+      <div class="info-box"><strong>Besonders stark</strong><div class="analysis-list" id="good-list"><div class="small">Noch keine Analyse.</div></div></div>
+      <div class="info-box"><strong>Grössere Fehler</strong><div class="analysis-list" id="mistake-list"><div class="small">Noch keine Analyse.</div></div></div>
+    </aside>
+  </section>
+</main>
+<script src="../assets/chess-common.js"></script>
+<script>
+'use strict';
+const C=window.ChessSafari;
+let state=C.startState(),playerColor='w',aiColor='b',difficulty=2,selected=null,history=[],analysisEntries=[],aiBusy=false,gameActive=false,goodPoints=0;
+function tagClass(label){return /Starker|Sehr gut|Gut/.test(label)?'good':/Kleiner/.test(label)?'warn':'bad'}
+function tagText(label){return /Starker|Sehr gut|Gut/.test(label)?'Stark':/Kleiner/.test(label)?'Fehler':'Grosser Fehler'}
+function coordLabel(sq){return C.algebraic(sq)}
+function updateMeta(text=''){document.getElementById('progress').textContent=`Richtig: ${goodPoints}`;document.getElementById('state-pill').textContent=text|| (gameActive?'Partie läuft':'Noch keine Partie');}
+function boardOrder(){if(playerColor==='w')return {r:[0,1,2,3,4,5,6,7],f:[0,1,2,3,4,5,6,7]};return {r:[7,6,5,4,3,2,1,0],f:[7,6,5,4,3,2,1,0]};}
+function playerLegalMoves(){return C.legalMoves(state).filter(m=>C.colorOf(state.board[m.from])===playerColor)}
+function renderBoard(){const host=document.getElementById('board');host.innerHTML='';const allMoves=C.legalMoves(state);const available=selected!==null?allMoves.filter(m=>m.from===selected):[];const ksq=C.inCheck(state,state.turn)?state.board.findIndex(p=>p=== (state.turn==='w'?'K':'k')):-1;const order=boardOrder(); for(const r of order.r){for(const f of order.f){const sq=C.idx(f,r), piece=state.board[sq]||'', btn=document.createElement('button');btn.type='button';btn.className=`sq coord ${(r+f)%2?'dark':'light'}`;btn.dataset.coord=C.algebraic(sq);btn.textContent=piece?C.unicode[piece]:''; if(sq===selected)btn.classList.add('selected'); if(sq===ksq)btn.classList.add('checksq'); if(available.some(m=>m.to===sq))btn.classList.add(available.some(m=>m.to===sq&&m.capture)?'capture':'target'); btn.addEventListener('click',()=>onSquareClick(sq)); host.append(btn);}}}
+function setStatus(main,sub='',cls='turn'){const el=document.getElementById('status');el.textContent=main;el.className='status '+cls;document.getElementById('substatus').textContent=sub;}
+function renderMoves(){const host=document.getElementById('move-list'); if(!history.length){host.innerHTML='<div class="small">Noch keine Züge.</div>'; return;} host.innerHTML=history.map((h,i)=>`<div class="move-line">${i+1}. ${h.actor}: ${h.text}</div>`).join('');}
+function renderAnalysis(){const goods=analysisEntries.filter(x=>/Starker|Sehr gut/.test(x.label)).slice(-6).reverse(); const mistakes=analysisEntries.filter(x=>/Kleiner|Grosser/.test(x.label)).slice(-6).reverse(); document.getElementById('good-list').innerHTML=goods.length?goods.map(x=>`<div><span class="tag good">${x.label}</span>${x.moveText}</div>`).join(''):'<div class="small">Noch keine Analyse.</div>'; document.getElementById('mistake-list').innerHTML=mistakes.length?mistakes.map(x=>`<div><span class="tag ${tagClass(x.label)}">${x.label}</span>${x.moveText}<div class="small">Besser wäre oft gewesen: ${x.bestText}</div></div>`).join(''):'<div class="small">Noch keine grösseren Fehler.</div>';}
+function startGame(){difficulty=Number(document.getElementById('difficulty').value);playerColor=document.getElementById('color').value;aiColor=C.other(playerColor);state=C.startState();selected=null;history=[];analysisEntries=[];aiBusy=false;gameActive=true;goodPoints=0;renderMoves();renderAnalysis();renderBoard();updateMeta('Partie läuft');setStatus(playerColor==='w'?'Du bist Weiss und beginnst.':'Du bist Schwarz. Der Computer beginnt.','Tippe eine eigene Figur an.'); if(playerColor==='b')setTimeout(aiTurn,250);} 
+function classifyAndScore(label){if(label==='Starker Zug')return 2; if(label==='Sehr gut' || label==='Gut')return 1; return 0;}
+function onSquareClick(sq){if(!gameActive||aiBusy||state.turn!==playerColor)return; const piece=state.board[sq]; const allMoves=C.legalMoves(state); if(piece && C.colorOf(piece)===playerColor){selected=sq; renderBoard(); return;} if(selected===null)return; const move=allMoves.find(m=>m.from===selected&&m.to===sq); if(!move)return; const before=C.cloneState(state); const analysis=C.analyseHumanMove(before,move,2); analysis.moveText=C.moveText(move); analysis.bestText=analysis.best?C.moveText(analysis.best.move):'–'; analysisEntries.push(analysis); goodPoints+=classifyAndScore(analysis.label); history.push({actor:'Du',text:`${analysis.moveText} · ${analysis.label}`}); state=C.apply(state,move); selected=null; renderBoard(); renderMoves(); renderAnalysis(); updateMeta('Partie läuft'); const ok=!/Kleiner|Grosser/.test(analysis.label); window.SafariTelemetry?.record({task:`Schachzug ${history.length}`,correct:ok,correctCount:ok?1:0,total:1,answer:analysis.moveText,expected:analysis.bestText,details:analysis.label}); const status=C.gameStatus(state); if(status.over){finishGame(status);return;} setStatus(C.inCheck(state,state.turn)?'Schach!':'Computer ist am Zug …',analysis.label,C.inCheck(state,state.turn)?'check':'turn'); aiBusy=true; setTimeout(aiTurn,200);
+}
+function aiTurn(){if(!gameActive)return; const status0=C.gameStatus(state); if(status0.over){finishGame(status0);return;} const pick=C.chooseComputerMove(state,difficulty); if(!pick){finishGame(C.gameStatus(state));return;} state=C.apply(state,pick.move); history.push({actor:'Computer',text:C.moveText(pick.move)}); aiBusy=false; renderBoard(); renderMoves(); const status=C.gameStatus(state); if(status.over){finishGame(status);return;} setStatus(state.turn===playerColor?(C.inCheck(state,playerColor)?'Du stehst im Schach!':'Du bist am Zug.'):'Computer ist am Zug.', 'Wähle eine Figur.'); updateMeta('Partie läuft');}
+function finishGame(status){gameActive=false; aiBusy=false; let main='',sub=''; if(status.result==='checkmate'){if(status.winner===playerColor){main='Schachmatt! Du hast gewonnen!';goodPoints+=5;sub='Stark gespielt.';} else {main='Schachmatt – der Computer gewinnt.';sub='Schau dir unten die Analyse an.';}} else {main='Patt – Unentschieden.';goodPoints+=2;sub='Niemand hat mehr einen legalen Zug.';} updateMeta('Partie beendet'); renderBoard(); renderMoves(); renderAnalysis(); setStatus(main,sub,status.result==='checkmate'&&status.winner!==playerColor?'check':'turn'); const summary=status.result==='checkmate'?(status.winner===playerColor?'Sieg':'Niederlage'):'Unentschieden'; window.SafariTelemetry?.record({task:'Schachpartie',correct:status.winner===playerColor,correctCount:goodPoints,total:1,answer:summary,expected:'Eigene starke Züge und möglichst wenige Fehler',details:`${analysisEntries.length} eigene Züge, ${goodPoints} Punkte`}); }
+
+document.getElementById('start-btn').addEventListener('click',startGame);
+document.getElementById('reset-btn').addEventListener('click',startGame);
+renderBoard(); renderMoves(); renderAnalysis(); updateMeta();
+</script>
+<script src="../assets/login-config.js"></script>
+<script defer src="../assets/highscore.js"></script>
+<script defer src="../assets/game-telemetry.js"></script>
+</body>
+</html>

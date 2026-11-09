@@ -28,6 +28,7 @@ const paths={
   ['Notenname · Notenbild · Rhythmussprache','rhythmus-trio-profi.html','preview-rhythm-profi.webp','Rhythmen schreiben und zeichnen'],
   ['Teste dein Wissen','teste-dein-wissen-musik.html',null,'24 Punkte · 12 Aufgaben']],
  Mathe:[
+  ['Einmaleins-Tafel erforschen','einmaleins-tafel-entdecken.html','preview-einmaleins-tafel.svg','Zusammenhänge finden · Neue Reihen mit Merkaufgaben lösen'],
   ['Einmaleins-Mix','einmaleins-mix.html','preview-einmaleins-mix.svg','2er-, 5er- und 10er-Reihe gemischt üben'],
   ['Die 3er-Reihe','einmaleins-dreier.html','preview-einmaleins-dreier.svg','Mit der 2er-Reihe die 3er-Reihe entdecken'],
   ['Die 6er-Reihe','einmaleins-sechser.html','preview-einmaleins-sechser.svg','Mit der 5er-Reihe die 6er-Reihe entdecken'],

@@ -11,8 +11,8 @@
 <script defer src="assets/daily-data.js"></script>
 <script defer src="assets/login-config.js?v=2"></script>
 <script defer src="assets/login.js?v=7"></script>
-<script defer src="assets/safari.js?v=12"></script><link rel="stylesheet" href="assets/zahl-des-tages.css?v=11"><script defer src="assets/zahl-des-tages.js?v=11"></script>
-<link rel="stylesheet" href="assets/lernsafari-dark.css?v=10"><link rel="stylesheet" href="assets/tierwelt.css?v=12"><script defer src="assets/tierwelt-data.js?v=11"></script><script defer src="assets/tierwelt.js?v=11"></script><script defer src="assets/agenda.js?v=12"></script></head>
+<script defer src="assets/safari.js?v=14"></script><link rel="stylesheet" href="assets/zahl-des-tages.css?v=12"><script defer src="assets/zahl-des-tages.js?v=13"></script>
+<link rel="stylesheet" href="assets/lernsafari-dark.css?v=10"><link rel="stylesheet" href="assets/tierwelt.css?v=12"><script defer src="assets/tierwelt-data.js?v=11"></script><script defer src="assets/tierwelt.js?v=11"></script><script defer src="assets/agenda.js?v=12"></script><link rel="stylesheet" href="assets/lernsteuerung.css?v=2"><script defer src="assets/lernsteuerung.js?v=1"></script><script defer src="assets/lernhelfer.js?v=1"></script><script defer src="assets/exit-ticket.js?v=1"></script></head>
 <body>
 <header class="site-header" id="main-header">
  <div class="header-inner">
@@ -35,6 +35,7 @@
      <a data-subject="nmg" href="#aktuelle--nmg">NMG</a>
     </div>
    </div>
+   <a class="nav-link" data-route="todo" id="nav-todo" href="#todo" hidden>To-Do</a>
    <a class="nav-link" data-route="lernportale" href="#lernportale">Lernportale</a>
    <a class="nav-link" data-route="tiere" href="#tiere">Tiere</a>
    <a class="nav-link" data-route="agenda" id="nav-agenda" href="#agenda" hidden>Agenda</a>
@@ -75,6 +76,7 @@
    </div>
   </div>
  </section>
+ <section class="view" id="view-todo" hidden><div id="lernsteuerung-todo" class="ls-todo-root"></div><div id="ls-exit-kids"></div></section>
  <section class="view" id="view-aktuelle" hidden>
   <div class="section-heading"><span class="eyebrow">Zum Üben und Entdecken</span><h1>Aktuelle Lernspiele</h1><p>Wähle ein Fach und dann dein Lernspiel aus.</p></div>
   <div id="subject-list" class="subject-list"></div><div class="archive-entry"><p>Suchst du ein älteres Lernspiel?</p><a href="#archiv" class="archive-open">Zu den archivierten Lernspielen</a></div>
@@ -101,6 +103,7 @@
  </section>
  <section class="view" id="view-admin" hidden>
   <div class="section-heading"><span class="eyebrow">Nur mit Code erreichbar</span><h1>Admin</h1><p>Übersicht der Tagesaufgaben und Notizen für die Webseite.</p></div>
+  <section class="ls-admin-root" id="lernsteuerung-admin"></section><div id="ls-exit-admin"></div>
   <div class="admin-layout">
    <section class="admin-card admin-tasks-overview"><h2>Aufgaben des Tages</h2><div id="admin-reserve" class="reserve-status"></div><p class="admin-small">Ab Montag, 16. November, werden automatisch die 20 Reserve-Serien verwendet, wenn keine neuen Aufgaben ergänzt wurden. Nach deren Ende wird nicht wiederholt.</p></section>
    <section class="admin-card safari-feature admin-agenda-panel"><h2>Agenda bearbeiten</h2><p>Wähle einen Tag und Vormittag oder Nachmittag, um Termine hinzuzufügen. Klicke auf einen Termin, um ihn zu bearbeiten oder zu löschen. Standard-Hausaufgaben kannst du für einzelne Wochen ausblenden. Schulfrei gilt für ganze Tage.</p><div id="agenda-admin"></div></section>

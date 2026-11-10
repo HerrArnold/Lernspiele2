@@ -110,3 +110,16 @@ Der Nutzer hat den vollständigen bestehenden Cloudflare-Worker `worker.js` **di
 Die angepasste Entwurfsfassung wurde lokal mit simuliertem D1 und simulierten HTTP-Anfragen (22 Assertions) geprüft: Direktlinks, Gast, Kinderlogin, Modus, Fach, Freigabe/Rücknahme, neue Sperre, Zahl des Tages. Die SQL-Migration wurde syntaktisch in SQLite und auf mehrfache Ausführung geprüft. **Keine echte Cloudflare-Ausführung und kein Deployment.**
 
 Nächste reale Aktion durch den Nutzer: D1-Binding `DB` identifizieren, **privates Backup** der Bestandsdaten sichern, Test-D1/Test-Worker einrichten. Erst danach die private Entwurfsdatei und SQL-Migration in die isolierte Cloudflare-Testumgebung übernehmen. Die bereits in GitHub gespeicherten generischen Worker-Module sind als **Architekturvorarbeit** zu verstehen; für den weiteren Anschluss ist die lokal anhand des Original-Workers erstellte Entwurfsfassung massgeblich. Niemals den Live-Worker direkt ersetzen.
+
+
+## Lehrperson kann temporäre Anmeldesperre aufheben (Entwicklungsstand 10.11.2026)
+
+Im bestehenden Worker sperrt `/login` ein Tierkonto nach 6 falschen Passwortversuchen für rund 15 Minuten über `login_fails.username`, `attempts` und `last_at`. Für den Unterricht ist eine Lehrpersonenfreigabe sinnvoll, wenn klar ist, dass das Kind selbst die Anmeldung versucht.
+
+**Implementierung als Entwurf:**
+- Zusätzliche, ausschliesslich per gültiger bestehender `X-Safari-Admin`-Sitzung erreichbare Worker-Route `POST /admin-login-unlock`; prüft, dass der Nutzer ein wirkliches Tierkonto (`users.role='child'`) besitzt, und löscht nur dessen Eintrag in `login_fails`. **Kein Passwortwechsel, kein Löschen von Sessions, keine allgemeine Aufhebung von Sicherheitsregeln.**
+- `GET /admin-learning` wird um `loginLocks` ergänzt. Nur aktive 15-Minuten-Sperren werden im Adminbereich angezeigt.
+- Der neue Lehrpersonenbereich zeigt unter `🔓 Anmeldesperren aufheben` die aktuell gesperrten Tierkonten mit separater Bestätigungsabfrage an. Die Anzeige erscheint nur, wenn der Worker `loginLocks` bereitstellt; so wird dem Nutzer auf dem alten Worker keine funktionierende Freigabe vorgetäuscht.
+- Keine weiteren Datenbanktabellen erforderlich. Die Änderung liegt in einer **privaten Worker-Entwurfsdatei** und im separaten GitHub-Frontend-Branch; nicht veröffentlicht. Der Original-Worker darf nicht öffentlich ins GitHub-Repository kopiert werden.
+
+Die Sperrzeit im bestehenden Code bleibt aus Sicherheitsgründen erhalten; bei wiederholten Fehleingaben wird die Sperre erneut aktiv. Vor Live-Nutzung sind echte Admin- und Tierkonto-Tests in der getrennten Cloudflare-Testumgebung nötig.

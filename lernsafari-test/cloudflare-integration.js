@@ -231,6 +231,37 @@
      }catch(err){output.textContent='Konnte nicht gespeichert werden: '+errorText(err);button.disabled=false;}
     });
    }
+
+   // Admin-only password lockout recovery: available only with upgraded Worker.
+   // The worker checks the admin session again for every reset.
+   if(Array.isArray(report.loginLocks)){
+    const entries=report.loginLocks.filter(x=>x&&Number(x.attempts)>=6&&x.lockedUntil&&Date.parse(x.lockedUntil)>Date.now());
+    const lockPanel=document.createElement('section');
+    lockPanel.className='pd-panel';
+    lockPanel.id='cloudLoginLocks';
+    lockPanel.innerHTML=`<h4>🔓 Anmeldesperren aufheben</h4>
+      <p>Nach sechs falschen Passworteingaben wird ein Tierkonto vorübergehend für 15 Minuten gesperrt. Du kannst es nach persönlicher Prüfung frühzeitig entsperren. Das Passwort bleibt gleich.</p>
+      <div class="pd-items">${entries.length?entries.map((x,i)=>`<article class="pd-task">
+        <div class="pd-task-head"><span>🔒</span><div><strong>${html(x.username)}</strong>
+        <small>${Number(x.attempts)} fehlgeschlagene Versuche · gesperrt bis ${html(new Date(x.lockedUntil).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Zurich'}))}</small></div></div>
+        <div class="pd-task-actions"><button type="button" class="pd-secondary" data-cloud-unlock="${i}">🔓 Entsperren</button></div>
+        </article>`).join(''):'<p>Aktuell ist kein Tierkonto wegen zu vieler Passwortversuche gesperrt.</p>'}</div>
+      <p id="cloudLoginUnlockStatus" role="status"></p>`;
+    const before=host.querySelector('#cloudProgressPanel');
+    if(before)before.insertAdjacentElement('beforebegin',lockPanel);
+    lockPanel.querySelectorAll('[data-cloud-unlock]').forEach(b=>b.onclick=async()=>{
+      const chosen=entries[Number(b.dataset.cloudUnlock)];
+      if(!chosen||!loggedTeacher()||!confirm('Anmeldesperre für '+chosen.username+' aufheben? Bitte vorher prüfen, ob das Kind selbst die Anmeldung versucht hat.'))return;
+      const status=lockPanel.querySelector('#cloudLoginUnlockStatus');
+      b.disabled=true;
+      try{
+       await call('/admin-login-unlock',{admin:true,method:'POST',body:{username:chosen.username}});
+       status.textContent='✅ Sperre für '+chosen.username+' aufgehoben. Das Passwort bleibt unverändert.';
+       await renderCloudAdmin();
+      }catch(err){status.textContent='Entsperren fehlgeschlagen: '+errorText(err);b.disabled=false;}
+    });
+   }
+
    host.querySelector('#cloudLoadResults')?.addEventListener('click',renderAdminProgress);
    const form=host.querySelector('#cloudAssignmentForm');form.elements.audience.onchange=()=>{host.querySelector('#cloudChildWrap').hidden=form.elements.audience.value!=='child'};
    form.onsubmit=async e=>{e.preventDefault();const start=new Date(form.elements.start.value),end=new Date(form.elements.end.value);const msg=host.querySelector('#cloudAdminMessage');if(!(end>start)){msg.textContent='Ende muss nach dem Beginn liegen.';return}const payload={id:form.dataset.id?Number(form.dataset.id):undefined,audience:form.elements.audience.value,username:form.elements.audience.value==='child'?form.elements.username.value:'',start_at:start.toISOString(),end_at:end.toISOString(),target:form.elements.target.value,title:form.elements.title.value.trim(),kind:form.elements.kind.value};const submit=form.querySelector('[type=submit]');submit.disabled=true;try{await call('/admin-assignments',{admin:true,method:'POST',body:payload});await renderCloudAdmin();notify('Auftrag in Cloudflare gespeichert.')}catch(err){msg.textContent=errorText(err);submit.disabled=false}};

@@ -12,6 +12,7 @@ const service=createClassroomService({
   loadMode:async()=>current,saveMode:async mode=>{current=mode},
   assignmentDefinitions:async ids=>available.filter(a=>ids.includes(a.id)),
   childAssignments:async name=>available.filter(a=>a.audience==='all'||a.username===name),
+  studentExists:async name=>['Zebra','Loewe'].includes(name),
   verifiedIds:async name=>[...(verified.get(name)||new Set())],
   setVerification:async ({username,assignmentId,verified:yes})=>{const ids=verified.get(username)||new Set();if(yes)ids.add(assignmentId);else ids.delete(assignmentId);verified.set(username,ids)}
  }

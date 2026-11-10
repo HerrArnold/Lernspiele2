@@ -69,3 +69,60 @@ Do not infer comprehension from page views. Keep timestamps as learning metadata
 6. Echte Tests mit Tier-Testkonto/Lehrperson auf Cloudflare-Preview; Datenschutz, UI und Messgenauigkeit prüfen; erst dann veröffentlichen.
 
 **Verbindlich für künftige Spiele:** Neben `LERNSAFARI-NEUE-SPIELE-LERNBERICHT-PFLICHT.md` muss jeder neue Inhalt einen Typ, eine Lerneinheit und die betreffenden Lernziele erhalten. Reine Inputs werden als Nutzung erfasst, Übungs-/Testaufgaben über korrekte Evidenz; offene Ergebnisse benötigen passende Rückmeldung statt erfundene Quoten.
+
+
+## Verbindliches Grundprinzip: Digital dokumentiert, analog und digital gelernt
+
+**Leitentscheid des Lehrers:** Eine Lerneinheit enthält bewusst digitale und analoge Aktivitäten – Arbeitsblätter, Experimente, Naturbeobachtungen, Partner-/Gruppenaufträge, Materialarbeiten und Produkte. Das ganze Lernen kann im persönlichen Logbuch und im Lehrpersonen-Lernbericht dokumentiert werden, **ohne dass jede Aufgabe am Bildschirm bearbeitet werden muss**. Der Speicherort des Lernnachweises ist unabhängig vom Bearbeitungsmedium.
+
+Jeder `learning_step` erhält zusätzliche Felder:
+- `modality`: `digital` / `paper` / `experiment` / `observation` / `material` / `conversation` / `mixed`
+- `evidence_method`: `automatic_answer` / `pupil_confirmation` / `photo_upload` / `file_upload` / `teacher_observation` / `teacher_review` / `none` (ggf. kombiniert)
+- `submission_required`, `group_mode`, `assessment_mode`, `objectives`, `material_links`, `safety_notes`
+
+### Standardablauf für analoge Aufgaben
+
+1. **Vorbereiten:** Lehrperson erstellt mit ChatGPT die Aufgabe inkl. Lernziel, Materialliste, Zeit, Anleitung, Differenzierung, Druckvorlage, Erwartungshorizont, Lösung oder Kriterienraster und der Art des Lernnachweises.
+2. **Zuweisen:** Aufgabe erscheint im persönlichen Logbuch unter der Lerneinheit mit Symbol «Papier», «Experiment» usw.; Arbeitsblatt herunterladen oder Material im Klassenzimmer nehmen.
+3. **Analog durchführen:** Eigenständig/zu zweit/in der Gruppe schreiben, forschen, bauen, messen, beobachten, diskutieren. Auch Arbeiten ohne hochladbares Produkt sind gültige Lernschritte.
+4. **Dokumentieren:** Kinder fotografieren das Blatt/Produkt oder laden PDF/Bild hoch, tippen eine kurze Reflexion ein oder die Lehrperson vermerkt eine Beobachtung. Bei Gruppenaufgaben nur geeignete Gruppenabgabe mit nachvollziehbarer Zuordnung.
+5. **Prüfen:** Eindeutige, strukturierte Antworten können nach zuverlässiger Erfassung und bei Bedarf manueller Bestätigung regelbasiert geprüft werden; Handschrift, Skizzen, offene Begründungen und Experimentergebnisse benötigen einen Prüf-/Freigabeschritt der Lehrperson. Eine optionale KI-Rückmeldung ist ein **Vorschlag**, keine automatische offizielle Beurteilung.
+6. **Rückmelden:** Logbuch zeigt «Abgabe erhalten», «Überprüfung läuft», «Rückmeldung vorhanden», «Überarbeitung erwünscht» oder «von Lehrperson geprüft». Lernbericht zeigt die Evidenz je Lernziel, niemals automatisches «verstanden» wegen eines Uploads.
+
+### Richtigkeit und Beurteilung
+
+- **Geschlossene Antworten:** z. B. ankreuzen, Zahlen, eindeutige Zuordnungen → nach sicherer Digitalisierung automatisch prüfbar. Unsichere Texterkennung oder unleserliche Scans als «manuell prüfen» markieren, nicht als falsch.
+- **Halboffene Antworten:** z. B. kurzer Satz → Vorschläge oder Teilkriterien, mit Lehrpersonenprüfung.
+- **Offene Lösungen/Transfer:** z. B. Experimentauswertung, begründete Massnahmen → kriterienorientierte Rückmeldung, keine erfundene Prozentquote.
+- **Experimente:** Durchführung, Beobachtung, Messdaten, Erklärung und Reflexion getrennt dokumentieren. Eine unerwartete Messung ist nicht automatisch eine falsche Leistung. Sicherheitsregeln stehen auf Arbeitsblatt und im Logbuch.
+- **Formative Beurteilung:** Lernhinweise und nächste Schritte aus Abgabe + Feedback ableiten. **Summative Beurteilungen** bleiben davon getrennt und unter Kontrolle der Lehrperson.
+- **Ohne digitale Abgabe:** Lehrperson kann «durchgeführt», Beobachtungsnotiz oder Kriterienstand eintragen. Ein fehlender Upload bedeutet nicht automatisch «nicht gelernt».
+
+### Uploads: technische und datenschutzbezogene Anforderungen
+
+- Cloudflare Worker prüft **serverseitig** Anmeldung, Eigentümerschaft, Lehrpersonenrolle und Klassenbezug; keine fremden Arbeiten abrufbar. Gäste laden nichts Personenbezogenes hoch.
+- Geeigneter Speicher für Dateien (z. B. privater Objektspeicher) getrennt von strukturierten Daten; Upload-Grössen/Typen begrenzen, Dateiinhalte kontrollieren, sichere zufällige Objektschlüssel; keine öffentlich erratbaren Links.
+- Erforderliche Metadaten nur: Konto, Lerneinheit, Aufgabe, Upload-Zeit, Status, ggf. Gruppenbezug; keine unnötigen Gesichter oder persönlichen Daten im Bild. Datenschutz/Einwilligung, Aufbewahrungs- und Löschkonzept mit schulischen Vorgaben abstimmen, bevor echte Kinderarbeiten hochgeladen werden.
+- Bei automatischer Analyse Handschrift/OCR nie stillschweigend als verlässlich behandeln; Unsicherheit und erkannte Antwort für Kind/Lehrperson sichtbar machen. Vor Verwendung externer KI-Dienste schulische Datenschutzfreigabe klären. Keine automatische Benotung durch KI.
+- Bild- und Dokument-Uploads auch auf Laptop und Handy gut bedienbar gestalten, Eingabealternativen und barrierearme Möglichkeit für Kinder ohne eigenes Gerät bereitstellen.
+- Abgaben versionieren: Original, Überarbeitung, Rückmeldung, Freigabe. Keine Löschung/Überschreibung ohne Nachvollziehbarkeit.
+- **Noch kein implementiertes Feature:** Erst Datenmodell, Berechtigungen, UI und Testablauf im Entwicklungsbranch planen und auf Preview mit fiktiven Konten erproben. Version 3.2 und laufende 3.3-Lernberichte unverändert lassen.
+
+### Beispiel: Rabenvögel – analog-digitaler Lernpfad
+
+| Inhalt | Medium | Dokumentation | Prüfung |
+|---|---|---|---|
+| Ka «Was glaubst du über Rabenvögel?» | Gespräch / Papier | Erste Vorstellung fotografieren oder in Logbuch eintippen | Nicht nach richtig/falsch beurteilen |
+| Input zu Schnabel und Nahrung | Buch, Bilder, Audio | Bearbeitung durch Kind bestätigen | Verständnis erst in anschliessender Aufgabe |
+| Forscherauftrag Schnabelformen | Experiment mit verschiedenen Werkzeugen | Beobachtungsbogen als Foto/PDF; eigene Erklärung | Durchführung & Begründung mit Kriterien überprüfen |
+| Rabenvogelarten üben | Digitales Zuordnungsspiel | Automatische Lernversuche | Geschlossene Antworten direkt prüfen |
+| Lebensraum gestalten | Gruppe, Papier/Modell | Foto/Skizze/Lehrerbeobachtung | Transfer und Begründung anhand Raster |
+| «Teste dein Wissen» | Laptop oder analoges Blatt | Digitale Antworten oder hochgeladenes Blatt | Formative, lernzielbezogene Rückmeldung |
+
+### Priorisierter Entwicklungsplan
+
+1. In Lerneinheiten Lernschritte mit Medium, Nachweisart und Lernzielbezug erfassen.
+2. Zuerst **analog erledigt + Lehrerbestätigung** ohne Upload ermöglichen, damit Papier- und Experimentaufträge sofort einen Platz im Logbuch haben.
+3. Anschliessend Datei-/Foto-Einreichung mit Rollenrechten, privater Speicherung und nachvollziehbaren Rückmeldungen aufbauen.
+4. Zuletzt automatische Prüfroutinen für **geeignete** Aufgabenformate und eine kontrollierte Vorprüfung offener Aufgaben ergänzen.
+5. Jede Stufe mit Testkonten und ohne echte Schülerdokumente prüfen, bevor sie veröffentlicht wird.

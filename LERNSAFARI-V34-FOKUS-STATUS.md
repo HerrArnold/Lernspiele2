@@ -99,3 +99,14 @@ Der Service übernimmt die serverseitige Prüfung für den **Lehrpersonenmodus**
 **Wichtige Kompatibilitätsregel:** Solange die Lehrperson keinen neuen Unterrichtsmodus aktiviert hat, wird in `/learning-plan` das bestehende Fokusdatenmodell **nicht** durch ein künstliches `classroomMode: free` ersetzt. Der neue öffentliche Prüf-Endpunkt verweigert in diesem unkonfigurierten Übergang den Gastzugang, um die alten Sperren nicht zu umgehen.
 
 Es fehlt weiterhin die tatsächliche Einbindung der Module in den **bestehenden** Worker, denn dessen Quellcode steht in den verbundenen GitHub-Repositories nicht zur Verfügung. Für einen sicheren produktiven Rollout braucht es einen Cloudflare-Worker-Export oder den Repo-Zugriff, einen D1-Datenbank-Backup/Preview, die Integration der vorhandenen Authentisierung und Auftragsabfragen sowie echte E2E-Tests. **Kein Deployment und keine Änderungen an Version 3.2.**
+
+
+## Aktualisierung 10.11.2026 – Original-Worker liegt jetzt als private Sicherung vor
+
+Der Nutzer hat den vollständigen bestehenden Cloudflare-Worker `worker.js` **direkt im Gespräch** hochgeladen. Seine Struktur ist nun bekannt: `env.DB`, `users`/`sessions`/`admin_sessions`, `class_assignments`, `class_assignment_done`, `class_focus_rules`, `highscores`, `game_attempts`, die realen REST-Endpunkte inkl. `/learning-plan`, `/admin-learning`, `/game-score` und `/game-attempt`. Die bisherige Authentisierung bleibt erhalten.
+
+**Wichtig zum Schutz vorhandener Authentisierungsdaten:** Der vollständige Original-Worker und die aus ihm erstellte integrierte Entwurfsfassung werden **nicht** in diesem öffentlichen Repository gespeichert. Eine tatsächlich an den Original-Code angepasste, private **Download-Datei** wurde im laufenden Gespräch erstellt, zusammen mit einer additiven D1-Migration und einer Integrationsanleitung. Die Download-Datei liegt nicht in GitHub, da der Original-Worker eingebettete Authentisierungsdetails enthält.
+
+Die angepasste Entwurfsfassung wurde lokal mit simuliertem D1 und simulierten HTTP-Anfragen (22 Assertions) geprüft: Direktlinks, Gast, Kinderlogin, Modus, Fach, Freigabe/Rücknahme, neue Sperre, Zahl des Tages. Die SQL-Migration wurde syntaktisch in SQLite und auf mehrfache Ausführung geprüft. **Keine echte Cloudflare-Ausführung und kein Deployment.**
+
+Nächste reale Aktion durch den Nutzer: D1-Binding `DB` identifizieren, **privates Backup** der Bestandsdaten sichern, Test-D1/Test-Worker einrichten. Erst danach die private Entwurfsdatei und SQL-Migration in die isolierte Cloudflare-Testumgebung übernehmen. Die bereits in GitHub gespeicherten generischen Worker-Module sind als **Architekturvorarbeit** zu verstehen; für den weiteren Anschluss ist die lokal anhand des Original-Workers erstellte Entwurfsfassung massgeblich. Niemals den Live-Worker direkt ersetzen.

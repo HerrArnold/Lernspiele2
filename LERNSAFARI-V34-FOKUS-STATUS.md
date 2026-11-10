@@ -89,3 +89,13 @@ Der Worker muss für `POST /admin-classroom-mode` die fachlichen und sicherheits
 `GET /classroom-access?game=id` muss öffentlich ausschliesslich `{allowed:boolean}` liefern, ohne Schülerdaten, und die aktiven Regeln mit oder ohne authentifizierten Bearer-Token anwenden. Gastzugang: in Unterrichtsmodi deny; bei `free` allow für ausdrücklich gastfreigegebene Spiele. Direkte Datei-HTTP-Autorisierung bleibt eine separate Architekturfrage.
 
 Die Browseroberfläche und ihr HTML/CSS sind im Branch vorbereitet und die pure Payload-/Zuordnungslogik wird von GitHub Actions geprüft. **Kein Worker-Code geändert oder deployed; keine aktive Unterrichtssteuerung per Lehrpersonenknopf.**
+
+## Worker-Erweiterung jetzt im Entwicklungsbranch vorbereitet (10.11.2026)
+
+Die unabhängigen, auf GitHub automatisch getesteten Module `cloudflare-worker/classroom-service.mjs`, `cloudflare-worker/classroom-d1-store.mjs`, `cloudflare-worker/classroom-migration.sql` und `cloudflare-worker/INTEGRATION.md` wurden erstellt.
+
+Der Service übernimmt die serverseitige Prüfung für den **Lehrpersonenmodus**, die **direkte Spieladresse**, die **rollenbasierte Freigabe einzelner Kinderaufträge** und die sichere Speicherung der Modusdaten. Bestätigungen werden mit der Lehrperson und dem Zeitpunkt protokolliert. Er akzeptiert keine vom Kind selbst behauptete Lehrerberechtigung. Für eine Lehrpersonenfreigabe muss das Tierkonto existieren und der Auftrag für dieses Konto gültig sein.
+
+**Wichtige Kompatibilitätsregel:** Solange die Lehrperson keinen neuen Unterrichtsmodus aktiviert hat, wird in `/learning-plan` das bestehende Fokusdatenmodell **nicht** durch ein künstliches `classroomMode: free` ersetzt. Der neue öffentliche Prüf-Endpunkt verweigert in diesem unkonfigurierten Übergang den Gastzugang, um die alten Sperren nicht zu umgehen.
+
+Es fehlt weiterhin die tatsächliche Einbindung der Module in den **bestehenden** Worker, denn dessen Quellcode steht in den verbundenen GitHub-Repositories nicht zur Verfügung. Für einen sicheren produktiven Rollout braucht es einen Cloudflare-Worker-Export oder den Repo-Zugriff, einen D1-Datenbank-Backup/Preview, die Integration der vorhandenen Authentisierung und Auftragsabfragen sowie echte E2E-Tests. **Kein Deployment und keine Änderungen an Version 3.2.**

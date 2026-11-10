@@ -8,6 +8,7 @@
  const esc=v=>escapeHtml(String(v??''));
  const html=(v)=>esc(v);
  let childToken='', adminToken='', person=null, plan=null, adminData=null, pending=false;
+ let focusGate=null, focusBusy=false;
  const safeGame=(name)=>Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({...g,subject}))).find(g=>g.file.replace(/\.html$/,'')===name);
  const dateFormat=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',day:'numeric',month:'short',year:'numeric'}).format(d):''};
  const localDateTime=d=>{const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);return p.replace(' ','T')};
@@ -42,6 +43,7 @@
    try{localStorage.setItem(CHILD_KEY,childToken)}catch(_){/* transient session only */}
    document.querySelector('#password').value='';
    enter('cloudflare-child',String(identity.username||response.username||username));
+   refreshClassFocus();
   }catch(e){notify('Anmeldung fehlgeschlagen: '+errorText(e));}
   finally{pending=false}
  }
@@ -62,7 +64,7 @@
  }
  async function signOut(){
   if(childToken){try{await call('/logout',{method:'POST',body:{}})}catch(_){/* invalidate locally anyway */}}
-  childToken='';person=null;adminToken='';plan=null;adminData=null;
+  childToken='';person=null;adminToken='';plan=null;adminData=null;focusGate=null;
   try{localStorage.removeItem(CHILD_KEY);sessionStorage.removeItem(ADMIN_KEY)}catch(_){}
  }
  async function restore(){
@@ -72,7 +74,7 @@
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){
-   try{const identity=await call('/me');if(identity.role!=='child')throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));return}
+   try{const identity=await call('/me');if(identity.role!=='child')throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();return}
    catch(_){childToken='';try{localStorage.removeItem(CHILD_KEY)}catch(_){}}
   }
  }
@@ -146,7 +148,7 @@
   try{
    const [p,highscores]=await Promise.all([call('/learning-plan'),call('/highscores').catch(()=>({highscores:[]}))]);
    if(!loggedChild()||state.modal!=='logbook')return;
-   plan=p;
+   plan=p;updateClassFocus(p);
    const assignments=Array.isArray(p.assignments)?p.assignments:[];
    const done=new Set(Array.isArray(p.done)?p.done.map(Number):[]);
    const finished=assignments.filter(a=>done.has(Number(a.id))).length;
@@ -197,6 +199,75 @@
    host.innerHTML=`<div class="pd-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🧭 Cloudflare-Agenda</span><h3>Diese Woche</h3><p>Hausaufgaben, Lernkontrollen und Termine aus deiner bisherigen LernSafari.</p></div></div><div class="cloud-week">${days.map((date,i)=>`<article class="cloud-day"><h4>${names[i]} · ${html(dateFormat(date))}</h4>${events.filter(e=>e.day_date===date).map(e=>`<div class="cloud-event"><strong>${html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')}</strong><p>${html(e.text||'')}</p></div>`).join('')||'<p>Keine Einträge</p>'}</article>`).join('')}</div>${loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: in der erweiterten Verwaltung unter «Agenda».</p>':''}</div>`;
   }catch(e){host.innerHTML=`<div class="pd-panel"><h3>Agenda nicht erreichbar</h3><p>${html(errorText(e))}</p></div>`}
  }
+
+ // Existing Worker returns active blocks and assignments; this is a pedagogical UI gate,
+ // NOT a verified mastery signal or security protection for public HTML files.
+ function updateClassFocus(p){
+  if(!loggedChild()||!window.LernSafariFocusGate){focusGate=null;return;}
+  focusGate=window.LernSafariFocusGate.makeState(p,ORIGINAL_GAMES);
+  paintClassFocus();
+ }
+ async function refreshClassFocus(){
+  if(!loggedChild()||focusBusy)return;
+  focusBusy=true;
+  try{const p=await call('/learning-plan');if(loggedChild()){plan=p;updateClassFocus(p)}}
+  catch(_){if(loggedChild())notify('Fokusregeln konnten nicht aktualisiert werden.')}
+  finally{focusBusy=false}
+ }
+ function showFocusNotice(){
+  notify('🔒 Zuerst deine offenen Pflichtaufträge im Logbuch bearbeiten.');
+ }
+ function blockedInClass(target,kind){
+  if(!loggedChild()||!focusGate?.restricted)return false;
+  if(kind==='area')return !focusGate.allowDestination(target);
+  if(kind==='subject')return !focusGate.allowSubject(target);
+  if(kind==='game')return !focusGate.allowGame(target);
+  if(kind==='page')return !focusGate.allowTarget(target);
+  return false;
+ }
+ function paintClassFocus(){
+  if(!loggedChild())return;
+  for(const el of document.querySelectorAll('[data-map-destination],[data-lagoon-subject]')){
+   const isArea=el.hasAttribute('data-map-destination');
+   const locked=isArea?blockedInClass(el.dataset.mapDestination,'area'):blockedInClass(el.dataset.lagoonSubject,'subject');
+   el.classList.toggle('cloud-focus-locked',locked);
+   el.setAttribute('aria-disabled',locked?'true':'false');
+   if(locked)el.title='Zuerst deine offenen Pflichtaufträge bearbeiten';
+   else if(el.title==='Zuerst deine offenen Pflichtaufträge bearbeiten')el.removeAttribute('title');
+  }
+  const hint=document.querySelector('#campHint');
+  if(hint&&focusGate?.restricted)hint.textContent='🔒 Fokuszeit: Öffne dein Logbuch und bearbeite deine To-dos.';
+ }
+ // Capture clicks before the original app's event handlers. Keep the logbook and
+ // the compass/letterbox available, as they are navigational and informational.
+ document.addEventListener('click',e=>{
+  if(!loggedChild()||!focusGate?.restricted)return;
+  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-open],[data-baobab-section]');
+  if(!button)return;
+  let locked=false;
+  if(button.hasAttribute('data-map-destination'))locked=blockedInClass(button.dataset.mapDestination,'area');
+  else if(button.hasAttribute('data-lagoon-subject'))locked=blockedInClass(button.dataset.lagoonSubject,'subject');
+  else if(button.hasAttribute('data-baobab-section'))locked=blockedInClass('page:tiere','page');
+  else if(button.dataset.open&&!['logbook','map','agenda','mail','clock','help','admin'].includes(button.dataset.open))locked=true;
+  if(locked){e.preventDefault();e.stopImmediatePropagation();showFocusNotice();}
+ },true);
+ // Internal navigation may happen without a click on a map hotspot (e.g. direct
+ // To-do links). Protect destinations AND embedded games as a second UI layer.
+ const originalTravelTo=travelTo;
+ travelTo=function(id){if(blockedInClass(id,'area')){showFocusNotice();return;}return originalTravelTo(id)};
+ const unguardedFrame=originalFrame;
+ originalFrame=function(relative,title,opts){
+  const match=String(relative).match(/(?:^|\/)spiele\/([a-z0-9-]+)\.html(?:[?#]|$)/i);
+  if(match&&blockedInClass(match[1],'game')){showFocusNotice();return;}
+  return unguardedFrame(relative,title,opts);
+ };
+ const contentRoot=document.querySelector('#destinationContent'),modalRoot=DOM.modalBody;
+ const observer=new MutationObserver(()=>paintClassFocus());
+ if(contentRoot)observer.observe(contentRoot,{subtree:false,childList:true});
+ if(modalRoot)observer.observe(modalRoot,{subtree:false,childList:true});
+ window.addEventListener('focus',()=>refreshClassFocus());
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshClassFocus()});
+ setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},20000);
 
  // Existing app.js login placeholder handles submit in bubble phase; intercept for authenticated login.
  document.querySelector('#loginForm').addEventListener('submit',e=>{e.preventDefault();e.stopImmediatePropagation();childLogin(document.querySelector('#username').value,document.querySelector('#password').value)},{capture:true});

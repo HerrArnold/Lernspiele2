@@ -1,0 +1,31 @@
+name: LernSafari 3.3 · Lernberichte prüfen
+on:
+  push:
+    branches:
+      - lernsafari-v3-3-lernberichte
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Grundstruktur prüfen
+        run: node lernsafari-test/pruefen.mjs
+      - name: Lernberichte prüfen
+        run: node lernsafari-test/tests/lernbericht-v33.test.cjs
+      - name: Neue Lernspiele müssen den Lernbericht unterstützen
+        run: node lernsafari-test/tests/neue-spiele-lernbericht.test.mjs
+      - name: JavaScript-Syntax prüfen
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do node --check "$file"; done < <(find lernsafari-test \( -name '*.js' -o -name '*.cjs' \) -print0)
+      - name: Bindung des Lernberichts prüfen
+        shell: bash
+        run: |
+          grep -q 'src="lernbericht-v33.js"' lernsafari-test/index.html
+          grep -q 'LernSafariProgressV33.render' lernsafari-test/cloudflare-integration.js
+          grep -q 'admin:true' lernsafari-test/cloudflare-integration.js

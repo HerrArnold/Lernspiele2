@@ -20,7 +20,7 @@ assert.equal(progress.dateOf({created_at:'invalid'}),null);
 
 // Alternate timestamps and Swiss-local calendar weeks.
 assert.equal(progress.dateOf({created_at:'invalid',answered_at:'2026-11-10T10:00:00Z'}).toISOString(),'2026-11-10T10:00:00.000Z');
-assert.equal(progress.dateOf({timestamp:'1794304800'}).toISOString(),'2026-11-10T09:00:00.000Z');
+assert.equal(progress.dateOf({timestamp:'1794304800'}).toISOString(),'2026-11-10T10:00:00.000Z');
 const midnight=progress.enrich({students:[],attempts:[{username:'Eidechse',game:'reihe',is_correct:1,created_at:'2026-11-08T23:30:00Z'},{username:'Eidechse',game:'reihe',is_correct:0,created_at:'2026-11-09T10:00:00Z'}],highscores:[]},catalog);
 assert.equal(progress.aggregate(midnight.attempts,midnight.scores,'Eidechse','all','all','all').trend.length,1,'Swiss Monday should group late Sunday UTC with local Monday');
 assert.equal(progress.aggregate(midnight.attempts,midnight.scores,'Eidechse','all','all','7',new Date('2026-11-10T18:00:00Z')).attempts,2);

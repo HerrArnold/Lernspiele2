@@ -126,3 +126,25 @@ Jeder `learning_step` erhält zusätzliche Felder:
 3. Anschliessend Datei-/Foto-Einreichung mit Rollenrechten, privater Speicherung und nachvollziehbaren Rückmeldungen aufbauen.
 4. Zuletzt automatische Prüfroutinen für **geeignete** Aufgabenformate und eine kontrollierte Vorprüfung offener Aufgaben ergänzen.
 5. Jede Stufe mit Testkonten und ohne echte Schülerdokumente prüfen, bevor sie veröffentlicht wird.
+
+
+## Umsetzungsetappen und Altersangemessenheit – Präzisierung vom 10.11.2026
+
+### Bestehende Spiele und laufende Unterrichtsplanung
+- **Keine rückwirkende Umstellung** der bereits aufgeschalteten Spiele auf Lerneinheiten und Lernziele. Die aktuellen und anstehenden Unterrichtseinheiten sind bereits geplant; die Inhalte der LernSafari dienen derzeit als **ergänzende Übungen zum Präsenzunterricht**.
+- Die bisherige Auswertung nach Spielen, Versuchen, richtigen Antworten, Highscores und zeitlicher Entwicklung bleibt sinnvoll und wird als eigenständiger Funktionsbereich weitergeführt.
+- Das hier entworfene umfassende Lerneinheiten-Konzept ist **ausschliesslich für später gemeinsam entworfene Einheiten** vorgesehen. Auch dort bleiben analoge und digitale Angebote kombinierbar.
+- Neue Spiele, die vor Einführung vollständiger Lerneinheiten entstehen, müssen weiterhin die bestehende Lernbericht-Anbindung erhalten; sie müssen dafür vorläufig **keine künstlich erfundenen Lernziel-Zuordnungen** bekommen.
+
+### Auswertung von Antworten von Kindern im Alter von 8–9 Jahren
+- **Fachwissen und Ausdrucksform trennen**: In NMG/Mathe/Musik fachliche Kernaussage prüfen, nicht automatisch Rechtschreibung, Satzvollständigkeit oder Handschrift. In sprachbezogenen Deutschaufgaben darf Form ein ausdrücklich ausgewiesenes Beurteilungskriterium sein.
+- Antworten dürfen je nach Aufgabe als Stichwörter, kurze Sätze, Auswahl, Zuordnung, Zeichnung, Foto eines Blatts, Lehrpersonenbeobachtung oder später optional Audio eingereicht werden.
+- Tippfähigkeiten oder Schönschreiben dürfen kein verstecktes Hindernis für das Nachweisen von Sachwissen werden.
+- **Drei Prüfausgänge:** fachlich richtig / fachlich noch nicht richtig / **manuelle Überprüfung nötig**. Unklare, schwer lesbare oder nicht sicher interpretierbare Antworten sind nicht falsch zu werten.
+- Bei automatischer Prüfung nicht nur exakte Textübereinstimmung verwenden; fachlich akzeptable Varianten und häufige altersbedingte Schreibweisen müssen berücksichtigt werden, soweit zuverlässig möglich.
+- Nicht jeden offenen Inhalt mit KI oder OCR «automatisch korrigieren». Erkannten Text für Lehrperson sichtbar machen; unsichere Lesungen durch Rückfrage oder manuelle Kontrolle abklären. Keine automatische Notenbildung aus diesen Vorschlägen.
+- **Für jeden Auftrag ein explizites Bewertungsprofil**: fachliche Kriterien; sprachliche Kriterien (nur wenn Lernziel); zulässige Antwortformen; automatischer vs. manueller Prüfschritt; erwartete Variationen.
+- Rückmeldungen wertschätzend und konkret formulieren: z. B. «Du hast richtig erkannt, dass Daunenfedern wärmen.» statt unzutreffender Kritik wegen unvollständiger Satzstruktur.
+
+### Umsetzung
+Bei Erstellung einer zukünftigen Lerneinheit zuerst prüfen, welche Arbeit auf Papier oder mit Material sinnvoller ist. Uploads und automatische Erkennung erst nach Rollen-, Datenschutz-, Zuverlässigkeits- und Lehrpersonenprüfungen freigeben. Die laufende Version 3.3 wird durch diese Konzeptpräzisierung **nicht** zu einer vollständigen Lernzielplattform umgebaut.

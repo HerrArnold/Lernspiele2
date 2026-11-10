@@ -1,0 +1,47 @@
+name: LernSafari · Staging-Prüfung
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'lernsafari-test/**'
+      - 'lernsafari-verbindungstest.html'
+      - 'LERNSAFARI-V3-1-TEST.md'
+      - '.github/workflows/lernsafari-staging-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prüfe Testdateien und Navigationsziele
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re,sys
+          root=Path('lernsafari-test')
+          diag=Path('lernsafari-verbindungstest.html')
+          if not diag.exists():
+            sys.exit('Fehlt: lernsafari-verbindungstest.html')
+          if not root.exists():
+            print('Vollständige LernSafari 3.1 noch nicht hochgeladen; nur Diagnose vorhanden.')
+            raise SystemExit(0)
+          must=['index.html','app.js','styles.css','integration.js','integration.css','cloudflare-integration.js','original/index.html']
+          missing=[p for p in must if not (root/p).is_file()]
+          if missing:sys.exit('Fehlende Hauptdateien: '+', '.join(missing))
+          games=list((root/'original'/'spiele').glob('*.html'))
+          if len(games)<29:sys.exit(f'Nur {len(games)} Originalspiele vorhanden (mindestens 29 erwartet)')
+          print(f'Staging-Struktur vollständig: {len(games)} Spielseiten')
+          PY
+      - name: JavaScript-Syntax der Testversion
+        run: |
+          if [ -f lernsafari-test/index.html ]; then
+            find lernsafari-test -type f -name '*.js' -print0 | while IFS= read -r -d '' file; do node --check "$file" || exit 1; done
+          else
+            echo "Noch keine vollständige Testversion vorhanden"
+          fi

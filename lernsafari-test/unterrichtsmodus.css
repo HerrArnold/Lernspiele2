@@ -14,3 +14,9 @@
 .map-mobile-place.cloud-focus-locked::before,
 .lagoon-mobile-links [data-lagoon-subject].cloud-focus-locked::before{content:'🔒 '}
 @media(prefers-reduced-motion:reduce){.cloud-focus-locked{transition:none!important}}
+
+/* Pause an already opened game when newly assigned duties activate. */
+.cloud-focus-interrupted{margin:12px auto;max-width:650px;padding:26px 20px;text-align:center;background:#fff9e9;color:#4a392b;border:2px solid #c49a6a;border-radius:18px;box-shadow:0 6px 18px #503c2320}
+.cloud-focus-interrupted h3{font-size:clamp(19px,2.4vw,27px);color:#685037;margin:0 0 12px}
+.cloud-focus-interrupted p{line-height:1.6;margin-bottom:18px}
+.cloud-focus-interrupted .pd-action{min-height:44px}

@@ -63,3 +63,17 @@ Beispiel einer Antwort auf das existierende authentifizierte `GET /learning-plan
 Wichtig: Das JSON ist **ein Datenmodell und Testvertrag**, nicht die Behauptung, dass der produktive Worker schon solche Antworten sendet. Vor Aktivierung muss die Lehrersteuerung mit serverseitig geprüftem Modus-Wechsel, Klassensitzung und Ablaufzeit ergänzt werden. `expires_at` muss pro Unterrichtsphase durch die Lehrperson oder eine gültige Zeitplanung gesetzt werden.
 
 **Noch kein echter Unterrichtsmodus veröffentlicht; kein echter Postversand; kein Mastery-Backend.**
+
+## Direkte Spieladressen – Erweiterung
+
+**Bereits im Entwicklungsbranch umgesetzt (Browserprüfung):**
+- Das von den bestehenden Spielen gemeinsam genutzte Skript `original/assets/new-safari-bridge.js` startet bei **jedem direkten Spielaufruf** `original/assets/game-zugang.js` – auch ohne Einbettung in die LernSafari.
+- Bis der Zugriffsstatus geladen ist, erscheint ein Hinweis. Eine positive Freigabe blendet ihn aus, eine Sperre lässt das Spiel unbedienbar. Alle 29 bestehenden Spiel-HTML-Dateien werden in GitHub Actions auf die Einbindung der Brücke überprüft.
+- Angemeldete Tierkonten: zuerst zukünftigen `GET /classroom-access?game=<id>` befragen; solange der Endpunkt noch nicht existiert, auf den bestehenden authentifizierten `GET /learning-plan` zurückfallen. Das Spiel wird über `game:<dateiname-ohne-html>` zugeordnet. Dieser Fallback kann nur bestehende Fokusregeln und die vorbereiteten zukünftigen Modusdaten auswerten.
+- Gäste: **nur ein ausdrücklich erteiltes `allowed:true` vom noch zu implementierenden öffentlichen Prüf-Endpunkt** erlaubt die Nutzung. Bei 404/Netzfehler bleiben Gästespiele im neuen Entwicklungsbranch gesperrt, damit kein ungeregelter Zugriff als «freigegeben» interpretiert wird. Der aktuelle produktive 3.2-Gastzugang bleibt unverändert.
+- Während eines geöffneten Spiels wird die Prüfung bei Fensterfokus/Rückkehr und regelmässig wiederholt; eine neue Sperre blendet den Inhalt aus.
+- Automatische Tests prüfen freie Gäste, gesperrte Gäste, unbekannten Status, erlaubtes/gesperrtes Kind, alten Fokusmodus und verifizierten Auftrag.
+
+**Wesentliche Grenze:** Das ist eine **Browser-/Navigationssperre**, kein echter Dateizugriffsschutz. Öffentliche HTML-/JS-Ressourcen werden vom Browser weiterhin geladen und sind technisch umgehbar. Um auch HTTP-Anfragen nach einer Spieladresse zuverlässig abzulehnen, müssten Spielressourcen hinter einer Cloudflare-Pages-Function oder einem Worker mit serverseitiger Autorisierung liegen (einschliesslich aller für das Spiel nötigen Ressourcen). Diese Architektur braucht einen getrennten Test und Freigabe; sie ist noch nicht umgesetzt.
+
+**Nächste Worker-Arbeit:** `GET /classroom-access?game=<id>` so implementieren, dass Gäste datensparsam nur `{allowed:true|false}` erhalten, eingeloggte Kinder ebenso mit persönlicher Auftragsprüfung; keine persönlichen Daten über öffentliche Antworten offenlegen. Endpunkt gegen direkt aufgerufene URL, fehlenden/ungültigen Token, Moduswechsel, Fachpflicht, Ablaufdatum, Gastzugang testen. Die browserseitige Sperre ist derzeit im Entwurfs-PR #4, nicht veröffentlicht.

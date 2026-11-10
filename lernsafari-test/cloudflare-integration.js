@@ -253,9 +253,9 @@
   const frame=document.querySelector('#originalGameFrame');
   if(frame){
    const path=frame.getAttribute('src')||'';
-   const match=path.match(/(?:^|\\/)spiele\\/([a-z0-9-]+)\\.html(?:[?#]|$)/i);
+   const match=path.match(/(?:^|\/)spiele\/([a-z0-9-]+)\.html(?:[?#]|$)/i);
    const blocked=match?blockedInClass(match[1],'game'):(
-    /(?:^|\\/)original\\/index\\.html(?:[?#]|$)/i.test(path)
+    /(?:^|\/)original\/index\.html(?:[?#]|$)/i.test(path)
       &&(blockedInClass('baobab','area')||blockedInClass('valley','area'))
    );
    if(blocked){

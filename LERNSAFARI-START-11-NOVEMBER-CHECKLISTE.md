@@ -41,3 +41,6 @@
 
 ## Nicht Teil des morgigen Starts
 Neue Lerneinheiten, automatisch bewertete analoge Uploads, KI-Korrektur, umfassende Kompetenzraster, neue Grafikformate/Variante-A-Relaunch, Baobab-Neugestaltung.
+
+## Verbindlicher visueller Folgeauftrag (NICHT VERGESSEN)
+Nach den Go-live-Funktionen wird die gesamte Knopf- und Illustrationslogik überarbeitet. **Variante A ist entschieden:** keine fest in die Illustrationen gezeichneten Knöpfe; stattdessen echte HTML-Buttons, die visuell zur Szene gehören und deren sichtbare und klickbare Fläche exakt übereinstimmen. Karte und Lern-Lagune sollen auf Laptop-Bildschirmen ohne vertikales Scrollen vollständig sichtbar sein. Camp/Startseite, Karte, Lern-Lagune und weitere betroffene Ansichten werden vereinheitlicht; Baobab-Baum erhält eine umfassende grafische und inhaltliche Überarbeitung. Siehe `LERNSAFARI-GESTALTUNG-BACKLOG.md`. Diesen Auftrag nicht mit den zukünftigen vollständigen Lerneinheiten verwechseln.

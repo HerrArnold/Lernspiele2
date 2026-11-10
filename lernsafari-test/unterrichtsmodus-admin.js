@@ -2,11 +2,12 @@
    No local fake mode state: the Cloudflare Worker is always authoritative. */
 'use strict';
 (function(root){
+ let currentCatalog={};
  const subjects={Mathe:'Mathematik',Deutsch:'Deutsch',NMG:'NMG',Musik:'Musik',Englisch:'Englisch'};
  const arr=x=>Array.isArray(x)?x:[];
  const subjectFor=target=>{
   const id=String(target||'').replace(/^game:/,'');
-  return Object.entries(root.ORIGINAL_GAMES||{}).find(([,games])=>arr(games).some(g=>g.file===id+'.html'))?.[0]||'';
+  return Object.entries(currentCatalog).find(([,games])=>arr(games).some(g=>g.file===id+'.html'))?.[0]||'';
  };
  function matchingAssignments(assignments,kind,subject,now=Date.now()){
   return arr(assignments).filter(a=>{
@@ -28,8 +29,9 @@
   if(!Number.isFinite(Date.parse(expiresAt))||Date.parse(expiresAt)<=Date.now())throw Error('Bitte eine gültige Endzeit in der Zukunft wählen');
   return {kind,subject:kind==='subject'?subject:null,required_assignment_ids:active?ids:[],require_verified:requireVerified,expires_at:new Date(expiresAt).toISOString()};
  }
- function render({mount,assignments,fetchMode,saveMode,refreshAssignments}){
+ function render({mount,assignments,originalGames,fetchMode,saveMode,refreshAssignments}){
   if(!mount)return;
+  currentCatalog=originalGames||{};
   mount.innerHTML=`<section class="pd-panel class-mode-panel">
    <h4>🧭 Unterrichtsmodus</h4>
    <p>Steuere, welche Aufgaben die Kinder jetzt bearbeiten dürfen. Änderungen gelten erst, nachdem Cloudflare sie gespeichert hat.</p>

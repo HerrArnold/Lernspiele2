@@ -53,12 +53,13 @@ function evaluate(mode,plan,game,gameSubjects){
  store.assignmentDefinitions(ids) -> server-side assignments, including audience/time
  store.childAssignments(username) -> active assignments for child
  store.verifiedIds(username) -> teacher-verified assignment IDs
+ store.studentExists(username) -> true only for a current class account
  store.setVerification({username,assignmentId,verified,adminUsername}) -> persisted
  catalog {gameId:subject} must be from server allowlist, NOT request input.
 */
 export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
  if(!auth?.requireAdmin||!auth?.optionalChild||!store?.loadMode||!store?.saveMode||
-    !store?.assignmentDefinitions||!store?.childAssignments||!store?.verifiedIds||!store?.setVerification||
+    !store?.assignmentDefinitions||!store?.childAssignments||!store?.studentExists||!store?.verifiedIds||!store?.setVerification||
     !catalog||typeof catalog!=='object')throw Error('Trusted Worker adapters required');
  const games=new Map(Object.entries(catalog).filter(([id])=>/^[a-z0-9-]+$/.test(id)));
  async function mode(){return activeMode(await store.loadMode(),now())}
@@ -111,7 +112,7 @@ export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
     const id=numberId(body?.assignment_id),username=String(body?.username||'');
     if(!id||!username||username.length>80||!/^[\p{L}\p{N} _.-]+$/u.test(username)||typeof body.verified!=='boolean')return invalid('Ungültige Freigabe');
     const defs=await store.assignmentDefinitions([id]);
-    if(defs.length!==1||!validForChild(defs[0],username,now()))return invalid('Auftrag nicht für dieses Tierkonto gültig');
+    if(!await store.studentExists(username)||defs.length!==1||!validForChild(defs[0],username,now()))return invalid('Auftrag nicht für dieses Tierkonto gültig');
     await store.setVerification({username,assignmentId:id,verified:body.verified,adminUsername:admin.username});
     return json({ok:true});
    }

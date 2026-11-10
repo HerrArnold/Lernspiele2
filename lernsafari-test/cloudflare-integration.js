@@ -99,7 +99,7 @@
    const data=await call('/admin-report',{admin:true});
    if(!loggedTeacher()||state.modal!=='admin'||!panel.isConnected)return;
    if(!window.LernSafariProgressV33)throw Error('Die Lernbericht-Komponente konnte nicht geladen werden.');
-   window.LernSafariProgressV33.render({panel,data,originalGames:ORIGINAL_GAMES,escapeHTML:html});
+   window.LernSafariProgressV33.render({panel,data,learningData:adminData,originalGames:ORIGINAL_GAMES,escapeHTML:html});
    panel.addEventListener('lernsafari:reload-progress',renderAdminProgress,{once:true});
   }catch(e){
    if(panel.isConnected)panel.innerHTML=`<h4>🎯 Lernberichte</h4><p>${html(errorText(e))}</p><button type="button" class="pd-secondary" id="cloudRetryResults">Erneut laden</button>`;

@@ -1,0 +1,16 @@
+/* Classroom focus UI: visual guidance, not an authentication/security boundary. */
+.cloud-focus-locked{position:relative!important;filter:grayscale(.55);opacity:.46;cursor:not-allowed!important}
+.map-hotspot.cloud-focus-locked::after,
+.lagoon-hotspot.cloud-focus-locked::after{
+ content:'🔒';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ background:#fff9ed;border:2px solid #9b6a51;border-radius:14px;
+ padding:7px 11px;font-size:22px;box-shadow:0 3px 9px #33281544;
+ pointer-events:none;
+}
+.map-mobile-place.cloud-focus-locked,
+.lagoon-mobile-links [data-lagoon-subject].cloud-focus-locked{
+ border:2px dashed #9b6a51!important;opacity:.62;
+}
+.map-mobile-place.cloud-focus-locked::before,
+.lagoon-mobile-links [data-lagoon-subject].cloud-focus-locked::before{content:'🔒 '}
+@media(prefers-reduced-motion:reduce){.cloud-focus-locked{transition:none!important}}

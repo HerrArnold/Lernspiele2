@@ -12,6 +12,8 @@ async function send(data){
 }
 window.SafariTelemetry={
  record(p){const d={task:small(p.task||'Aufgabe',140),correct:p.correct===true,correctCount:p.correctCount??(p.correct?1:0),total:p.total??1,answer:small(p.answer),expected:small(p.expected),details:small(p.details)};
+   // Read-only notification to the embedding prototype; no pupil identity is transmitted.
+   if(window.parent!==window){try{window.parent.postMessage({source:'LernSafariOriginal',action:'demoAttempt',game,correct:d.correct,task:d.task},location.origin==='null'?'*':location.origin)}catch(_){}}
    // One queue per page prevents reversing the submission order.
    chain=chain.catch(()=>{}).then(()=>send(d)).catch(err=>{console.warn('LernSafari Speicherung:',err.message);});return chain;
  },

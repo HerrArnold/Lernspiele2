@@ -16,32 +16,48 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Prüfe Testdateien und Navigationsziele
+      - name: Prüfe Originalspiele und Cloudflare-Einbindung
+        run: node lernsafari-test/pruefen.mjs
+      - name: Prüfe interne Bild- und Skriptdateien der Startseite
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re,sys
+          from html.parser import HTMLParser
           root=Path('lernsafari-test')
-          diag=Path('lernsafari-verbindungstest.html')
-          if not diag.exists():
-            sys.exit('Fehlt: lernsafari-verbindungstest.html')
-          if not root.exists():
-            print('Vollständige LernSafari 3.1 noch nicht hochgeladen; nur Diagnose vorhanden.')
-            raise SystemExit(0)
-          must=['index.html','app.js','styles.css','integration.js','integration.css','cloudflare-integration.js','original/index.html']
-          missing=[p for p in must if not (root/p).is_file()]
-          if missing:sys.exit('Fehlende Hauptdateien: '+', '.join(missing))
-          games=list((root/'original'/'spiele').glob('*.html'))
-          if len(games)<29:sys.exit(f'Nur {len(games)} Originalspiele vorhanden (mindestens 29 erwartet)')
-          print(f'Staging-Struktur vollständig: {len(games)} Spielseiten')
+          class Refs(HTMLParser):
+              def __init__(self):super().__init__();self.links=[]
+              def handle_starttag(self, tag, attrs):
+                  a=dict(attrs)
+                  if tag in ('script','img','link'):
+                      v=a.get('src') or (a.get('href') if tag=='link' else '')
+                      if v and not v.startswith(('https:','http:','data:','//','#')):
+                          self.links.append(v.split('?')[0].split('#')[0])
+          p=Refs();p.feed((root/'index.html').read_text(encoding='utf-8'))
+          missing=[x for x in p.links if not (root/x).is_file()]
+          if missing:raise SystemExit('Fehlende Referenzen: '+', '.join(missing))
+          for x in ('startseite.png','camp.png','karte.png','lern-lagune.png','baobab.jpg','tages-tal-landscape.jpg'):
+              f=root/'assets'/x
+              if not f.is_file() or f.stat().st_size<10000:raise SystemExit('Fehlendes oder zu kleines Safari-Bild: '+x)
+          print('PASS: Startseite und alle 6 Safari-Bilder geprüft')
           PY
-      - name: JavaScript-Syntax der Testversion
+      - name: Prüfe JavaScript-Syntax
+        shell: bash
         run: |
-          if [ -f lernsafari-test/index.html ]; then
-            find lernsafari-test -type f -name '*.js' -print0 | while IFS= read -r -d '' file; do node --check "$file" || exit 1; done
-          else
-            echo "Noch keine vollständige Testversion vorhanden"
-          fi
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find lernsafari-test -type f -name '*.js' -print0)
+      - name: Bereite lokal testbares Paket vor
+        run: |
+          cd lernsafari-test
+          zip -qr ../lernsafari-v3.1-staging.zip .
+      - name: Lade geprüftes Testpaket als GitHub-Artefakt hoch
+        uses: actions/upload-artifact@v4
+        with:
+          name: LernSafari-v3.1-Testpaket
+          path: lernsafari-v3.1-staging.zip
+          retention-days: 7
+          if-no-files-found: error

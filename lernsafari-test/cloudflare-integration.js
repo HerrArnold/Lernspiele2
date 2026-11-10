@@ -86,7 +86,7 @@
 
 
  // Cloudflare contains authentic results; an attempt/highscore is not proof of a finished assignment.
- const scoreIndex=rows=>new Map((Array.isArray(rows)?rows:[]).filter(x=>x&&typeof x.game==='string').map(x=>[x.game,Math.max(0,Number(x.score)||0)]));
+ const scoreIndex=rows=>{const scores=new Map();for(const row of Array.isArray(rows)?rows:[]){if(!row||typeof row.game!=='string'||!row.game)continue;const value=Number(row.score);if(!Number.isFinite(value)||value<0)continue;scores.set(row.game,Math.max(scores.get(row.game)??0,value));}return scores;};
  const taskScore=(target,scores)=>target.startsWith('game:')?scores.get(target.slice(5)):undefined;
  const scoreText=(value)=>Number.isFinite(value)?`⭐ Bester Punktestand: ${Math.max(0,Math.floor(value))}`:'Noch kein gespeicherter Highscore';
  const safeCounts=rows=>Array.isArray(rows)?rows:[];

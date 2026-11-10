@@ -72,4 +72,24 @@ assert.match(reportJs,/id="cloudV33Print"/);
 assert.match(reportJs,/state\.person\|\|!panel\.isConnected/);
 assert.match(reportCss,/body\.cloud-v33-print-active \.cloud-v33-detail/);
 assert.match(reportCss,/body\.cloud-v33-print-active \*/);
+
+const weeklyGame=progress.enrich({attempts:[
+ ...Array.from({length:6},(_,i)=>({username:'Eidechse',game:'reihe',is_correct:i<2,created_at:'2026-10-27T10:00:00Z'})),
+ ...Array.from({length:6},(_,i)=>({username:'Eidechse',game:'reihe',is_correct:i<5,created_at:'2026-11-10T10:00:00Z'}))
+]},catalog);
+const development=progress.aggregate(weeklyGame.attempts,[], 'Eidechse','all','all','all');
+const evolution=progress.gameEvolution(development.games[0]);
+assert.equal(evolution.history.length,2);
+assert.equal(evolution.history[0].evaluated,6);
+assert.equal(evolution.history[1].right,5);
+assert.equal(evolution.comparable,true);
+assert.equal(evolution.change,50,'Progress measured in percentage points, not percent increase');
+const sparse=progress.gameEvolution({dated:[
+ {_date:new Date('2026-10-27T10:00:00Z'),_correct:true},
+ {_date:new Date('2026-11-10T10:00:00Z'),_correct:true}
+]});
+assert.equal(sparse.comparable,false,'Two weeks of tiny samples must not claim progress');
+assert.equal(sparse.change,null);
+assert.equal(progress.gameEvolution({dated:[]}).history.length,0);
+
 console.log('PASS: LernSafari 3.3 report checks, including Swiss week boundaries');

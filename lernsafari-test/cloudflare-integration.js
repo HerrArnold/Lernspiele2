@@ -189,6 +189,48 @@
      refreshAssignments:async()=>{const data=await call('/admin-learning',{admin:true});return data.assignments||[]}
     });
    }
+   // Explicit teacher verification is available only when the upgraded Worker
+   // includes a server-confirmed verified list. Legacy Worker: never fake approval.
+   if(Array.isArray(report.verified)){
+    const verified=new Set(report.verified.map(v=>String(v.username)+'|'+Number(v.assignment_id)));
+    const submitted=new Set(done.map(v=>String(v.username)+'|'+Number(v.assignment_id)));
+    const activeJobs=jobs.filter(a=>a.kind==='pflicht'&&Date.parse(a.start_at)<=Date.now()&&Date.parse(a.end_at)>Date.now());
+    const candidates=[];
+    for(const task of activeJobs){
+     for(const person of kids){
+      if(task.audience==='child'&&task.username!==person.username)continue;
+      const code=String(person.username)+'|'+Number(task.id);
+      if(submitted.has(code)||verified.has(code)){
+       candidates.push({username:person.username,task,code,isVerified:verified.has(code),isSubmitted:submitted.has(code)});
+      }
+     }
+    }
+    const verificationPanel=document.createElement('section');
+    verificationPanel.className='pd-panel';
+    verificationPanel.id='cloudTeacherVerification';
+    verificationPanel.innerHTML=`<h4>✅ Pflichtaufträge überprüfen</h4><p>«Erledigt» ist die Rückmeldung des Kindes. Erst deine Bestätigung zählt als überprüfte Erledigung für den Unterrichtsmodus.</p>
+      <div class="pd-items">${candidates.slice(0,100).map((c,i)=>`<article class="pd-task">
+        <div class="pd-task-head"><span>${c.isVerified?'✅':'📝'}</span><div>
+        <strong>${html(c.username)} · ${html(c.task.title)}</strong>
+        <small>${c.isSubmitted?'Vom Kind als erledigt markiert':'Von der Lehrperson bereits bestätigt'}</small>
+        </div><span class="pd-task-status">${c.isVerified?'Überprüft':'Zu überprüfen'}</span></div>
+        <div class="pd-task-actions"><button type="button" class="pd-secondary" data-cloud-verify="${i}" aria-label="${c.isVerified?'Bestätigung zurücknehmen':'Auftrag bestätigen'}: ${html(c.username)}">${c.isVerified?'Bestätigung zurücknehmen':'✅ Als überprüft bestätigen'}</button></div>
+        </article>`).join('')||'<p>Derzeit keine vom Kind als erledigt markierten Pflichtaufträge zur Überprüfung.</p>'}</div>
+        ${candidates.length>100?'<p>Die ersten 100 Einträge werden angezeigt. Weitere folgen in der Klassenübersicht.</p>':''}
+        <p id="cloudVerifyStatus" role="status"></p>`;
+    const progressPanel=host.querySelector('#cloudProgressPanel');
+    if(progressPanel)progressPanel.insertAdjacentElement('beforebegin',verificationPanel);
+    verificationPanel.querySelectorAll('[data-cloud-verify]').forEach(button=>button.onclick=async()=>{
+     const c=candidates[Number(button.dataset.cloudVerify)];
+     if(!c||!loggedTeacher())return;
+     const output=verificationPanel.querySelector('#cloudVerifyStatus');button.disabled=true;
+     try{
+      await call('/admin-verify-assignment',{admin:true,method:'POST',body:{username:c.username,assignment_id:Number(c.task.id),verified:!c.isVerified}});
+      output.textContent='✅ Bestätigung in Cloudflare gespeichert.';
+      await renderCloudAdmin();
+     }catch(err){output.textContent='Konnte nicht gespeichert werden: '+errorText(err);button.disabled=false;}
+    });
+   }
    host.querySelector('#cloudLoadResults')?.addEventListener('click',renderAdminProgress);
    const form=host.querySelector('#cloudAssignmentForm');form.elements.audience.onchange=()=>{host.querySelector('#cloudChildWrap').hidden=form.elements.audience.value!=='child'};
    form.onsubmit=async e=>{e.preventDefault();const start=new Date(form.elements.start.value),end=new Date(form.elements.end.value);const msg=host.querySelector('#cloudAdminMessage');if(!(end>start)){msg.textContent='Ende muss nach dem Beginn liegen.';return}const payload={id:form.dataset.id?Number(form.dataset.id):undefined,audience:form.elements.audience.value,username:form.elements.audience.value==='child'?form.elements.username.value:'',start_at:start.toISOString(),end_at:end.toISOString(),target:form.elements.target.value,title:form.elements.title.value.trim(),kind:form.elements.kind.value};const submit=form.querySelector('[type=submit]');submit.disabled=true;try{await call('/admin-assignments',{admin:true,method:'POST',body:payload});await renderCloudAdmin();notify('Auftrag in Cloudflare gespeichert.')}catch(err){msg.textContent=errorText(err);submit.disabled=false}};

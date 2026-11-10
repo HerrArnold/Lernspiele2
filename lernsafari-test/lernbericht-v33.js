@@ -4,16 +4,19 @@
  const asArray=x=>Array.isArray(x)?x:[];
  const txt=x=>String(x??'');
  const dateOf=row=>{
-  const raw=row?.created_at??row?.answered_at??row?.occurred_at??row?.timestamp??row?.at;
-  if(raw===undefined||raw===null||raw==='')return null;
-  const date=new Date(typeof raw==='number'&&raw<1e11?raw*1000:raw);
-  return Number.isFinite(date.getTime())?date:null;
+  for(const raw of [row?.created_at,row?.answered_at,row?.occurred_at,row?.timestamp,row?.at]){
+   if(raw===undefined||raw===null||raw==='')continue;
+   const numeric=typeof raw==='string'&&/^\d{10,13}$/.test(raw)?Number(raw):raw;
+   const date=new Date(typeof numeric==='number'&&numeric<1e11?numeric*1000:numeric);
+   if(Number.isFinite(date.getTime()))return date;
+  }
+  return null;
  };
  const correct=row=>row?.is_correct===true||row?.is_correct===1||row?.is_correct==='1';
  const gameKey=row=>txt(row?.game??row?.game_id).trim();
  const displayDate=d=>new Intl.DateTimeFormat('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
  const percent=(ok,total)=>total?Math.round(ok/total*100)+' %':'–';
- const localMonday=d=>{const day=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));day.setUTCDate(day.getUTCDate()-(day.getUTCDay()+6)%7);return day.toISOString().slice(0,10);};
+ const localMonday=d=>{const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d);const get=t=>parts.find(p=>p.type===t)?.value;const day=new Date(Date.UTC(Number(get('year')),Number(get('month'))-1,Number(get('day'))));day.setUTCDate(day.getUTCDate()-(day.getUTCDay()+6)%7);return day.toISOString().slice(0,10);};
  function catalogFrom(original){
   const entries=[];
   for(const [subject,games] of Object.entries(original||{}))for(const game of asArray(games)){
@@ -51,7 +54,7 @@
   const children=model.students.map(x=>txt(x.username)).filter(Boolean).sort((a,b)=>a.localeCompare(b,'de-CH'));
   const subjects=[...new Set([...model.catalog.map(x=>x.subject),...model.attempts.map(x=>x._meta.subject),...model.scores.map(x=>x._meta.subject)])].sort((a,b)=>a.localeCompare(b,'de-CH'));
   const gameOptions=[...new Map([...model.catalog,...model.attempts.map(a=>a._meta),...model.scores.map(s=>s._meta)].map(x=>[x.key,x])).values()].sort((a,b)=>a.title.localeCompare(b.title,'de-CH'));
-  let state={subject:'all',game:'all',days:'all',person:''};
+  let state={subject:'all',game:'all',days:'all',sort:'name',person:''};
   const select=(id,label,items,value)=>`<label>${label}<select id="${id}">${items.map(([v,t])=>`<option value="${html(v)}" ${value===v?'selected':''}>${html(t)}</option>`).join('')}</select></label>`;
   const nameButton=name=>`<button type="button" class="cloud-v33-person" data-person="${html(name)}">${html(name)}</button>`;
   const chosenGames=()=>gameOptions.filter(g=>state.subject==='all'||g.subject===state.subject);
@@ -59,21 +62,24 @@
    if(!panel.isConnected)return;
    if(state.game!=='all'&&!chosenGames().some(g=>g.key===state.game))state.game='all';
    const summaries=children.map(name=>({name,...aggregate(model.attempts,model.scores,name,state.subject,state.game,state.days)}));
+   if(state.sort==='attempts')summaries.sort((a,b)=>b.attempts-a.attempts||a.name.localeCompare(b.name,'de-CH'));
+   else if(state.sort==='rate')summaries.sort((a,b)=>(b.attempts?b.right/b.attempts:-1)-(a.attempts?a.right/a.attempts:-1)||a.name.localeCompare(b.name,'de-CH'));
    const detailed=state.person?summaries.find(row=>row.name===state.person):null;
    const allAttempts=summaries.reduce((sum,r)=>sum+r.attempts,0);
    const allRight=summaries.reduce((sum,r)=>sum+r.right,0);
    panel.innerHTML=`<div class="cloud-panel-head"><h4>🎯 Lernberichte · Klasse 3b</h4><button type="button" class="pd-secondary" id="cloudV33Reload">Aus Cloudflare aktualisieren</button></div>
     <p class="cloud-progress-intro">Lernversuche zeigen Übungsaktivität, die Erfolgsquote den Anteil richtiger Antworten. Highscores und erledigte Lernaufträge werden separat betrachtet.</p>
-    <div class="cloud-v33-filters">${select('cloudV33Subject','Schulfach',[['all','Alle Fächer'],...subjects.map(x=>[x,x])],state.subject)}${select('cloudV33Game','Lernspiel',[['all','Alle Spiele'],...chosenGames().map(g=>[g.key,g.title])],state.game)}${select('cloudV33Days','Zeitraum',[['all','Alle verfügbaren Daten'],['7','Letzte 7 Tage'],['30','Letzte 30 Tage'],['90','Letzte 90 Tage']],state.days)}</div>
+    <div class="cloud-v33-filters">${select('cloudV33Subject','Schulfach',[['all','Alle Fächer'],...subjects.map(x=>[x,x])],state.subject)}${select('cloudV33Game','Lernspiel',[['all','Alle Spiele'],...chosenGames().map(g=>[g.key,g.title])],state.game)}${select('cloudV33Days','Zeitraum',[['all','Alle verfügbaren Daten'],['7','Letzte 7 Tage'],['30','Letzte 30 Tage'],['90','Letzte 90 Tage']],state.days)}${select('cloudV33Sort','Reihenfolge',[['name','Tierkonto (A–Z)'],['attempts','Meiste Lernversuche'],['rate','Höchste Erfolgsquote']],state.sort)}</div>
     <div class="cloud-v33-stats"><span><strong>${children.length}</strong> Tierkonten</span><span><strong>${allAttempts}</strong> Lernversuche</span><span><strong>${percent(allRight,allAttempts)}</strong> richtige Antworten</span></div>
-    <div class="cloud-v33-table-wrap"><table class="cloud-v33-table"><thead><tr><th>Tierkonto</th><th>Spiele mit Highscore*</th><th>Lernversuche</th><th>Richtig</th><th>Erfolgsquote</th></tr></thead><tbody>${summaries.map(r=>`<tr><td>${nameButton(r.name)}</td><td>${r.highscoreGames}</td><td>${r.attempts}</td><td>${r.right}</td><td>${r.rate}</td></tr>`).join('')}</tbody></table></div>
-    ${state.days!=='all'?'<p class="cloud-v33-note">* Highscores sind derzeit Gesamtbestwerte. Der Zeitraumfilter gilt für Lernversuche und Erfolgsquoten, nicht für Highscores. Undatierte Versuche lassen sich nicht nach Zeitraum einordnen.</p>':''}
+    <div class="cloud-v33-table-wrap" tabindex="0" aria-label="Klassenübersicht: bei Bedarf horizontal scrollen"><table class="cloud-v33-table"><thead><tr><th>Tierkonto</th><th>Spiele mit Highscore*</th><th>Lernversuche</th><th>Richtig</th><th>Erfolgsquote</th></tr></thead><tbody>${summaries.map(r=>`<tr><td>${nameButton(r.name)}</td><td>${r.highscoreGames}</td><td>${r.attempts}</td><td>${r.right}</td><td>${r.rate}</td></tr>`).join('')}</tbody></table></div>
+    <p class="cloud-v33-note">* Highscores sind Gesamtbestwerte aus allen verfügbaren Spielrunden. Der Zeitraumfilter gilt ausschliesslich für datierte Lernversuche und die Erfolgsquote. ${state.days!=='all'?'Lernversuche ohne auswertbares Datum können nicht zum gewählten Zeitraum gezählt werden.':''}</p>
     ${detailed?`<section class="cloud-v33-detail" aria-label="Persönlicher Lernbericht"><div class="cloud-panel-head"><h4>📖 Lernbericht: ${html(detailed.name)}</h4><button type="button" class="pd-secondary" id="cloudV33Close">Schliessen</button></div><p>${detailed.attempts} Lernversuche · ${detailed.rate} richtig · ${detailed.highscoreGames} Spiele mit Highscore</p><div class="cloud-v33-table-wrap"><table class="cloud-v33-table"><thead><tr><th>Fach / Spiel</th><th>Versuche</th><th>Richtig</th><th>Erfolgsquote</th><th>Bestwert*</th></tr></thead><tbody>${detailed.games.map(g=>`<tr><td><strong>${html(g.meta.title)}</strong><small>${html(g.meta.subject)}</small></td><td>${g.attempts}</td><td>${g.correct}</td><td>${percent(g.correct,g.attempts)}</td><td>${g.best===null?'–':html(g.best)}</td></tr>`).join('')||'<tr><td colspan="5">Für diese Auswahl liegen keine Spieldaten vor.</td></tr>'}</tbody></table></div>
     <h5>Entwicklung nach Übungswochen</h5>${detailed.trend.length?`<div class="cloud-v33-trend">${detailed.trend.map(w=>`<div class="cloud-v33-week"><span>ab ${html(displayDate(new Date(w.week+'T12:00:00Z')))}</span><div class="cloud-v33-bar"><span style="width:${w.right/w.count*100}%"></span></div><strong>${percent(w.right,w.count)}</strong><small>${w.count} Versuche</small></div>`).join('')}</div>${detailed.trend.length<2?'<p class="cloud-v33-note">Für einen Vergleich werden mindestens zwei Wochen mit datierten Versuchen benötigt.</p>':''}`:'<p class="cloud-v33-note">Die verfügbaren Versuche enthalten für diese Auswahl kein auswertbares Datum. Ein zeitlicher Verlauf kann deshalb nicht angezeigt werden.</p>'}${detailed.undated?`<p class="cloud-v33-note">${detailed.undated} Versuche ohne auswertbares Datum sind in der zeitlichen Darstellung nicht enthalten.</p>`:''}<p class="cloud-v33-note">Die Wochenwerte sind Anteile richtiger Einzelantworten, keine benoteten Lernkontrollen. Unterschiedliche Aufgaben können unterschiedlich schwierig sein. «Erledigt» wird hier bewusst nicht aus Highscores abgeleitet.</p></section>`:'<p class="cloud-v33-note">Klicke auf ein Tierkonto, um einzelne Spiele und den zeitlichen Verlauf zu sehen.</p>'}
     <p class="cloud-v33-note">Die Werte werden nur im angemeldeten Lehrpersonenbereich aus dem vorhandenen Cloudflare-Klassenbericht gelesen. Diese Ansicht verändert keine Lernstände.</p>`;
    panel.querySelector('#cloudV33Subject').onchange=e=>{state.subject=e.target.value;state.game='all';paint()};
    panel.querySelector('#cloudV33Game').onchange=e=>{state.game=e.target.value;paint()};
    panel.querySelector('#cloudV33Days').onchange=e=>{state.days=e.target.value;paint()};
+   panel.querySelector('#cloudV33Sort').onchange=e=>{state.sort=e.target.value;paint()};
    panel.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{state.person=b.dataset.person;paint();panel.querySelector('.cloud-v33-detail')?.scrollIntoView({block:'nearest'})});
    panel.querySelector('#cloudV33Close')?.addEventListener('click',()=>{state.person='';paint()});
    panel.querySelector('#cloudV33Reload').onclick=()=>panel.dispatchEvent(new CustomEvent('lernsafari:reload-progress',{bubbles:false}));

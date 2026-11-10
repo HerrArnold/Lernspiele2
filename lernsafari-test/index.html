@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f2dfb6">
+  <meta name="description" content="LernSafari – interaktiver Prototyp für die Klasse 3b.">
+  <title>LernSafari · Die Safari beginnt!</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="integration.css">
+  <script src="app.js" defer></script>
+  <script src="integration.js" defer></script>
+  <link rel="stylesheet" href="profile-demo.css">
+  <script src="profile-demo.js" defer></script>
+  <script src="original/assets/login-config.js"></script>
+  <link rel="stylesheet" href="cloudflare-integration.css">
+  <script src="cloudflare-integration.js" defer></script>
+</head>
+<body>
+  <div id="app" class="app">
+    <header class="topbar" id="topbar" hidden>
+      <button class="brand" id="homeBtn" aria-label="Zum Camp">🌿 <strong>LernSafari</strong></button>
+      <nav aria-label="Schnellnavigation" class="topnav">
+        <button data-open="map">🗺️ <span>Karte</span></button>
+        <button data-open="logbook">📖 <span>Logbuch</span></button>
+        <button data-open="agenda">🧭 <span>Agenda</span></button>
+        <button data-open="mail">✉️ <span>Post</span></button>
+        <button id="adminNav" data-open="admin" hidden>🛠️ <span>Verwaltung</span></button>
+      </nav>
+      <div class="user-tools"><span id="userLabel">Gast</span><button id="logoutBtn" title="Zur Anmeldung">↪ <span>Ausgang</span></button></div>
+    </header>
+
+    <main id="screen">
+      <section id="loginScreen" class="login-screen" aria-label="Willkommen bei der LernSafari">
+        <div class="scene-wrap login-wrap">
+          <div class="scene login-scene" id="loginScene">
+            <img src="assets/startseite.png" alt="Ein fröhlicher rosa Flamingo mit Safarihut begrüsst dich hinter einem grossen Logbuch in der Savanne." draggable="false">
+            <form id="loginForm" class="login-controls" autocomplete="off">
+              <label class="sr-only" for="username">Benutzername</label>
+              <input id="username" name="username" placeholder="Benutzername" autocomplete="username" aria-label="Benutzername">
+              <label class="sr-only" for="password">Passwort</label>
+              <input id="password" name="password" type="password" placeholder="Passwort" autocomplete="current-password" aria-label="Passwort">
+              <button type="submit" class="login-submit">Anmelden</button>
+              <button type="button" id="guestBtn" class="login-guest">Als Gast fortfahren</button>
+            </form>
+          </div>
+        </div>
+        <div class="login-bottom"><span>🌞 Willkommen in der Klasse 3b!</span><button id="demoChild" class="text-action">Demo als Kind ausprobieren (ohne Konto)</button><button id="demoTeacher" class="text-action">Verwaltung testen (Demo)</button><button id="cloudTeacher" class="text-action">🔐 Lehrperson anmelden</button></div>
+      </section>
+
+      <section id="campScreen" class="camp-screen" aria-label="Safari-Camp" hidden>
+        <div class="scene-wrap camp-wrap"><div class="scene camp-scene" id="campScene">
+          <img src="assets/camp.png" alt="Expeditionscamp mit Zelt, Briefkasten, grosser Safari-Karte, persönlichem Logbuch, Kompass, Uhr und einem freundlichen Flamingo." draggable="false">
+          <button class="hotspot hotspot-mail" data-open="mail" aria-label="Briefkasten öffnen" data-name="Briefkasten"><span class="hotspot-label">✉️ Briefkasten</span><span class="mail-indicator" id="mailIndicator" hidden>1</span></button>
+          <button class="hotspot hotspot-map" data-open="map" aria-label="Karte öffnen" data-name="Karte"><span class="hotspot-label">🗺️ Karte</span></button>
+          <button class="hotspot hotspot-logbook" data-open="logbook" aria-label="Mein Logbuch öffnen" data-name="Mein Logbuch"><span class="hotspot-label">📖 Mein Logbuch</span></button>
+          <button class="hotspot hotspot-agenda" data-open="agenda" aria-label="Kompass und Agenda öffnen" data-name="Kompass / Agenda"><span class="hotspot-label">🧭 Kompass / Agenda</span></button>
+          <button class="hotspot hotspot-clock" data-open="clock" aria-label="Uhr und Tagesübersicht öffnen" data-name="Uhr"><span class="hotspot-label">🕰️ Tagesübersicht</span></button>
+          <button class="hotspot hotspot-flamingo" id="flamingoHelp" aria-label="Flamingo um Hilfe bitten"><span class="hotspot-label">🦩 Brauchst du Hilfe?</span></button>
+          <div class="camp-hint" id="campHint">Klicke auf einen Gegenstand und entdecke die Safari!</div>
+        </div></div>
+        <div class="camp-bottom"><span id="greeting">🌴 Willkommen im Camp!</span><button data-open="map" class="pill-link">🗺️ Orte entdecken</button></div>
+      </section>
+
+      <section id="destinationScreen" class="destination-screen" hidden aria-label="Safari-Ort">
+        <div class="destination-panel">
+          <button class="back-link" id="destinationBack">← Zur Karte</button>
+          <div class="dest-hero"><div class="dest-emoji" id="destEmoji">🌊</div><div><div class="eyebrow">Deine nächste Expedition</div><h1 id="destTitle">Lern-Lagune</h1><p id="destText"></p></div></div>
+          <div id="destinationContent"></div>
+          <div class="destination-actions"><button id="backToCamp" class="primary">⛺ Zurück ins Camp</button></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="modalLayer" class="modal-layer" hidden>
+      <div class="modal-backdrop" id="modalBackdrop"></div>
+      <section id="modal" class="modal parchment" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+        <header class="modal-header"><span class="modal-icon" id="modalIcon">📖</span><div><div class="eyebrow" id="modalEyebrow">Entdecke die LernSafari</div><h2 id="modalTitle">Mein Logbuch</h2></div><button class="close-btn" id="closeModal" aria-label="Fenster schliessen">✕</button></header>
+        <div id="modalBody" class="modal-body"></div>
+        <footer class="modal-footer"><button id="modalBack" class="secondary">← Zurück ins Camp</button></footer>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <div class="prototype-note" id="hostingNote">GitHub Pages · Kinderkonten und Verwaltung über Cloudflare · Demo-Modus separat</div>
+  </div>
+</body>
+</html>

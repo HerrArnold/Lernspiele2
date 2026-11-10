@@ -25,4 +25,21 @@ const midnight=progress.enrich({students:[],attempts:[{username:'Eidechse',game:
 assert.equal(progress.aggregate(midnight.attempts,midnight.scores,'Eidechse','all','all','all').trend.length,1,'Swiss Monday should group late Sunday UTC with local Monday');
 assert.equal(progress.aggregate(midnight.attempts,midnight.scores,'Eidechse','all','all','7',new Date('2026-11-10T18:00:00Z')).attempts,2);
 
+
+const assignments={assignments:[
+ {id:1,audience:'all',target:'game:reihe'},
+ {id:2,audience:'child',username:'Eidechse',target:'game:rhythmus'},
+ {id:3,audience:'child',username:'Giraffe',target:'game:reihe'}
+],done:[
+ {assignment_id:1,username:'Eidechse'},
+ {assignment_id:2,username:'Eidechse'},
+ {assignment_id:3,username:'Giraffe'},
+ {assignment_id:1,username:'Giraffe'},
+ {assignment_id:2} // unknown ownership must not count
+]};
+assert.deepEqual(progress.assignmentSummary(assignments,'Eidechse'),{completed:2,total:2});
+assert.deepEqual(progress.assignmentSummary(assignments,'Giraffe'),{completed:2,total:2});
+assert.deepEqual(progress.assignmentSummary(assignments,'Elefant'),{completed:0,total:1});
+assert.deepEqual(progress.assignmentSummary(null,'Elefant'),{completed:0,total:0});
+
 console.log('PASS: LernSafari 3.3 report checks, including Swiss week boundaries');

@@ -206,6 +206,7 @@
   if(!loggedChild()||!window.LernSafariFocusGate){focusGate=null;return;}
   focusGate=window.LernSafariFocusGate.makeState(p,ORIGINAL_GAMES);
   paintClassFocus();
+  enforceCurrentFocus();
  }
  async function refreshClassFocus(){
   if(!loggedChild()||focusBusy)return;
@@ -236,8 +237,42 @@
    else if(el.title==='Zuerst deine offenen Pflichtaufträge bearbeiten')el.removeAttribute('title');
   }
   const hint=document.querySelector('#campHint');
-  if(hint&&focusGate?.restricted)hint.textContent='🔒 Fokuszeit: Öffne dein Logbuch und bearbeite deine To-dos.';
+  if(hint){hint.textContent=focusGate?.restricted?'🔒 Fokuszeit: Öffne dein Logbuch und bearbeite deine To-dos.':'Klicke auf einen Gegenstand und entdecke die Safari!';}
+  for(const button of document.querySelectorAll('.integration-game-card[data-original-game]')){
+   const index=Number(button.dataset.originalGame);
+   const game=(ORIGINAL_GAMES[safariSubject]||[])[index];
+   const locked=!!game&&blockedInClass(game.file.replace(/\.html$/i,''),'game');
+   button.classList.toggle('cloud-focus-locked',locked);
+   button.setAttribute('aria-disabled',locked?'true':'false');
+  }
  }
+ function enforceCurrentFocus(){
+  if(!loggedChild()||!focusGate?.restricted)return;
+  // Newly assigned work must take effect even when another game is already open.
+  // Removing the iframe stops that embedded game rather than merely covering it.
+  const frame=document.querySelector('#originalGameFrame');
+  if(frame){
+   const path=frame.getAttribute('src')||'';
+   const match=path.match(/(?:^|\\/)spiele\\/([a-z0-9-]+)\\.html(?:[?#]|$)/i);
+   const blocked=match?blockedInClass(match[1],'game'):(
+    /(?:^|\\/)original\\/index\\.html(?:[?#]|$)/i.test(path)
+      &&(blockedInClass('baobab','area')||blockedInClass('valley','area'))
+   );
+   if(blocked){
+    frame.removeAttribute('src');frame.remove();
+    const surface=document.querySelector('.integration-game-surface');
+    if(surface){
+     surface.innerHTML='<div class="cloud-focus-interrupted" role="status"><h3>🔒 Neue Pflichtaufgaben</h3><p>Die Lehrperson hat neue To-dos freigeschaltet. Bitte bearbeite zuerst deine offenen Aufträge.</p><button type="button" class="pd-action" id="cloudFocusToLogbook">Mein Logbuch öffnen</button></div>';
+     surface.querySelector('#cloudFocusToLogbook')?.addEventListener('click',()=>showModal('logbook'));
+    }
+   }
+  }
+  if(state.screen==='destination'&&state.destination&&blockedInClass(state.destination,'area')){
+   goCamp();
+   notify('🔒 Für diesen Bereich gibt es gerade neue Pflichtaufträge. Schau in dein Logbuch.');
+  }
+ }
+
  // Capture clicks before the original app's event handlers. Keep the logbook and
  // the compass/letterbox available, as they are navigational and informational.
  document.addEventListener('click',e=>{

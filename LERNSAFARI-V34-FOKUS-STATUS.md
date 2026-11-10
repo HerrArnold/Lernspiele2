@@ -28,3 +28,38 @@
 6. Auf Preview mit Testkonten: Ankunft → Mathe → Pause → neues Fach → frei → nächsten Tag mit neuen Mathe-Aufträgen und Re-Lock testen. Erst nach erfolgreichem Test in die normale Testseite übernehmen.
 
 **Grafikvertrag:** Variante A (Illustrationen ohne hineingemalte Buttons, echte HTML-Knöpfe exakt an sichtbarer Stelle) bleibt verbindlicher Folgeauftrag, siehe `LERNSAFARI-GESTALTUNG-BACKLOG.md` im parallel entwickelten 3.3-Branch. Der grafische Relaunch wurde in diesem ersten Fokus-Commit nicht durchgeführt.
+
+
+## Fortschritt: erneute Sperre und vorbereitete Modusregeln
+
+**Jetzt im Branch implementiert und automatisch getestet:**
+- Bereits geöffnete, später gesperrte Lernspiele werden bei der Aktualisierung des Fokusplans aus dem aktiven iframe entfernt; die Kinder bekommen eine Erklärung und einen Logbuch-Link. Eine neue Ziel-Sperre kann Kinder auf das Camp zurückführen.
+- Karten-, Fach- und Spielübersichten markieren gesperrte Links neu; Fokus-Hinweis wird nach Freigabe zurückgesetzt.
+- `unterrichtsmodus.js` kann zusätzlich ein **zukünftiges, serverseitig autoritatives** `classroomMode`-Objekt interpretieren. Der bisherige Cloudflare Worker sendet diese Daten noch nicht, deshalb bleibt beim echten Betrieb vorerst die ältere Fokusregel aktiv.
+
+### Erforderlicher API-Vertrag für den Cloudflare Worker (noch nicht implementiert)
+
+Beispiel einer Antwort auf das existierende authentifizierte `GET /learning-plan`:
+```json
+{
+  "assignments": [
+    {"id": 108, "target": "game:einmaleins-dreier", "kind": "pflicht"},
+    {"id": 109, "target": "number:word", "kind": "pflicht"}
+  ],
+  "done": [109],
+  "verified": [109],
+  "classroomMode": {
+    "kind": "subject",
+    "subject": "Mathe",
+    "required_assignment_ids": [108],
+    "require_verified": true,
+    "expires_at": "2026-11-11T09:45:00Z"
+  }
+}
+```
+
+`kind`: `arrival` / `subject` / `free` / `closed`. `required_assignment_ids` enthält **nur die in diesem Modus aktuell verpflichtenden** Aufgaben des individuellen Tierkontos. `done` = Kind hat «fertig» bestätigt; `verified` = durch nachvollziehbares, gespeichertes Kriterium oder Lehrperson freigegeben. Beide Zustände sind getrennt. Eine neue Pflichtaufgabe, die noch nicht in `verified` ist, sperrt erneut, selbst wenn frühere Aufträge bestätigt waren. Der Modus wird vom Worker autorisiert; die Kinder können ihn nicht selbst verändern.
+
+Wichtig: Das JSON ist **ein Datenmodell und Testvertrag**, nicht die Behauptung, dass der produktive Worker schon solche Antworten sendet. Vor Aktivierung muss die Lehrersteuerung mit serverseitig geprüftem Modus-Wechsel, Klassensitzung und Ablaufzeit ergänzt werden. `expires_at` muss pro Unterrichtsphase durch die Lehrperson oder eine gültige Zeitplanung gesetzt werden.
+
+**Noch kein echter Unterrichtsmodus veröffentlicht; kein echter Postversand; kein Mastery-Backend.**

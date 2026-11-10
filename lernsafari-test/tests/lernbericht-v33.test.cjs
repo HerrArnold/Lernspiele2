@@ -42,4 +42,22 @@ assert.deepEqual(progress.assignmentSummary(assignments,'Giraffe'),{completed:2,
 assert.deepEqual(progress.assignmentSummary(assignments,'Elefant'),{completed:0,total:1});
 assert.deepEqual(progress.assignmentSummary(null,'Elefant'),{completed:0,total:0});
 
+
+const mixed=progress.enrich({attempts:[
+ {username:'Eidechse',game:'reihe',is_correct:true,created_at:'2026-11-09T10:00:00Z'},
+ {username:'Eidechse',game:'reihe',is_correct:false,created_at:'2026-11-09T11:00:00Z'},
+ {username:'Eidechse',game:'reihe',created_at:'2026-11-09T12:00:00Z'},
+ {username:'Eidechse',game:'reihe',is_correct:null,created_at:'2026-11-09T13:00:00Z'}
+]},catalog);
+const mixedSummary=progress.aggregate(mixed.attempts,mixed.scores,'Eidechse','all','all','all');
+assert.equal(mixedSummary.attempts,4);
+assert.equal(mixedSummary.evaluated,2);
+assert.equal(mixedSummary.unrated,2);
+assert.equal(mixedSummary.right,1);
+assert.equal(mixedSummary.rate,'50 %','Unrated attempts must not lower success rate');
+assert.equal(mixedSummary.games[0].evaluated,2);
+assert.equal(mixedSummary.trend[0].evaluated,2);
+const onlyUnrated=progress.enrich({attempts:[{username:'Eidechse',game:'reihe',created_at:'2026-11-09T10:00:00Z'}]},catalog);
+assert.equal(progress.aggregate(onlyUnrated.attempts,[],'Eidechse','all','all','all').rate,'–');
+
 console.log('PASS: LernSafari 3.3 report checks, including Swiss week boundaries');

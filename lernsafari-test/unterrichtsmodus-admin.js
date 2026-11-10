@@ -91,6 +91,6 @@
   };
   load();
  }
- root.LernSafariClassModeAdmin={render,matchingAssignments,payloadOf};
+ root.LernSafariClassModeAdmin={render,matchingAssignments,payloadOf,setCatalogForTests:games=>{currentCatalog=games||{}}};
  if(typeof module!=='undefined'&&module.exports)module.exports=root.LernSafariClassModeAdmin;
 })(typeof window==='undefined'?globalThis:window);

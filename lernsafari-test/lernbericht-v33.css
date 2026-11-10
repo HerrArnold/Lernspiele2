@@ -5,3 +5,23 @@
 .cloud-v33-table th{white-space:nowrap}
 @media(max-width:800px){.cloud-v33-table{min-width:610px}.cloud-v33-detail{padding:12px}}
 @media(max-width:680px){.cloud-v33-filters{grid-template-columns:1fr}.cloud-v33-table-wrap{margin-inline:-4px}}
+
+/* v3.3: print only the selected child's report; no full class list. */
+.cloud-v33-detail-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+@media print{
+ body.cloud-v33-print-active *{visibility:hidden!important}
+ body.cloud-v33-print-active .cloud-v33-detail,
+ body.cloud-v33-print-active .cloud-v33-detail *{visibility:visible!important}
+ body.cloud-v33-print-active .cloud-v33-detail{
+  position:absolute!important;left:0!important;top:0!important;
+  width:100%!important;max-width:none!important;margin:0!important;
+  padding:8mm!important;box-sizing:border-box!important;
+  background:#fff!important;border:0!important;box-shadow:none!important;
+  color:#000!important
+ }
+ body.cloud-v33-print-active .cloud-v33-detail-actions{display:none!important}
+ body.cloud-v33-print-active .cloud-v33-detail .cloud-v33-table-wrap{overflow:visible!important}
+ body.cloud-v33-print-active .cloud-v33-detail .cloud-v33-table{min-width:0!important;width:100%!important;font-size:10pt!important}
+ body.cloud-v33-print-active .cloud-v33-detail .cloud-v33-table tr,
+ body.cloud-v33-print-active .cloud-v33-detail .cloud-v33-week{break-inside:avoid}
+}

@@ -61,6 +61,12 @@
   const completed=assignments.filter(a=>completedIds.has(Number(a.id))).length;
   return {completed,total};
  }
+ function dataCaution(evaluated,attempts){
+  if(!attempts)return 'Noch keine Übungsversuche in dieser Auswahl.';
+  if(!evaluated)return 'Noch keine bewerteten Antworten – eine Erfolgsquote ist nicht möglich.';
+  if(evaluated<5)return 'Weniger als fünf bewertete Antworten: Die Quote ist noch wenig aussagekräftig.';
+  return '';
+ }
  function render({panel,data,learningData,originalGames,escapeHTML}){
   if(!panel||!panel.isConnected)return;
   const html=v=>escapeHTML(txt(v));
@@ -89,7 +95,7 @@
     <div class="cloud-v33-stats"><span><strong>${children.length}</strong> Tierkonten</span><span><strong>${allAttempts}</strong> Lernversuche</span><span><strong>${percent(allRight,allEvaluated)}</strong> richtig (bewertet)</span>${allUnrated?`<span><strong>${allUnrated}</strong> nicht bewertet</span>`:''}</div>
     <div class="cloud-v33-table-wrap" tabindex="0" aria-label="Klassenübersicht: bei Bedarf horizontal scrollen"><table class="cloud-v33-table"><thead><tr><th>Tierkonto</th><th>Spiele mit Highscore*</th><th>Lernversuche</th><th>Richtig</th><th>Erfolgsquote</th><th>Aufträge erledigt**</th></tr></thead><tbody>${summaries.map(r=>`<tr><td>${nameButton(r.name)}</td><td>${r.highscoreGames}</td><td>${r.attempts}</td><td>${r.right}</td><td>${r.rate}</td><td>${r.assignments.completed} / ${r.assignments.total}</td></tr>`).join('')}</tbody></table></div>
     <p class="cloud-v33-note">* Highscores sind Gesamtbestwerte aus allen verfügbaren Spielrunden. Der Zeitraumfilter gilt ausschliesslich für datierte Lernversuche und die Erfolgsquote. ${state.days!=='all'?'Lernversuche ohne auswertbares Datum können nicht zum gewählten Zeitraum gezählt werden.':''} ** Die Erledigt-Häkchen zeigen alle zugewiesenen Lernaufträge, unabhängig von Fach-, Spiel- und Zeitraumfilter.</p>
-    ${detailed?`<section class="cloud-v33-detail" aria-label="Persönlicher Lernbericht"><div class="cloud-panel-head"><h4>📖 Lernbericht: ${html(detailed.name)}</h4><button type="button" class="pd-secondary" id="cloudV33Close">Schliessen</button></div><p>${detailed.attempts} Lernversuche · ${detailed.rate} richtig · ${detailed.highscoreGames} Spiele mit Highscore · ${detailed.assignments.completed} / ${detailed.assignments.total} Lernaufträge erledigt${detailed.unrated?` · ${detailed.unrated} Versuche nicht bewertet`:''}</p><div class="cloud-v33-table-wrap"><table class="cloud-v33-table"><thead><tr><th>Fach / Spiel</th><th>Versuche</th><th>Richtig</th><th>Erfolgsquote</th><th>Bestwert*</th></tr></thead><tbody>${detailed.games.map(g=>`<tr><td><strong>${html(g.meta.title)}</strong><small>${html(g.meta.subject)}</small></td><td>${g.attempts}</td><td>${g.correct}</td><td>${percent(g.correct,g.evaluated)}</td><td>${g.best===null?'–':html(g.best)}</td></tr>`).join('')||'<tr><td colspan="5">Für diese Auswahl liegen keine Spieldaten vor.</td></tr>'}</tbody></table></div>
+    ${detailed?`<section class="cloud-v33-detail" aria-label="Persönlicher Lernbericht"><div class="cloud-panel-head"><h4>📖 Lernbericht: ${html(detailed.name)}</h4><div class="cloud-v33-detail-actions"><button type="button" class="pd-secondary" id="cloudV33Print">🖨️ Bericht drucken</button><button type="button" class="pd-secondary" id="cloudV33Close">Schliessen</button></div></div><p>${detailed.attempts} Lernversuche · ${detailed.rate} richtig · ${detailed.highscoreGames} Spiele mit Highscore · ${detailed.assignments.completed} / ${detailed.assignments.total} Lernaufträge erledigt${detailed.unrated?` · ${detailed.unrated} Versuche nicht bewertet`:''}</p>${dataCaution(detailed.evaluated,detailed.attempts)?`<p class="cloud-v33-note" role="note">${html(dataCaution(detailed.evaluated,detailed.attempts))}</p>`:''}<div class="cloud-v33-table-wrap"><table class="cloud-v33-table"><thead><tr><th>Fach / Spiel</th><th>Versuche</th><th>Richtig</th><th>Erfolgsquote</th><th>Bestwert*</th></tr></thead><tbody>${detailed.games.map(g=>`<tr><td><strong>${html(g.meta.title)}</strong><small>${html(g.meta.subject)}</small></td><td>${g.attempts}</td><td>${g.correct}</td><td>${percent(g.correct,g.evaluated)}</td><td>${g.best===null?'–':html(g.best)}</td></tr>`).join('')||'<tr><td colspan="5">Für diese Auswahl liegen keine Spieldaten vor.</td></tr>'}</tbody></table></div>
     <h5>Entwicklung nach Übungswochen</h5>${detailed.trend.length?`<div class="cloud-v33-trend">${detailed.trend.map(w=>`<div class="cloud-v33-week"><span>ab ${html(displayDate(new Date(w.week+'T12:00:00Z')))}</span><div class="cloud-v33-bar"><span style="width:${w.evaluated?w.right/w.evaluated*100:0}%"></span></div><strong>${percent(w.right,w.evaluated)}</strong><small>${w.count} Versuche${w.count!==w.evaluated?' · '+(w.count-w.evaluated)+' ohne Bewertung':''}</small></div>`).join('')}</div>${detailed.trend.length<2?'<p class="cloud-v33-note">Für einen Vergleich werden mindestens zwei Wochen mit datierten Versuchen benötigt.</p>':''}`:'<p class="cloud-v33-note">Die verfügbaren Versuche enthalten für diese Auswahl kein auswertbares Datum. Ein zeitlicher Verlauf kann deshalb nicht angezeigt werden.</p>'}${detailed.undated?`<p class="cloud-v33-note">${detailed.undated} Versuche ohne auswertbares Datum sind in der zeitlichen Darstellung nicht enthalten.</p>`:''}<p class="cloud-v33-note">Die Wochenwerte sind Anteile richtiger bewerteter Einzelantworten, keine benoteten Lernkontrollen. Unterschiedliche Aufgaben können unterschiedlich schwierig sein. «Erledigt» wird hier bewusst nicht aus Highscores abgeleitet.</p></section>`:'<p class="cloud-v33-note">Klicke auf ein Tierkonto, um einzelne Spiele und den zeitlichen Verlauf zu sehen.</p>'}
     <p class="cloud-v33-note">Die Werte werden nur im angemeldeten Lehrpersonenbereich aus dem vorhandenen Cloudflare-Klassenbericht gelesen. Diese Ansicht verändert keine Lernstände.</p>`;
    panel.querySelector('#cloudV33Subject').onchange=e=>{state.subject=e.target.value;state.game='all';paint()};
@@ -98,10 +104,17 @@
    panel.querySelector('#cloudV33Sort').onchange=e=>{state.sort=e.target.value;paint()};
    panel.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{state.person=b.dataset.person;paint();panel.querySelector('.cloud-v33-detail')?.scrollIntoView({block:'nearest'})});
    panel.querySelector('#cloudV33Close')?.addEventListener('click',()=>{state.person='';paint()});
+   panel.querySelector('#cloudV33Print')?.addEventListener('click',()=>{
+    if(!state.person||!panel.isConnected)return;
+    document.body.classList.add('cloud-v33-print-active');
+    const cleanup=()=>document.body.classList.remove('cloud-v33-print-active');
+    window.addEventListener('afterprint',cleanup,{once:true});
+    try{window.print();}catch(_){cleanup();}
+   });
    panel.querySelector('#cloudV33Reload').onclick=()=>panel.dispatchEvent(new CustomEvent('lernsafari:reload-progress',{bubbles:false}));
   }
   paint();
  }
- root.LernSafariProgressV33={catalogFrom,enrich,aggregate,assignmentSummary,render,dateOf};
+ root.LernSafariProgressV33={catalogFrom,enrich,aggregate,assignmentSummary,dataCaution,render,dateOf};
  if(typeof module!=='undefined'&&module.exports)module.exports=root.LernSafariProgressV33;
 })(typeof window==='undefined'?globalThis:window);

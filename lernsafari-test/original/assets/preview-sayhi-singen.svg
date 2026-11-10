@@ -1,1 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-label="SayHi Singen: Musikvideo und Liedtext nebeneinander"><rect width="960" height="560" rx="32" fill="#1b2429"/><text x="38" y="67" font-size="41" font-family="Arial,sans-serif" font-weight="800" fill="#fff">SayHi: Singen</text><text x="39" y="104" font-size="22" font-family="Arial,sans-serif" fill="#f5abc3">Musikvideo und Liedtext</text><rect x="31" y="132" width="490" height="378" rx="25" fill="#35444c" stroke="#627078" stroke-width="3"/><rect x="51" y="154" width="450" height="260" rx="18" fill="#101a20"/><circle cx="276" cy="282" r="76" fill="#ef9fba"/><path d="M258 233l70 49-70 50z" fill="#263239"/><rect x="57" y="376" width="434" height="12" rx="6" fill="#6e7c83"/><rect x="57" y="376" width="161" height="12" rx="6" fill="#f0a7bc"/><text x="59" y="465" font-size="24" font-family="Arial,sans-serif" font-weight="700" fill="#fff">▶  Starten, pausieren, spulen</text><rect x="539" y="132" width="392" height="378" rx="25" fill="#35444c" stroke="#627078" stroke-width="3"/><text x="565" y="182" font-size="29" font-family="Arial,sans-serif" font-weight="800" fill="#fff">♫  Liedtext</text><rect x="565" y="208" width="332" height="269" rx="14" fill="#29373f"/><path d="M585 241h189M585 273h244M585 305h222M585 349h252M585 381h227M585 413h245M585 445h208" stroke="#f5f8fa" stroke-opacity=".8" stroke-width="12" stroke-linecap="round"/><rect x="585" y="327" width="230" height="8" rx="4" fill="#e88fb1"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360">
+<rect width="640" height="360" fill="#FFF4F8"/>
+<circle cx="80" cy="60" r="90" fill="#f8ead0"/><circle cx="560" cy="300" r="100" fill="#e8f0de"/>
+<rect x="18" y="18" width="604" height="324" rx="30" fill="#FFF4F8" stroke="#e0d0b2" stroke-width="4"/>
+<rect x="34" y="30" width="572" height="64" rx="22" fill="#667D5A"/>
+<text x="52" y="68" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#fff8ec">MUSIK</text>
+<text x="48" y="158" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#4f3a27">SayHi: Singen</text>
+<text x="48" y="190" font-family="Arial, sans-serif" font-size="18" fill="#6f614f">Mit dem Lied mitsingen</text>
+<circle cx="500" cy="192" r="90" fill="#fffdf7" stroke="#D98AAC" stroke-width="5"/>
+<rect x="34" y="274" width="572" height="48" rx="12" fill="#fffaf0" stroke="#e6d4b9" stroke-width="2"/>
+<text x="132" y="295" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#667D5A">LernSafari</text>
+<text x="132" y="314" font-family="Arial, sans-serif" font-size="15" fill="#7f6f58">spielerisch entdecken</text>
+<circle cx="563" cy="297" r="23" fill="#D98AAC"/>
+<text x="551" y="305" font-family="Arial, sans-serif" font-size="18" fill="#fff">LS</text>
+</svg>

@@ -61,7 +61,9 @@
  }
  async function check(){
   if(checking)return;checking=true;
-  shield().hidden=false;
+  // Keep an already authorised game visible while a routine recheck runs.
+  // If permission is revoked, the result below shows the shield immediately.
+  if(!lastAllowed)shield().hidden=false;
   try{
    const t=token();let data=null;
    try{data=await request('/classroom-access?game='+encodeURIComponent(game),t)}

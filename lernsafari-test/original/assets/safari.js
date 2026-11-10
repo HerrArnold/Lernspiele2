@@ -26,7 +26,7 @@ const paths={
   ['Solmisationsspiel schwer','solmisationsspiel-profi.html','preview-solmi-profi.webp','Do liegt auf verschiedenen Tönen'],
   ['Rhythmus-Trio','rhythmus-trio.html','preview-rhythm-trio.webp','Drei passende Karten finden'],
   ['Notenname · Notenbild · Rhythmussprache','rhythmus-trio-profi.html','preview-rhythm-profi.webp','Rhythmen schreiben und zeichnen'],
-  ['Teste dein Wissen','teste-dein-wissen-musik.html',null,'24 Punkte · 12 Aufgaben']],
+  ['Teste dein Wissen','teste-dein-wissen-musik.html','preview-teste-wissen-musik.svg','24 Punkte · 12 Aufgaben']],
  Mathe:[
   ['Einmaleins-Tafel erforschen','einmaleins-tafel-entdecken.html','preview-einmaleins-tafel.svg','Zusammenhänge finden · Neue Reihen mit Merkaufgaben lösen'],
   ['Einmaleins-Mix','einmaleins-mix.html','preview-einmaleins-mix.svg','2er-, 5er- und 10er-Reihe gemischt üben'],
@@ -40,7 +40,7 @@ const paths={
   ['Hunderter, Zehner und Einer zerlegen','hunderter-zehner-einer-zerlegen.html','preview-hunderter-zehner-einer-zerlegen.webp','Zahlen zerlegen'],
   ['Wie viele Hundertertafeln, Zehnerstangen und Einerwürfel?','wie-viele-brauchst-du.html','preview-wie-viele-brauchst-du.webp','Mit Stellenwertmaterial arbeiten'],
   ['Welche Zahl ist das?','welche-zahl-ist-das.html','preview-welche-zahl-ist-das.webp','Stellenwertmaterial erkennen'],
-  ['Teste dein Wissen','teste-dein-wissen.html',null,'Lernkontrolle · 15 Aufgaben']]
+  ['Teste dein Wissen','teste-dein-wissen.html','preview-teste-wissen-mathe.svg','Lernkontrolle · 15 Aufgaben']]
 };
 // Spiele werden künftig durch Verschieben von paths ins Archiv übernommen.
 // Archivierte Einträge: {subject,title,file,preview,description,archivedAt:'2026-11-07T12:00:00'}.

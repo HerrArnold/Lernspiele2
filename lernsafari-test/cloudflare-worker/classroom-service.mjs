@@ -64,10 +64,14 @@ export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
  const games=new Map(Object.entries(catalog).filter(([id])=>/^[a-z0-9-]+$/.test(id)));
  async function mode(){return activeMode(await store.loadMode(),now())}
  async function childPlan(username,basePlan){
-  const m=await mode();
+  const saved=await store.loadMode();
+  const m=activeMode(saved,now());
   const assignments=await store.childAssignments(username);
   const allowed=requiredForChild(m,assignments,username,Object.fromEntries(games),now());
   const verified=idsOf(await store.verifiedIds(username));
+  // Until the teacher explicitly enables a mode, preserve the existing
+  // /learning-plan focus rules instead of accidentally overriding them with 'free'.
+  if(!saved)return {...basePlan,assignments,verified};
   return {...basePlan,assignments,verified,classroomMode:{...m,required_assignment_ids:allowed}};
  }
  async function handle(request){
@@ -77,8 +81,13 @@ export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
    if(route==='/classroom-access'&&method==='GET'){
     const game=url.searchParams.get('game')||'';
     if(!games.has(game))return json({allowed:false},200);
-    const current=await mode();
+    const saved=await store.loadMode();
+    const current=activeMode(saved,now());
     const child=await auth.optionalChild(request);
+    // No explicit mode yet: the new endpoint MUST NOT claim that a guest is
+    // free to bypass old focus rules. Until migration, use the legacy child
+    // plan in the browser and keep anonymous direct-game access closed.
+    if(!saved)return json({allowed:false},200);
     if(!child?.username)return json({allowed:current.kind==='free'},200);
     const p=await childPlan(child.username,{});
     return json({allowed:evaluate(p.classroomMode,p,game,Object.fromEntries(games))});

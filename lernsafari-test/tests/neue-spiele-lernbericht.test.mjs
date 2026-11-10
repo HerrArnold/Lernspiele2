@@ -25,7 +25,7 @@ for(const item of catalogItems){
  const notAssessed=/<!--\s*LERNSAFARI:\s*NON_ASSESSED\s*-->/i.test(html);
  if(notAssessed){
    // Explicit documented exemption for non-exercise resources. No outcome report is promised.
-   if(/SafariTelemetry\s*\?\.\s*record\s*\(|SafariTelemetry\.record\s*\(/.test(html))
+   if(/SafariTelemetry\s*(?:\?\.|\.)\s*record\s*\(/.test(html))
       errors.push(name+': Nicht-bewertetes Spiel nutzt trotzdem SafariTelemetry.');
    continue;
  }
@@ -33,7 +33,7 @@ for(const item of catalogItems){
    errors.push(name+': Skript game-telemetry.js fehlt – keine Lernversuche im Lernbericht.');
  if(!/assets\/highscore\.js/.test(html))
    errors.push(name+': Skript highscore.js fehlt – kein Highscore im Lernbericht.');
- if(!/SafariTelemetry\s*(?:\?\.)?\.\s*record\s*\(/.test(html))
+ if(!/SafariTelemetry\s*(?:\?\.|\.)\s*record\s*\(/.test(html))
    errors.push(name+': Kein SafariTelemetry.record(...) bei einer bewerteten Antwort gefunden.');
 }
 for(const name of gameNames)if(!seen.has(name))errors.push('Spiel-Datei nicht im LernSafari-Spielekatalog: '+name);

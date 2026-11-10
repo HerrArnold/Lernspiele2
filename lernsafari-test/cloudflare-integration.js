@@ -92,24 +92,19 @@
  const safeCounts=rows=>Array.isArray(rows)?rows:[];
  const recentAttemptCount=(attempts,username)=>safeCounts(attempts).filter(x=>x.username===username).length;
  async function renderAdminProgress(){
-   const panel=DOM.modalBody.querySelector('#cloudProgressPanel');if(!panel||!loggedTeacher())return;
-   panel.innerHTML='<p role="status">Spielergebnisse werden aus Cloudflare geladen …</p>';
-   try{
-     const data=await call('/admin-report',{admin:true});
-     if(!loggedTeacher()||!panel.isConnected)return;
-     const students=safeCounts(data.students), attempts=safeCounts(data.attempts), highs=safeCounts(data.highscores);
-     // A learner may have multiple score entries; count different games, not rows.
-     const rows=students.map(u=>{
-       const name=String(u.username||'');
-       const ownScores=highs.filter(x=>x.username===name);
-       const games=new Set(ownScores.map(x=>String(x.game||''))).size;
-       const attemptsTotal=recentAttemptCount(attempts,name);
-       const correct=attempts.filter(x=>x.username===name&&(x.is_correct===true||x.is_correct===1||x.is_correct==='1')).length;
-       return {name,games,attemptsTotal,correct};
-     });
-     panel.innerHTML=`<div class="cloud-panel-head"><h4>🎯 Lernfortschritt aus Spielen</h4><button type="button" class="pd-secondary" id="cloudReloadResults">Aktualisieren</button></div><p class="cloud-progress-intro">Die Übersicht zeigt gespeicherte Lernversuche und Bestwerte. Ein Lernversuch ist keine abgeschlossene Pflichtaufgabe.</p><div class="cloud-progress-table" role="table" aria-label="Spielergebnisse pro Tierkonto"><div class="cloud-progress-row cloud-progress-header" role="row"><span role="columnheader">Tierkonto</span><span role="columnheader">Spiele mit Highscore</span><span role="columnheader">Lernversuche</span><span role="columnheader">Davon richtig</span></div>${rows.map(r=>`<div class="cloud-progress-row" role="row"><strong role="cell">${html(r.name)}</strong><span role="cell">${r.games}</span><span role="cell">${r.attemptsTotal}</span><span role="cell">${r.correct}</span></div>`).join('')}</div>${rows.length?'':'<p>Noch keine Tierkonten im Klassenbericht.</p>'}<p class="pd-warning">Detaillierte Antworten und zeitliche Verläufe findest du weiterhin im bestehenden Klassenbericht unter «Erweiterte Cloudflare-Verwaltung öffnen».</p>`;
-     panel.querySelector('#cloudReloadResults')?.addEventListener('click',renderAdminProgress);
-   }catch(e){if(panel.isConnected){panel.innerHTML=`<h4>🎯 Lernfortschritt</h4><p>${html(errorText(e))}</p><button type="button" class="pd-secondary" id="cloudRetryResults">Erneut laden</button>`;panel.querySelector('#cloudRetryResults')?.addEventListener('click',renderAdminProgress);}}
+  const panel=DOM.modalBody.querySelector('#cloudProgressPanel');
+  if(!panel||!loggedTeacher())return;
+  panel.innerHTML='<p role="status">Lernberichte werden aus Cloudflare geladen …</p>';
+  try{
+   const data=await call('/admin-report',{admin:true});
+   if(!loggedTeacher()||state.modal!=='admin'||!panel.isConnected)return;
+   if(!window.LernSafariProgressV33)throw Error('Die Lernbericht-Komponente konnte nicht geladen werden.');
+   window.LernSafariProgressV33.render({panel,data,originalGames:ORIGINAL_GAMES,escapeHTML:html});
+   panel.addEventListener('lernsafari:reload-progress',renderAdminProgress,{once:true});
+  }catch(e){
+   if(panel.isConnected)panel.innerHTML=`<h4>🎯 Lernberichte</h4><p>${html(errorText(e))}</p><button type="button" class="pd-secondary" id="cloudRetryResults">Erneut laden</button>`;
+   panel.querySelector('#cloudRetryResults')?.addEventListener('click',renderAdminProgress);
+  }
  }
  const STEP_LABELS={word:'Zahl als Wort',parity:'Gerade oder ungerade?',place:'Stellentafel mit Punkten',decomp:'Zerlegung',art:'Hunderter, Zehner und Einer',line:'Zahlenstrahl'};
  function targetName(target){

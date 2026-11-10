@@ -60,4 +60,16 @@ assert.equal(mixedSummary.trend[0].evaluated,2);
 const onlyUnrated=progress.enrich({attempts:[{username:'Eidechse',game:'reihe',created_at:'2026-11-09T10:00:00Z'}]},catalog);
 assert.equal(progress.aggregate(onlyUnrated.attempts,[],'Eidechse','all','all','all').rate,'–');
 
+// A low sample size is a warning, never a grading decision.
+assert.match(progress.dataCaution(0,0),/keine Übungsversuche/);
+assert.match(progress.dataCaution(0,4),/keine bewerteten/);
+assert.match(progress.dataCaution(4,12),/wenig aussagekräftig/);
+assert.equal(progress.dataCaution(5,5),'');
+const fs=require('node:fs');
+const reportJs=fs.readFileSync(require('node:path').join(__dirname,'..','lernbericht-v33.js'),'utf8');
+const reportCss=fs.readFileSync(require('node:path').join(__dirname,'..','lernbericht-v33.css'),'utf8');
+assert.match(reportJs,/id="cloudV33Print"/);
+assert.match(reportJs,/state\.person\|\|!panel\.isConnected/);
+assert.match(reportCss,/body\.cloud-v33-print-active \.cloud-v33-detail/);
+assert.match(reportCss,/body\.cloud-v33-print-active \*/);
 console.log('PASS: LernSafari 3.3 report checks, including Swiss week boundaries');

@@ -27,12 +27,15 @@ jobs:
           done
       - name: Unterrichtsmodi in der Lehrpersonenverwaltung prüfen
         run: node lernsafari-test/tests/unterrichtsmodus-admin.test.cjs
+      - name: Cloudflare Unterrichtsmodus prüfen
+        run: node lernsafari-test/tests/cloudflare-classroom-service.test.mjs
       - name: JavaScript-Syntax
         shell: bash
         run: |
           set -euo pipefail
           node --check lernsafari-test/unterrichtsmodus.js
           node --check lernsafari-test/unterrichtsmodus-admin.js
+          node --check lernsafari-test/cloudflare-worker/classroom-service.mjs
           node --check lernsafari-test/cloudflare-integration.js
           node --check lernsafari-test/original/assets/lernsteuerung.js
           node --check lernsafari-test/original/assets/game-zugang.js

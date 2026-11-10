@@ -16,6 +16,8 @@ jobs:
         run: node lernsafari-test/pruefen.mjs
       - name: Lernberichte prüfen
         run: node lernsafari-test/tests/lernbericht-v33.test.cjs
+      - name: Neue Lernspiele müssen den Lernbericht unterstützen
+        run: node lernsafari-test/tests/neue-spiele-lernbericht.test.mjs
       - name: JavaScript-Syntax prüfen
         shell: bash
         run: |

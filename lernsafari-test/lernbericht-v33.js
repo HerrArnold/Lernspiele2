@@ -1,0 +1,85 @@
+/* LernSafari 3.3: read-only teacher dashboards. Called only after server-authorised /admin-report. */
+'use strict';
+(function(root){
+ const asArray=x=>Array.isArray(x)?x:[];
+ const txt=x=>String(x??'');
+ const dateOf=row=>{
+  const raw=row?.created_at??row?.answered_at??row?.occurred_at??row?.timestamp??row?.at;
+  if(raw===undefined||raw===null||raw==='')return null;
+  const date=new Date(typeof raw==='number'&&raw<1e11?raw*1000:raw);
+  return Number.isFinite(date.getTime())?date:null;
+ };
+ const correct=row=>row?.is_correct===true||row?.is_correct===1||row?.is_correct==='1';
+ const gameKey=row=>txt(row?.game??row?.game_id).trim();
+ const displayDate=d=>new Intl.DateTimeFormat('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
+ const percent=(ok,total)=>total?Math.round(ok/total*100)+' %':'–';
+ const localMonday=d=>{const day=new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate()));day.setUTCDate(day.getUTCDate()-(day.getUTCDay()+6)%7);return day.toISOString().slice(0,10);};
+ function catalogFrom(original){
+  const entries=[];
+  for(const [subject,games] of Object.entries(original||{}))for(const game of asArray(games)){
+   if(!game?.file)continue;
+   entries.push({key:game.file.replace(/\.html$/i,''),subject,title:txt(game.title||game.file)});
+  }
+  return entries;
+ }
+ function enrich(data,catalog){
+  const dict=new Map(catalog.map(g=>[g.key,g]));
+  const meta=key=>dict.get(key)||{key,subject:'Weitere',title:key||'Unbekanntes Spiel'};
+  const attempts=asArray(data?.attempts).map(a=>({...a,_game:gameKey(a),_meta:meta(gameKey(a)),_date:dateOf(a),_correct:correct(a)}));
+  const scores=asArray(data?.highscores).filter(h=>gameKey(h)&&Number.isFinite(Number(h.score))&&Number(h.score)>=0).map(h=>({...h,_game:gameKey(h),_meta:meta(gameKey(h)),_value:Number(h.score)}));
+  return {students:asArray(data?.students),attempts,scores,catalog};
+ }
+ function aggregate(attempts,scores,username,subject,game,days,now){
+  const matches=(row)=>txt(row.username)===username&&(subject==='all'||row._meta.subject===subject)&&(game==='all'||row._game===game);
+  const end=now||new Date();
+  const filtered=attempts.filter(row=>matches(row)&&(days==='all'||(row._date&&row._date<=end&&row._date>=new Date(end.getTime()-Number(days)*86400000))));
+  const eligibleScores=scores.filter(row=>matches(row));
+  const byGame=new Map();
+  for(const score of eligibleScores){const item=byGame.get(score._game)||{key:score._game,meta:score._meta,best:null,attempts:0,correct:0,dated:[]};item.best=Math.max(item.best??0,score._value);byGame.set(score._game,item);}
+  for(const row of filtered){if(!row._game)continue;const item=byGame.get(row._game)||{key:row._game,meta:row._meta,best:null,attempts:0,correct:0,dated:[]};item.attempts++;if(row._correct)item.correct++;if(row._date)item.dated.push(row);byGame.set(row._game,item);}
+  const games=[...byGame.values()].sort((a,b)=>a.meta.title.localeCompare(b.meta.title,'de-CH'));
+  const right=filtered.filter(x=>x._correct).length;
+  const weeks=new Map();
+  for(const row of filtered){if(!row._date)continue;const wk=localMonday(row._date);const item=weeks.get(wk)||{week:wk,count:0,right:0};item.count++;if(row._correct)item.right++;weeks.set(wk,item);}
+  const trend=[...weeks.values()].sort((a,b)=>a.week.localeCompare(b.week));
+  return {attempts:filtered.length,right,rate:percent(right,filtered.length),games,highscoreGames:games.filter(g=>g.best!==null).length,trend,missingDates:filtered.some(x=>!x._date),undated:attempts.filter(x=>matches(x)&&!x._date).length};
+ }
+ function render({panel,data,originalGames,escapeHTML}){
+  if(!panel||!panel.isConnected)return;
+  const html=v=>escapeHTML(txt(v));
+  const model=enrich(data,catalogFrom(originalGames));
+  const children=model.students.map(x=>txt(x.username)).filter(Boolean).sort((a,b)=>a.localeCompare(b,'de-CH'));
+  const subjects=[...new Set([...model.catalog.map(x=>x.subject),...model.attempts.map(x=>x._meta.subject),...model.scores.map(x=>x._meta.subject)])].sort((a,b)=>a.localeCompare(b,'de-CH'));
+  const gameOptions=[...new Map([...model.catalog,...model.attempts.map(a=>a._meta),...model.scores.map(s=>s._meta)].map(x=>[x.key,x])).values()].sort((a,b)=>a.title.localeCompare(b.title,'de-CH'));
+  let state={subject:'all',game:'all',days:'all',person:''};
+  const select=(id,label,items,value)=>`<label>${label}<select id="${id}">${items.map(([v,t])=>`<option value="${html(v)}" ${value===v?'selected':''}>${html(t)}</option>`).join('')}</select></label>`;
+  const nameButton=name=>`<button type="button" class="cloud-v33-person" data-person="${html(name)}">${html(name)}</button>`;
+  const chosenGames=()=>gameOptions.filter(g=>state.subject==='all'||g.subject===state.subject);
+  function paint(){
+   if(!panel.isConnected)return;
+   if(state.game!=='all'&&!chosenGames().some(g=>g.key===state.game))state.game='all';
+   const summaries=children.map(name=>({name,...aggregate(model.attempts,model.scores,name,state.subject,state.game,state.days)}));
+   const detailed=state.person?summaries.find(row=>row.name===state.person):null;
+   const allAttempts=summaries.reduce((sum,r)=>sum+r.attempts,0);
+   const allRight=summaries.reduce((sum,r)=>sum+r.right,0);
+   panel.innerHTML=`<div class="cloud-panel-head"><h4>🎯 Lernberichte · Klasse 3b</h4><button type="button" class="pd-secondary" id="cloudV33Reload">Aus Cloudflare aktualisieren</button></div>
+    <p class="cloud-progress-intro">Lernversuche zeigen Übungsaktivität, die Erfolgsquote den Anteil richtiger Antworten. Highscores und erledigte Lernaufträge werden separat betrachtet.</p>
+    <div class="cloud-v33-filters">${select('cloudV33Subject','Schulfach',[['all','Alle Fächer'],...subjects.map(x=>[x,x])],state.subject)}${select('cloudV33Game','Lernspiel',[['all','Alle Spiele'],...chosenGames().map(g=>[g.key,g.title])],state.game)}${select('cloudV33Days','Zeitraum',[['all','Alle verfügbaren Daten'],['7','Letzte 7 Tage'],['30','Letzte 30 Tage'],['90','Letzte 90 Tage']],state.days)}</div>
+    <div class="cloud-v33-stats"><span><strong>${children.length}</strong> Tierkonten</span><span><strong>${allAttempts}</strong> Lernversuche</span><span><strong>${percent(allRight,allAttempts)}</strong> richtige Antworten</span></div>
+    <div class="cloud-v33-table-wrap"><table class="cloud-v33-table"><thead><tr><th>Tierkonto</th><th>Spiele mit Highscore*</th><th>Lernversuche</th><th>Richtig</th><th>Erfolgsquote</th></tr></thead><tbody>${summaries.map(r=>`<tr><td>${nameButton(r.name)}</td><td>${r.highscoreGames}</td><td>${r.attempts}</td><td>${r.right}</td><td>${r.rate}</td></tr>`).join('')}</tbody></table></div>
+    ${state.days!=='all'?'<p class="cloud-v33-note">* Highscores sind derzeit Gesamtbestwerte. Der Zeitraumfilter gilt für Lernversuche und Erfolgsquoten, nicht für Highscores. Undatierte Versuche lassen sich nicht nach Zeitraum einordnen.</p>':''}
+    ${detailed?`<section class="cloud-v33-detail" aria-label="Persönlicher Lernbericht"><div class="cloud-panel-head"><h4>📖 Lernbericht: ${html(detailed.name)}</h4><button type="button" class="pd-secondary" id="cloudV33Close">Schliessen</button></div><p>${detailed.attempts} Lernversuche · ${detailed.rate} richtig · ${detailed.highscoreGames} Spiele mit Highscore</p><div class="cloud-v33-table-wrap"><table class="cloud-v33-table"><thead><tr><th>Fach / Spiel</th><th>Versuche</th><th>Richtig</th><th>Erfolgsquote</th><th>Bestwert*</th></tr></thead><tbody>${detailed.games.map(g=>`<tr><td><strong>${html(g.meta.title)}</strong><small>${html(g.meta.subject)}</small></td><td>${g.attempts}</td><td>${g.correct}</td><td>${percent(g.correct,g.attempts)}</td><td>${g.best===null?'–':html(g.best)}</td></tr>`).join('')||'<tr><td colspan="5">Für diese Auswahl liegen keine Spieldaten vor.</td></tr>'}</tbody></table></div>
+    <h5>Entwicklung nach Übungswochen</h5>${detailed.trend.length?`<div class="cloud-v33-trend">${detailed.trend.map(w=>`<div class="cloud-v33-week"><span>ab ${html(displayDate(new Date(w.week+'T12:00:00Z')))}</span><div class="cloud-v33-bar"><span style="width:${w.right/w.count*100}%"></span></div><strong>${percent(w.right,w.count)}</strong><small>${w.count} Versuche</small></div>`).join('')}</div>${detailed.trend.length<2?'<p class="cloud-v33-note">Für einen Vergleich werden mindestens zwei Wochen mit datierten Versuchen benötigt.</p>':''}`:'<p class="cloud-v33-note">Die verfügbaren Versuche enthalten für diese Auswahl kein auswertbares Datum. Ein zeitlicher Verlauf kann deshalb nicht angezeigt werden.</p>'}${detailed.undated?`<p class="cloud-v33-note">${detailed.undated} Versuche ohne auswertbares Datum sind in der zeitlichen Darstellung nicht enthalten.</p>`:''}<p class="cloud-v33-note">Die Wochenwerte sind Anteile richtiger Einzelantworten, keine benoteten Lernkontrollen. Unterschiedliche Aufgaben können unterschiedlich schwierig sein. «Erledigt» wird hier bewusst nicht aus Highscores abgeleitet.</p></section>`:'<p class="cloud-v33-note">Klicke auf ein Tierkonto, um einzelne Spiele und den zeitlichen Verlauf zu sehen.</p>'}
+    <p class="cloud-v33-note">Die Werte werden nur im angemeldeten Lehrpersonenbereich aus dem vorhandenen Cloudflare-Klassenbericht gelesen. Diese Ansicht verändert keine Lernstände.</p>`;
+   panel.querySelector('#cloudV33Subject').onchange=e=>{state.subject=e.target.value;state.game='all';paint()};
+   panel.querySelector('#cloudV33Game').onchange=e=>{state.game=e.target.value;paint()};
+   panel.querySelector('#cloudV33Days').onchange=e=>{state.days=e.target.value;paint()};
+   panel.querySelectorAll('[data-person]').forEach(b=>b.onclick=()=>{state.person=b.dataset.person;paint();panel.querySelector('.cloud-v33-detail')?.scrollIntoView({block:'nearest'})});
+   panel.querySelector('#cloudV33Close')?.addEventListener('click',()=>{state.person='';paint()});
+   panel.querySelector('#cloudV33Reload').onclick=()=>panel.dispatchEvent(new CustomEvent('lernsafari:reload-progress',{bubbles:false}));
+  }
+  paint();
+ }
+ root.LernSafariProgressV33={catalogFrom,enrich,aggregate,render,dateOf};
+ if(typeof module!=='undefined'&&module.exports)module.exports=root.LernSafariProgressV33;
+})(typeof window==='undefined'?globalThis:window);

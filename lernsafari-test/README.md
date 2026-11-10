@@ -100,3 +100,12 @@ Version 3.1 – Diagnostik und Testfreigabe
 - `pruefen.mjs` für reproduzierbare lokale statische Prüfungen (`node pruefen.mjs`).
 - `TESTFREIGABE.md` für GitHub-Staging, CORS und Rollen-/Datenschutztests.
 - Originalspiele und Benutzerlogik gegenüber 3.0 unverändert.
+
+
+## Version 3.2 – Lernfortschritt aus Cloudflare
+- Kinder-Logbuch zeigt den serverseitig gespeicherten Highscore direkt bei zugewiesenen Spielen und eine Zusammenfassung der geübten Spiele.
+- Die Lehrperson kann im Adminbereich einen lesenden Klassenbericht mit Highscore-/Lernversuchszahlen pro Tierkonto öffnen.
+- Die Datensätze werden ausschliesslich nach erfolgreicher serverseitiger Anmeldung über bestehende API-Endpunkte abgefragt (`/highscores` und `/admin-report`).
+- Die automatische Speicherung der Lernversuche durch bestehende Originalspiele wird nicht verändert.
+- Highscores und Lernversuche werden absichtlich **nicht** als Beweis für eine abgeschlossene Pflichtaufgabe gewertet; Häkchen bleiben separat.
+- Kein Backend- oder Produktionsbranch-Update; nur in einem neuen Entwicklungsbranch testen.

@@ -1,0 +1,23 @@
+name: LernSafari 3.2 · Fortschrittstests
+on:
+  push:
+    branches:
+      - lernsafari-v3-2-fortschritt
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Grundstruktur und Cloudflare-Code prüfen
+        run: node lernsafari-test/pruefen.mjs
+      - name: Logbuch und Highscores überprüfen
+        run: node lernsafari-test/tests/fortschritt.test.mjs
+      - name: JavaScript-Syntax überprüfen
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do node --check "$file"; done < <(find lernsafari-test -name '*.js' -print0)

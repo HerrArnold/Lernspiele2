@@ -19,7 +19,9 @@ const service=createClassroomService({
 });
 const req=(route,method='GET',body,headers={})=>new Request('https://example.invalid'+route,{method,headers,body:body?JSON.stringify(body):undefined});
 async function call(r){const x=await service.handle(r);return {status:x.status,data:await x.json()}}
-assert.equal((await call(req('/classroom-access?game=einmaleins-dreier'))).data.allowed,true);
+assert.equal((await call(req('/classroom-access?game=einmaleins-dreier'))).data.allowed,false,'without a teacher-selected mode, guests cannot bypass legacy focus');
+const legacy=await service.childPlan('Zebra',{blocks:['andere-spiele'],done:[]});
+assert.equal(legacy.classroomMode,undefined,'existing legacy focus data must not be overridden before activation');
 assert.equal((await call(req('/admin-classroom-mode'))).status,403);
 const mode={kind:'subject',subject:'Mathe',required_assignment_ids:[2],expires_at:'2026-11-11T09:00:00Z'};
 assert.equal((await call(req('/admin-classroom-mode','POST',mode,{'x-school-admin':'1'}))).status,200);

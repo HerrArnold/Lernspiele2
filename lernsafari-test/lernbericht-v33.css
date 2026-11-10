@@ -25,3 +25,16 @@
  body.cloud-v33-print-active .cloud-v33-detail .cloud-v33-table tr,
  body.cloud-v33-print-active .cloud-v33-detail .cloud-v33-week{break-inside:avoid}
 }
+
+/* v3.3 – per-game learning progression inside the selected child's report */
+.cloud-v33-game-evolution{margin:16px 0 18px;padding:14px;background:#f0f5e8;border:1px solid #bdd3b0;border-radius:15px}
+.cloud-v33-game-evolution h5{margin:0 0 8px}
+.cloud-v33-game-evolution .cloud-v33-week{grid-template-columns:110px minmax(85px,1fr) 58px 155px}
+@media(max-width:680px){
+ .cloud-v33-game-evolution{padding:9px}
+ .cloud-v33-game-evolution .cloud-v33-week{grid-template-columns:85px minmax(60px,1fr) 48px}
+ .cloud-v33-game-evolution .cloud-v33-week small{grid-column:2 / -1}
+}
+@media print{
+ body.cloud-v33-print-active .cloud-v33-game-evolution{background:#fff!important;border:1px solid #777!important}
+}

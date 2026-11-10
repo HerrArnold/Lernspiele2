@@ -67,7 +67,7 @@ export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
   const assignments=await store.childAssignments(username);
   const allowed=requiredForChild(m,assignments,username,Object.fromEntries(games),now());
   const verified=idsOf(await store.verifiedIds(username));
-  return {...basePlan,verified,classroomMode:{...m,required_assignment_ids:allowed}};
+  return {...basePlan,assignments,verified,classroomMode:{...m,required_assignment_ids:allowed}};
  }
  async function handle(request){
   const url=new URL(request.url),route=url.pathname,method=request.method;

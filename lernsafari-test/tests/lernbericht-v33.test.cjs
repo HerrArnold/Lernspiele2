@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const progress=require('./lernbericht-v33.js');
+const progress=require('../lernbericht-v33.js');
 const catalog=progress.catalogFrom({Mathematik:[{file:'reihe.html',title:'Reihe'}],Musik:[{file:'rhythmus.html',title:'Rhythmus'}]});
 assert.equal(catalog.length,2);
 const data=progress.enrich({students:[{username:'Eidechse'}],attempts:[

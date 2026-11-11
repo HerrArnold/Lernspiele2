@@ -10,3 +10,11 @@
 .cloud-progress-row strong{color:#35593d}.cloud-progress-header{background:#e4eedc;color:#385d3c;font-size:12px;font-weight:850}
 .cloud-progress-row:not(.cloud-progress-header) span{text-align:center;font-variant-numeric:tabular-nums}
 @media(max-width:640px){.cloud-progress-row{grid-template-columns:minmax(100px,1.2fr) repeat(3,minmax(65px,1fr));gap:5px;padding:8px 5px;font-size:11px}.cloud-progress-header{font-size:10px}}
+
+/* Seven-day agenda navigation restored in the Camp. */
+.cloud-agenda-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:12px 0;padding:10px;background:#fff6e3;border:1px solid #d5b98b;border-radius:13px}
+.cloud-agenda-toolbar button{border:2px solid #c79f61;border-radius:11px;background:#fffdf6;color:#61452a;padding:9px 12px;font-weight:800;cursor:pointer}
+.cloud-agenda-toolbar button:hover,.cloud-agenda-toolbar button:focus-visible{border-color:#3f7b54;background:#eef6dc}
+.cloud-day.is-today{border:3px solid #39744a!important;background:#f0f8e6!important;box-shadow:0 0 0 2px #d5e9bd}
+.cloud-day.is-today h4{color:#245739}
+@media(max-width:680px){.cloud-agenda-toolbar{justify-content:center}.cloud-agenda-toolbar strong{flex-basis:100%;text-align:center;order:-1}}

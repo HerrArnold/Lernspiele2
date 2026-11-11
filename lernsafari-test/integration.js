@@ -108,13 +108,32 @@ renderValley=function(){
 };
 renderBaobab=function(){
  const root=document.getElementById('destinationContent');
- root.innerHTML=`<section class="original-baobab integration-shell integration-area-baobab integration-baobab-page">${integrationTrail('Baobab-Baum','','Wissensbereiche')}<div class="integration-hero"><div class="integration-icon" aria-hidden="true">🌳</div><div class="integration-hero-text"><span class="integration-kicker">Unser Baobab-Baum</span><h2>Klasse 3b · Hakuna Matata</h2><p>Hier warten unsere Klassentiere, Geschichten und Überraschungen.</p></div><aside class="integration-side-note"><strong>Stärker verbunden</strong> Auch Wissensseiten und Tierbereiche sollen sich wie echte Teile der LernSafari anfühlen.</aside></div><div class="integration-context-grid"><article class="integration-context-card"><strong>Klassentiere</strong><p>Tierwelt, Bilder, Informationen und Quiz bleiben in ihrer bewährten Logik erhalten.</p></article><article class="integration-context-card"><strong>Motto</strong><p>Hier passt alles weiterhin zum Thema «Hakuna Matata» und zur Savannenwelt der Klasse.</p></article><article class="integration-context-card"><strong>Weitere Inhalte</strong><p>Geschichten, Advent und Projektbereiche bleiben als eigene Themen klar erkennbar.</p></article></div><div class="integration-scene-card"><div class="integration-baobab-scene"><img src="assets/baobab.jpg" alt="Baobab-Baum mit den Tieren und Holzschildern" draggable="false"></div></div><div class="integration-choice-grid"><button data-baobab-original="tiere">🐾 Unsere Klassentiere</button><button data-baobab-original="advent">🎁 Adventskalender</button><button data-baobab-original="stories">📚 Geschichten & Projekte</button><button data-baobab-original="motto">🌿 Hakuna Matata</button></div><p class="integration-note">Tierwelt und Advent werden direkt aus den bisherigen Inhalten geladen. Bereiche ohne ausgearbeitete Originalinhalte bleiben weiterhin entsprechend gekennzeichnet.</p></section>`;
- root.querySelectorAll('[data-baobab-original]').forEach(btn=>btn.onclick=()=>{
-   const mode=btn.dataset.baobabOriginal;
-   if(mode==='tiere')originalFrame('original/index.html#tiere','Unsere Klassentiere',{areaId:'baobab',contextLabel:'Tierwelt',headline:'Unsere Klassentiere',intro:'Die Tierwelt aus der bisherigen LernSafari bleibt erhalten und erscheint hier in einem stärkeren Baobab-Rahmen.',toolbarLead:'🌳 Baobab-Baum · Tierwelt',toolbarNote:'Bilder, Steckbriefe und Quizlogik stammen direkt aus der bisherigen LernSafari.',tip:'So bleibt die bekannte Tierwelt erhalten, wirkt aber im Gesamtauftritt näher an der neuen Webseite.'});
-   else if(mode==='advent')originalFrame('original/index.html#advent','Adventskalender',{areaId:'baobab',contextLabel:'Advent',headline:'Adventskalender',intro:'Der Adventskalender wird direkt aus den bisherigen Inhalten übernommen und im Stil der LernSafari gerahmt.',toolbarLead:'🌳 Baobab-Baum · Advent',toolbarNote:'Die Kalenderlogik bleibt bestehen. Nur der Rahmen und die Einbettung wurden angepasst.',tip:'Später können hier weiterhin echte Überraschungen ergänzt werden.'});
-   else {baobabSection=mode==='stories'?'stories':'motto';originalBaobab()}
- });
+ root.innerHTML=`<section class="integration-baobab-new" aria-label="Baobab-Baum und Klassenwelt">
+   <div class="baobab-intro">🌳 Unser Baobab-Baum – entdecke unsere Klassentiere und Erlebnisse!</div>
+   <div class="baobab-map baobab-new-map">
+     <img src="assets/baobab-ohne-schilder.svg" alt="Ein grosser Baobab-Baum in einer zusammenhängenden Savanne. Im Vordergrund ein Löwe, ein Warzenschwein und genau ein Erdmännchen. Links sitzt ein Hornvogel." draggable="false">
+     <button class="baobab-hotspot baobab-animals" type="button" data-baobab-new="animals"><span>🐾 Unsere Klassentiere</span></button>
+     <button class="baobab-hotspot baobab-advent" type="button" data-baobab-new="advent"><span>🎄 Adventskalender<small>🔒 Noch nicht verfügbar</small></span></button>
+     <button class="baobab-hotspot baobab-projects" type="button" data-baobab-new="projects"><span>📸 Projekte und Erlebnisse</span></button>
+   </div>
+   <div class="baobab-mobile-links"><button type="button" data-baobab-new="animals">🐾 Unsere Klassentiere</button><button type="button" data-baobab-new="advent">🎄 Adventskalender 🔒</button><button type="button" data-baobab-new="projects">📸 Projekte und Erlebnisse</button></div>
+   <p class="integration-note">Ein Klick auf ein Holzschild führt dich direkt zum passenden Bereich.</p>
+ </section>`;
+ root.querySelectorAll('[data-baobab-new]').forEach(button=>button.addEventListener('click',()=>{
+   const id=button.dataset.baobabNew;
+   if(id==='animals'){
+     originalFrame('original/index.html#tiere','Unsere Klassentiere',{areaId:'baobab',contextLabel:'Tierwelt'});
+   }else if(id==='advent'){
+     const placeholder=document.createElement('section');placeholder.className='baobab-coming-soon';
+     placeholder.innerHTML='<button type="button" class="integration-back" id="backFromAdvent">← Zum Baobab-Baum</button><div class="baobab-coming-icon">🎄</div><h2>Adventskalender</h2><p>🛠️ Noch nicht verfügbar</p><small>Hier entsteht später unser Adventskalender.</small>';
+     root.replaceChildren(placeholder);
+     placeholder.querySelector('#backFromAdvent').onclick=()=>renderBaobab();
+   }else if(id==='projects'){
+     root.innerHTML='<div class="baobab-gallery-page"><button type="button" class="integration-back" id="returnFromProjects">← Zum Baobab-Baum</button><div id="baobabGalleryContent"></div></div>';
+     root.querySelector('#returnFromProjects').onclick=()=>renderBaobab();
+     window.LernSafariProjects?.render(root.querySelector('#baobabGalleryContent'));
+   }
+ }));
 };
 renderDestination=function(place){
  if(place.id==='lagoon'){safariSubject=null;safariGame=null;return renderLagoon()}

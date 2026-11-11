@@ -44,6 +44,10 @@ function evaluate(mode,plan,game,gameSubjects){
  const verified=new Set(idsOf(plan?.verified));
  const unfinished=required.length===0||required.some(id=>!verified.has(id));
  if(!unfinished)return true;
+ // During a Fachlektion, the entire selected subject is accessible.
+ // The teacher-selected mandatory tasks determine when other subjects unlock.
+ if(mode.kind==='subject')return gameSubjects[game]===mode.subject;
+ // During arrival time only the selected day's activities remain available.
  return assignments.some(a=>required.includes(numberId(a.id))&&a.target==='game:'+game);
 }
 /* Required adapters:

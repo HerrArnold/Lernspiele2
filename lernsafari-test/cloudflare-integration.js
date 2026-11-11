@@ -293,20 +293,60 @@
   }catch(e){host.innerHTML=`<div class="pd-panel"><h3>Verwaltung nicht erreichbar</h3><p>${html(errorText(e))}</p><button class="pd-action" id="retryCloudAdmin">Erneut versuchen</button></div>`;host.querySelector('#retryCloudAdmin').onclick=renderCloudAdmin;}
  }
  function mondayOfZurich(){const day=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Zurich',weekday:'short'}).format(new Date());const idx={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[day]||0;const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const utc=new Date(today+'T12:00:00Z');utc.setUTCDate(utc.getUTCDate()-((idx+6)%7));return utc.toISOString().slice(0,10)}
+
+ let cloudAgendaWeekOffset=0;
+ let cloudAgendaRequestNumber=0;
+ const agendaWeekStart=offset=>{
+   const d=new Date(mondayOfZurich()+'T12:00:00Z');
+   d.setUTCDate(d.getUTCDate()+offset*7);
+   return d.toISOString().slice(0,10);
+ };
  async function renderCloudAgenda(){
-  const host=DOM.modalBody;
-  const week=mondayOfZurich();
-  host.innerHTML='<div class="pd-panel">🧭 Wochenagenda wird von Cloudflare geladen …</div>';
-  try{
-   const result=await call((loggedTeacher()?'/admin-agenda':'/agenda')+'?week='+week,{admin:loggedTeacher()});if(state.modal!=='agenda')return;
-   const events=Array.isArray(result.events)?result.events:[];
-   const days=Array.from({length:7},(_,i)=>{const d=new Date(week+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10)});
+   const host=DOM.modalBody;
+   const offset=cloudAgendaWeekOffset;
+   const requestNumber=++cloudAgendaRequestNumber;
+   const week=agendaWeekStart(offset);
+   const days=Array.from({length:7},(_,i)=>{
+     const d=new Date(week+'T12:00:00Z');
+     d.setUTCDate(d.getUTCDate()+i);
+     return d.toISOString().slice(0,10);
+   });
    const names=['Mo','Di','Mi','Do','Fr','Sa','So'];
    const todayInZurich=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-   host.innerHTML=`<div class="pd-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🧭 Cloudflare-Agenda</span><h3>Diese Woche</h3><p>Hausaufgaben, Lernkontrollen und Termine aus deiner bisherigen LernSafari.</p></div></div><div class="cloud-week">${days.map((date,i)=>`<article class="cloud-day ${date===todayInZurich?'is-today':''}"><h4>${names[i]} · ${html(dateFormat(date))}</h4>${events.filter(e=>e.day_date===date).map(e=>`<div class="cloud-event cloud-event-${e.type==='ha'?'ha':e.type==='lk'?'lk':e.type==='free'?'free':'special'}"><strong>${html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')}</strong><p>${html(e.text||'')}</p></div>`).join('')||'<p>Keine Einträge</p>'}</article>`).join('')}</div>${loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: in der erweiterten Verwaltung unter «Agenda».</p>':''}</div>`;
-  }catch(e){host.innerHTML=`<div class="pd-panel"><h3>Agenda nicht erreichbar</h3><p>${html(errorText(e))}</p></div>`}
+   const weekLabel=dateFormat(week)+' – '+dateFormat(days[6]);
+   const away=offset!==0;
+   const toolbar='<nav class="cloud-agenda-nav" aria-label="Kalenderwoche wechseln">'+
+     '<button type="button" class="cloud-agenda-week-button" id="cloudAgendaPrevious">◀ Letzte Woche</button>'+
+     '<div class="cloud-agenda-week-center"><strong>'+html(weekLabel)+'</strong><small>Montag bis Sonntag</small></div>'+
+     '<button type="button" class="cloud-agenda-week-button" id="cloudAgendaNext">Nächste Woche ▶</button>'+
+     '</nav>'+
+     '<div class="cloud-agenda-actions"><button type="button" class="cloud-agenda-today-button" id="cloudAgendaToday" '+(!away?'disabled aria-current="date"':'')+'>Aktuelle Woche</button>'+
+     (away?'<p class="cloud-agenda-other-week" role="status">📅 Du schaust gerade '+(offset<0?'eine frühere':'eine spätere')+' Woche an – nicht die aktuelle Woche.</p>':
+     '<p class="cloud-agenda-current-week" role="status">✓ Du bist in der aktuellen Woche.</p>')+'</div>';
+   host.innerHTML='<div class="pd-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🧭 Wochenagenda</span><h3>'+html(weekLabel)+'</h3><p>Hausaufgaben, Lernkontrollen und Termine</p></div></div>'+
+     toolbar+'<div id="cloudAgendaDays" aria-live="polite"><p class="cloud-agenda-loading">Wochentermine werden geladen …</p></div></div>';
+   host.querySelector('#cloudAgendaPrevious').onclick=()=>{cloudAgendaWeekOffset--;renderCloudAgenda()};
+   host.querySelector('#cloudAgendaNext').onclick=()=>{cloudAgendaWeekOffset++;renderCloudAgenda()};
+   host.querySelector('#cloudAgendaToday').onclick=()=>{cloudAgendaWeekOffset=0;renderCloudAgenda()};
+   const area=host.querySelector('#cloudAgendaDays');
+   try{
+     const result=await call((loggedTeacher()?'/admin-agenda':'/agenda')+'?week='+encodeURIComponent(week),{admin:loggedTeacher()});
+     if(state.modal!=='agenda'||requestNumber!==cloudAgendaRequestNumber||!area.isConnected)return;
+     const events=Array.isArray(result.events)?result.events:[];
+     area.innerHTML='<div class="cloud-week">'+days.map((date,i)=>
+       '<article class="cloud-day '+(date===todayInZurich?'is-today':'')+'"><h4>'+names[i]+' · '+html(dateFormat(date))+
+       (date===todayInZurich?' <span class="cloud-day-today">Heute</span>':'')+'</h4>'+
+       events.filter(e=>e.day_date===date).map(e=>'<div class="cloud-event cloud-event-'+(e.type==='ha'?'ha':e.type==='lk'?'lk':e.type==='free'?'free':'special')+'"><strong>'+
+          html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')+
+          '</strong><p>'+html(e.text||'')+'</p></div>').join('')+
+       (events.some(e=>e.day_date===date)?'':'<p class="cloud-agenda-no-events">Keine Einträge</p>')+'</article>').join('')+'</div>'+
+       (loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: Verwaltung → Agenda</p>':'');
+   }catch(e){
+     if(requestNumber!==cloudAgendaRequestNumber||!area.isConnected||state.modal!=='agenda')return;
+     area.innerHTML='<div class="pd-panel cloud-agenda-error"><h3>Termine konnten nicht geladen werden</h3><p>'+html(errorText(e))+'</p><button type="button" id="cloudAgendaRetry" class="cloud-agenda-today-button">Erneut versuchen</button></div>';
+     area.querySelector('#cloudAgendaRetry').onclick=renderCloudAgenda;
+   }
  }
-
  // Existing Worker returns active blocks and assignments; this is a pedagogical UI gate,
  // NOT a verified mastery signal or security protection for public HTML files.
  function updateClassFocus(p){

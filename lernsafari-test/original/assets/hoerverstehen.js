@@ -92,9 +92,10 @@
   // German ß/Swiss ss are accepted as the same grapheme.
   function gradeSentence(actual,corrected,keywords){
     const a=trim(actual),want=trim(corrected);
-    const keywordMatch=keywords.every(k=>a.toLocaleLowerCase('de-CH').includes(swiss(k).toLocaleLowerCase('de-CH')));
-    const punctuation=a.length>8 && a.endsWith(want.slice(-1)) && /[.!?]$/.test(a);
-    const spelling= a.replace(/[.!?]$/,'')===want.replace(/[.!?]$/,'');
+    const sufficientlyComplete=a.split(/\s+/).length>=Math.max(3,Math.round(want.split(/\s+/).length*0.70));
+    const keywordMatch=sufficientlyComplete&&keywords.every(k=>a.toLocaleLowerCase('de-CH').includes(swiss(k).toLocaleLowerCase('de-CH')));
+    const punctuation=sufficientlyComplete&&a.endsWith(want.slice(-1))&&/[.!?]$/.test(a);
+    const spelling=a.replace(/[.!?]$/,'')===want.replace(/[.!?]$/,'');
     // Each of the three original criteria is one point.
     return Number(keywordMatch)+Number(punctuation)+Number(spelling);
   }

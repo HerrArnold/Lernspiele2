@@ -32,8 +32,42 @@ function integrationTrail(areaLabel,contextLabel,title){
   const parts=['LernSafari',areaLabel];
   if(contextLabel)parts.push(contextLabel);
   if(title)parts.push(title);
-  return `<nav class="integration-trail" aria-label="Pfad">${parts.map((part,i)=>`${i?'<span class="integration-chevron">›</span>':''}<span class="integration-pill ${i===parts.length-1?'is-current':''}">${htmlSafe(part)}</span>`).join('')}</nav>`;
+  return `<nav class="integration-trail" aria-label="Pfad">${parts.map((part,i)=>{
+    const current=i===parts.length-1;
+    const item=current
+      ?`<span class="integration-pill is-current" aria-current="page">${htmlSafe(part)}</span>`
+      :`<button type="button" class="integration-pill integration-trail-link" data-trail-index="${i}" aria-label="Zurück zu ${htmlSafe(part)}">${htmlSafe(part)}</button>`;
+    return `${i?'<span class="integration-chevron" aria-hidden="true">›</span>':''}${item}`;
+  }).join('')}</nav>`;
 }
+/* Breadcrumb navigation is delegated: every new view replaces destinationContent,
+   so handlers attached to individual pills would be lost after each render. */
+document.getElementById('destinationContent').addEventListener('click',event=>{
+  const pill=event.target.closest('button[data-trail-index]');
+  if(!pill||!event.currentTarget.contains(pill))return;
+  const index=Number(pill.dataset.trailIndex);
+  const labels=[...pill.closest('.integration-trail').querySelectorAll('.integration-pill')].map(el=>el.textContent.trim());
+  if(index===0){
+    safariGame=null;safariSubject=null;
+    goCamp();
+    return;
+  }
+  if(index===1){
+    safariGame=null;safariSubject=null;
+    const area=labels[1];
+    if(area==='Lern-Lagune'){activeLagoonSubject=null;renderLagoon();}
+    else if(area==='Baobab-Baum'){baobabSection=null;renderBaobab();}
+    else if(area==='Tages-Tal'){renderValley();}
+    else if(area==='Oase'){renderDestination(places.find(p=>p.id==='oasis'));}
+    return;
+  }
+  if(index===2 && labels[1]==='Lern-Lagune'){
+    safariGame=null;
+    const subject=SUBJECTS.find(x=>x[1]===labels[2]||x[0]===labels[2]);
+    if(subject){safariSubject=subject[0];renderLagoon();}
+    else {safariSubject=null;renderLagoon();}
+  }
+});
 function originalFrame(relative,title,opts={}){
  const root=document.getElementById('destinationContent');
  const back=integrationBackConfig(),areaId=opts.areaId||back.areaId||'lagoon',area=integrationAreaMeta(areaId),kind=opts.kind||'exercise';

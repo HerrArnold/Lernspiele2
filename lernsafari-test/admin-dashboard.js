@@ -8,7 +8,8 @@
   {id:'mode',icon:'🧭',name:'Unterrichtsmodus',desc:'Ankunftszeit, Fachunterricht und Entdeckungszeit'},
   {id:'progress',icon:'📈',name:'Lernfortschritte',desc:'Punkte und Lernversuche nach Kind und Thema'},
   {id:'activity',icon:'👀',name:'Aktivität',desc:'Anwesenheit und zuletzt gemeldete Tätigkeiten'},
-  {id:'messages',icon:'✉️',name:'Nachrichten',desc:'Mitteilungen für Kinder vorbereiten'}
+  {id:'messages',icon:'✉️',name:'Nachrichten',desc:'Mitteilungen für Kinder vorbereiten'},
+  {id:'projects',icon:'📸',name:'Projekte und Erlebnisse',desc:'Fotos, Datum und Rückblicke als Polaroids veröffentlichen'}
  ];
  const SUBJECTS=['Mathe','Deutsch','NMG','Musik','Englisch'];
  const TARGET_AREAS=[
@@ -226,6 +227,10 @@
   const messagePanel=document.createElement('div');messagePanel.className='pd-panel';
   messagePanel.innerHTML='<h4>✉️ Nachricht an die Kinder</h4><p>Mitteilungen werden nur über die geprüfte Cloudflare-Lehrpersonen-Sitzung versendet.</p><label>Empfänger<select id="adminMessageRecipient"><option value="all">Ganze Klasse</option>'+kids.map(k=>'<option value="'+html(k.username)+'">'+html(k.username)+'</option>').join('')+'</select></label><label>Betreff<input id="adminMessageSubject" maxlength="100" placeholder="z. B. Morgen mitbringen"></label><label>Nachricht<textarea id="adminMessageText" rows="5" maxlength="1500" placeholder="Deine Nachricht an die Kinder …"></textarea></label><div class="admin-message-actions"><button type="button" class="pd-action" id="adminMessageSend" disabled>Sicher versenden</button><button type="button" class="pd-secondary" id="adminMessageCopy">Text kopieren</button><button type="button" class="pd-secondary" id="adminMessageLegacy">Bestehende Verwaltung öffnen</button></div><p id="adminMessageStatus" role="status">Nachrichtenfunktion wird beim Öffnen geprüft.</p><section id="adminSentMessages" aria-label="Zuletzt versendete Nachrichten"></section>';
   sections.messages.append(messagePanel);
+  if(sections.projects&&root.LernSafariProjects?.adminMount){
+    const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';sections.projects.append(projectMount);
+    root.LernSafariProjects.adminMount({mount:projectMount,call});
+  }
   let messageServiceAvailable=false;
   async function checkMessagesAvailability(){
     const status=messagePanel.querySelector('#adminMessageStatus');

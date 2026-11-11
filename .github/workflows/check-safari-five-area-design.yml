@@ -31,6 +31,14 @@ jobs:
           const outer=fs.readFileSync(root+'index.html','utf8');
           const inside=fs.readFileSync(root+'original/index.html','utf8');
           if(!outer.includes('safari-area-theme.css'))throw Error('Theme not loaded');
+          if(!c.includes('--sf-valley:#d87521'))throw Error('Tages-Tal must be orange');
+          if(fs.existsSync(root+'original/assets/lernsafari-dark.css'))throw Error('Obsolete dark stylesheet is still in the test site');
+          for(const old of ['id="guestBtn"','id="demoChild"','id="demoTeacher"','id="cloudTeacher"','profile-demo.js']){
+            if(outer.includes(old))throw Error('Unsafe old guest/demo action: '+old);
+          }
+          const auth=fs.readFileSync(root+'cloudflare-integration.js','utf8');
+          if(!auth.includes("==='flamingo')adminLogin(password)"))throw Error('Unified teacher login missing');
+          if(!auth.includes("else childLogin(username,password)"))throw Error('Child login missing');
           for(const name of ['tierwelt-palette.css','tages-tal-palette.css'])if(!inside.includes(name))throw Error('Legacy theme not loaded '+name);
           const daily=fs.readFileSync(root+'original/assets/zahl-des-tages.js','utf8');
           if(!daily.includes('hornvogel-zahl-des-tages.webp')||daily.includes('Der Flamingo zeigt die Zahl'))throw Error('Hornbill number mascot missing');

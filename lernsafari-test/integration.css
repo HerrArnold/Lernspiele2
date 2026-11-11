@@ -166,3 +166,74 @@
   .is-lagoon .destination-actions {margin-top:4px;padding-top:6px}
   .is-lagoon .integration-trail {font-size:12px}
 }
+
+
+/* Warmes Safari-Farbkonzept statt der fast weissen Flachen der Lern-Lagune. */
+.original-lagoon.integration-area-lagoon .integration-scene-card {
+  background:#e2e9cc;
+  border-color:#a7bf88;
+}
+.original-lagoon.integration-area-lagoon .integration-lagoon-scene {
+  background:#d4e4ba;
+  border-color:#9caf76;
+}
+.original-lagoon.integration-area-lagoon .integration-subjects button {
+  background:#f3e2bc;
+  color:#573f28;
+}
+.original-lagoon.integration-area-lagoon .integration-trail .integration-pill {
+  background:#f4e5c7;
+}
+.is-lagoon .destination-panel {
+  background:#f4e5c7;
+}
+.destination-screen.is-lagoon {
+  background:linear-gradient(160deg,#dbe9bd,#a9d2b5 53%,#dec68f);
+}
+
+/* Baobab-Baum: komplette Uebersicht auf Laptophoehe ohne Scrollen.
+   Die Bildgroesse bleibt proportional; die Inhaltsbuttons sind erreichbar. */
+@media (min-width:900px) and (min-height:550px) {
+  .original-baobab.integration-shell {
+    max-width:none;
+    gap:5px;
+  }
+  .original-baobab > .integration-hero,
+  .original-baobab > .integration-context-grid,
+  .original-baobab > .integration-note {display:none}
+  .original-baobab > .integration-trail {margin:0 0 2px}
+  .original-baobab .integration-scene-card {
+    padding:5px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e3e3b9;
+    border-color:#a9a875;
+  }
+  .original-baobab .integration-baobab-scene {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:fit-content;
+    max-width:100%;
+    max-height:none;
+    border-width:2px;
+    border-color:#ac895a;
+  }
+  .original-baobab .integration-baobab-scene img {
+    display:block;
+    width:auto;
+    height:auto;
+    max-width:100%;
+    max-height:calc(100dvh - 225px);
+    object-fit:contain;
+  }
+  .original-baobab > .integration-choice-grid {gap:6px}
+  .original-baobab > .integration-choice-grid button {
+    padding:6px 12px;
+    min-height:36px;
+    font-size:13px;
+  }
+  .is-baobab .destination-actions {margin-top:4px;padding-top:6px}
+  .is-baobab .integration-trail {font-size:12px}
+}

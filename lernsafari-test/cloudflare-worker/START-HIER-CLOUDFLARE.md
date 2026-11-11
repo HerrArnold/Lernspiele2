@@ -3,6 +3,24 @@
 **Stand:** 11. November 2026. Nur auf dem Test-Worker/Test-D1 einrichten.
 **Hauptseite:** `HerrArnold/lernspiele` niemals ändern.
 
+## Aktueller Stand der Live-API (11. November 2026)
+
+Der **lesende GitHub-Actions-Test** erreicht die Worker-Adresse. Mit dem
+`Origin` der LernSafari-Testseite antworten die sechs neuen Endpunkte
+`/admin-classroom-mode`, `/admin-messages`, `/messages`,
+`/admin-live-activity`, `/admin-projects` und `/projects` aktuell
+alle mit **HTTP 401**. Eine zufällig gewählte unbekannte Adresse dient
+als Vergleich, damit ein allgemeines 401/403 **nicht als installierter
+Endpunkt** fehlgedeutet wird. Die neuen Funktionen sind daher noch
+**nicht als aktiv nachgewiesen**. Vollständige Anbindung und
+Authentifizierungstests sind weiterhin notwendig.
+
+[Cloudflare-Testreport auf GitHub](https://github.com/HerrArnold/Lernspiele2/actions/workflows/check-cloudflare-readiness.yml)
+
+**Neue Anmeldung:** Kinder-Sitzungen werden auf der Testseite nur noch in
+`sessionStorage` gehalten. Ein Tab-Neustart verlangt eine Anmeldung;
+nach dem blossen Aktualisieren bleibt die Tab-Sitzung erhalten.
+
 ## Was im GitHub-Entwicklungszweig bereits fertig ist
 
 - Anmeldung über dasselbe Logbuch (Flamingo + bestehender Admincode für Lehrperson,

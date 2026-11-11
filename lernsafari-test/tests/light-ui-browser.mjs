@@ -25,6 +25,22 @@ try{
   assert.equal(value,expected,'Wrong '+name);
  }
  await page.screenshot({path:'/tmp/safari-login-light.png',fullPage:false});
+ // Read-only UI preview, not a real signed-in session. Inspect exact layout only.
+ await page.evaluate(()=>enter('preview','Layoutprüfung'));
+ await page.waitForTimeout(850);
+ await page.evaluate(()=>showModal('map'));
+ await page.locator('.modal-kind-map .safari-map').waitFor();
+ const mapOverflow=await page.locator('.modal-kind-map').evaluate(el=>({
+  scrollHeight:el.scrollHeight,clientHeight:el.clientHeight,bottom:el.getBoundingClientRect().bottom
+ }));
+ assert.ok(mapOverflow.scrollHeight<=mapOverflow.clientHeight+6,'Map modal requires scrolling on 1366x768: '+JSON.stringify(mapOverflow));
+ assert.ok(mapOverflow.bottom<=768,'Map extends outside laptop viewport');
+ assert.equal(await page.locator('.modal-kind-map [data-map-destination]').count(),10,'Map landmarks should be five visible buttons + five mobile shortcuts');
+ await page.screenshot({path:'/tmp/safari-map-light.png',fullPage:false});
+ await page.evaluate(()=>{closeModal(true);travelTo('baobab')});
+ await page.waitForTimeout(700);
+ assert.equal(await page.locator('.baobab-new-map .baobab-hotspot').count(),3,'Baobab should show only three labelled buttons');
+ await page.screenshot({path:'/tmp/safari-baobab-light.png',fullPage:false});
  // Embedded legacy page must use the light colour palette.
  await page.goto(base+'/original/index.html#tiere',{waitUntil:'domcontentloaded'});
  await page.waitForTimeout(1200);

@@ -83,10 +83,28 @@
    if(state.modal==='logbook'&&loggedChild()){renderChildLogbook();return;}
    if(state.modal==='admin'&&loggedTeacher()){renderCloudAdmin();return;}
    if(state.modal==='agenda'&&(loggedChild()||loggedTeacher())){renderCloudAgenda();return;}
+   if(state.modal==='mail'&&loggedChild()){renderCloudMail(originalRender);return;}
    originalRender();
  };
 
 
+ // The mailbox is enabled only after the existing Cloudflare Worker confirms
+ // an authenticated, child-filtered GET /messages endpoint.
+ async function renderCloudMail(fallback){
+   const host=DOM.modalBody;
+   host.innerHTML='<div class="pd-panel"><h3>✉️ Mein Briefkasten</h3><p>Nachrichten werden geladen …</p></div>';
+   try{
+     const response=await call('/messages');
+     if(state.modal!=='mail'||!loggedChild())return;
+     if(response.available!==true||!Array.isArray(response.messages))throw Error('Nachrichten noch nicht eingerichtet');
+     const rows=response.messages;
+     host.innerHTML='<div class="pd-shell cloud-shell"><div class="pd-banner"><div><span class="pd-eyebrow">✉️ Persönlicher Briefkasten</span><h3>Meine Post</h3><p>Nachrichten der Lehrperson</p></div><div class="pd-total"><strong>'+rows.length+'</strong><span>Nachrichten</span></div></div>'+
+       '<div class="pd-items">'+(rows.length?rows.map(row=>'<article class="pd-panel cloud-mail-message"><strong>'+html(row.subject||'Nachricht')+'</strong><small>'+html(row.created_at||'')+'</small><p>'+html(row.body||'').replace(/\n/g,'<br>')+'</p></article>').join(''):
+       '<div class="pd-panel"><p>Du hast noch keine Nachrichten erhalten.</p></div>')+'</div></div>';
+   }catch(_){
+     if(state.modal==='mail'&&loggedChild())fallback();
+   }
+ }
  // Cloudflare contains authentic results; an attempt/highscore is not proof of a finished assignment.
  const scoreIndex=rows=>{const scores=new Map();for(const row of Array.isArray(rows)?rows:[]){if(!row||typeof row.game!=='string'||!row.game)continue;const value=Number(row.score);if(!Number.isFinite(value)||value<0)continue;scores.set(row.game,Math.max(scores.get(row.game)??0,value));}return scores;};
  const taskScore=(target,scores)=>target.startsWith('game:')?scores.get(target.slice(5)):undefined;
@@ -392,6 +410,28 @@
  window.addEventListener('focus',()=>refreshClassFocus());
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshClassFocus()});
  setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},20000);
+ // Minimal, authenticated, short-lived presence reports. Never send guest data,
+ // answer text, keyboard input, device identifiers or browser location.
+ let activityEndpointUnavailable=false;
+ async function heartbeat(){
+   if(!loggedChild()||document.hidden||activityEndpointUnavailable)return;
+   let area='camp',game='';
+   if(state.modal==='mail')area='mail';
+   else if(state.modal==='agenda')area='agenda';
+   else if(state.modal==='logbook')area='logbook';
+   else if(state.screen==='destination'){
+     area=state.destination||'camp';
+     if(safariGame?.file&&/^[a-z0-9-]+\.html$/i.test(safariGame.file)){
+       area='game';game=safariGame.file.replace(/\.html$/i,'');
+     }
+   }
+   if(!['camp','map','logbook','lagoon','valley','baobab','oasis','agenda','mail','help','game'].includes(area))area='camp';
+   try{await call('/activity-heartbeat',{method:'POST',body:{area,game}});}
+   catch(err){if(/404|405|Not Found|not found|Methode nicht erlaubt/.test(String(err.message||err)))activityEndpointUnavailable=true;}
+ }
+ setInterval(heartbeat,45000);
+ window.addEventListener('focus',()=>{activityEndpointUnavailable=false;heartbeat()});
+
 
  // Existing app.js login placeholder handles submit in bubble phase; intercept for authenticated login.
  document.querySelector('#loginForm').addEventListener('submit',e=>{e.preventDefault();e.stopImmediatePropagation();childLogin(document.querySelector('#username').value,document.querySelector('#password').value)},{capture:true});

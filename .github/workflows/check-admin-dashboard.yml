@@ -1,0 +1,44 @@
+name: Check Safari teacher dashboard
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/admin-dashboard.js'
+      - 'lernsafari-test/admin-dashboard.css'
+      - 'lernsafari-test/cloudflare-integration.js'
+      - 'lernsafari-test/unterrichtsmodus-admin.js'
+      - 'lernsafari-test/topic-navigation.js'
+      - 'lernsafari-test/index.html'
+      - '.github/workflows/check-admin-dashboard.yml'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify JavaScript syntax
+        run: |
+          node --check lernsafari-test/admin-dashboard.js
+          node --check lernsafari-test/cloudflare-integration.js
+          node --check lernsafari-test/unterrichtsmodus-admin.js
+          node --check lernsafari-test/topic-navigation.js
+      - name: Verify dashboard links and catalog mapping
+        run: |
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const html=fs.readFileSync('lernsafari-test/index.html','utf8');
+          const cloud=fs.readFileSync('lernsafari-test/cloudflare-integration.js','utf8');
+          const topic=fs.readFileSync('lernsafari-test/topic-navigation.js','utf8');
+          const dash=require('./lernsafari-test/admin-dashboard.js').LernSafariAdminDashboard;
+          for(const file of ['admin-dashboard.css','admin-dashboard.js'])if(!html.includes(file))throw Error('Missing '+file);
+          if(!cloud.includes('LernSafariAdminDashboard?.mount('))throw Error('Dashboard is not connected to Cloudflare teacher view');
+          for(const title of ['Lernaufträge','Unterrichtsmodus','Lernfortschritte','Aktivität','Nachrichten'])if(!fs.readFileSync('lernsafari-test/admin-dashboard.js','utf8').includes(title))throw Error('Missing '+title);
+          if(!topic.includes('window.LernSafariTopicCatalog'))throw Error('Topic catalog not exposed');
+          const catalog=dash.catalog([{v:'game:einmaleins-mix'}]);
+          for(const subject of ['Mathe','Deutsch','NMG','Musik','Englisch'])if(!Array.isArray(catalog[subject]))throw Error('Missing '+subject);
+          console.log('Dashboard assets, catalog and navigation hooks verified');
+          NODE
+      - name: Run existing classroom tests
+        run: |
+          node --test lernsafari-test/tests/unterrichtsmodus.test.cjs
+          node --test lernsafari-test/tests/unterrichtsmodus-admin.test.cjs

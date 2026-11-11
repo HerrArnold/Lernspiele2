@@ -65,7 +65,7 @@ function renderMap(){
     travelTo(id);
   }));
 }
-function travelTo(id){const place=places.find(p=>p.id===id);if(!place)return;closeModal(true);state.destination=id;showScreen('destination');$('#destinationScreen').classList.toggle('is-lagoon',id==='lagoon');$('#destinationScreen').classList.toggle('is-valley',id==='valley');$('#destinationScreen').classList.toggle('is-baobab',id==='baobab');$('#destEmoji').textContent=place.emoji;$('#destTitle').textContent=place.title;$('#destText').textContent=place.description;renderDestination(place);history.pushState({screen:'destination',id},'',`#${id}`)}
+function travelTo(id){const place=places.find(p=>p.id===id);if(!place)return;closeModal(true);state.destination=id;showScreen('destination');$('#destinationScreen').classList.toggle('is-lagoon',id==='lagoon');$('#destinationScreen').classList.toggle('is-valley',id==='valley');$('#destinationScreen').classList.toggle('is-baobab',id==='baobab');$('#destinationScreen').classList.toggle('is-oasis',id==='oasis');$('#destEmoji').textContent=place.emoji;$('#destTitle').textContent=place.title;$('#destText').textContent=place.description;renderDestination(place);history.pushState({screen:'destination',id},'',`#${id}`)}
 // Fächer der Lern-Lagune. Dies sind vorerst Zugänge, keine behaupteten fertigen Lernspiele.
 const lagoonSubjects = [
   {id:'math',name:'Mathematik',icon:'🔢',heading:'Zahlen entdecken',description:'Hier kannst du die 3er- und 6er-Reihe üben und Zahlen aus Hundertern, Zehnern und Einern bauen.',ideas:['Zahl des Tages','Reihen üben','Zahlen legen']},
@@ -703,6 +703,7 @@ function renderDestination(place){
   screen.classList.toggle('is-lagoon',place.id==='lagoon');
   screen.classList.toggle('is-valley',place.id==='valley');
   screen.classList.toggle('is-baobab',place.id==='baobab');
+  screen.classList.toggle('is-oasis',place.id==='oasis');
   if(place.id==='lagoon'){
     activeLagoonSubject=null;
     renderLagoon();

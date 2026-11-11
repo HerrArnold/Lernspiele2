@@ -237,3 +237,24 @@
   .is-baobab .destination-actions {margin-top:4px;padding-top:6px}
   .is-baobab .integration-trail {font-size:12px}
 }
+
+
+/* Navigierbare Pfad-Knoepfe: klar als Schaltflaechen erkennbar. */
+.integration-trail button.integration-trail-link {
+  appearance:none;
+  font:inherit;
+  font-size:inherit;
+  font-weight:inherit;
+  color:#65472e;
+  cursor:pointer;
+}
+.integration-trail button.integration-trail-link:hover {
+  background:#e1eed3;
+  border-color:#7b9d76;
+  color:#285637;
+}
+.integration-trail button.integration-trail-link:focus-visible {
+  outline:3px solid #367d84;
+  outline-offset:2px;
+}
+.integration-trail .integration-pill.is-current {cursor:default}

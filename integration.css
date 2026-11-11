@@ -137,3 +137,12 @@
 .original-frame.original-daily{height:clamp(720px,86vh,1120px);min-height:720px}
 .destination-screen:has(.original-integration) .destination-actions{margin-top:14px;padding-top:10px}
 @media(max-width:700px){.destination-screen:has(.original-integration) .destination-panel,.destination-screen:has(.original-collection) .destination-panel,.destination-screen:has(.original-lagoon) .destination-panel,.destination-screen:has(.original-baobab) .destination-panel{padding:12px;border-width:2px}.integration-play-title{width:100%}.integration-play-title h2{font-size:22px}.integration-play-emoji{width:42px;height:42px;font-size:23px}.integration-game-surface{padding:4px;border-radius:14px}.original-frame{min-height:580px;height:78vh}.original-frame.original-daily{min-height:620px;height:80vh}.integration-game-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.integration-game-card{min-height:195px}.integration-game-card img{height:100px}}
+
+
+/* Restored clickable learning-level navigation and grouped learning units. */
+.integration-trail .integration-crumb{cursor:pointer;appearance:none;font:inherit}
+.integration-trail .integration-crumb:hover,.integration-trail .integration-crumb:focus-visible{background:#e2f1d3;border-color:#5b8864;color:#294e35;outline:2px solid #4d7955;outline-offset:2px}
+.integration-units{display:grid;gap:24px}
+.integration-unit{border:2px solid #d8bd8a;border-radius:18px;background:#fff9eb;padding:17px}
+.integration-unit-title{font-size:clamp(19px,2.1vw,25px);margin:0 0 12px;color:#694822}
+.integration-unit .integration-game-grid{margin:0}

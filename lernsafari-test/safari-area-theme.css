@@ -4,7 +4,7 @@
 :root{
  --sf-pink:#b84270;--sf-pink-dark:#772f4e;--sf-pink-light:#fff1f4;
  --sf-brown:#8b591f;--sf-brown-dark:#59401f;--sf-gold-light:#fff4d9;
- --sf-valley:#236ba0;--sf-valley-dark:#194d77;--sf-valley-light:#eff8ff;
+ --sf-valley:#d87521;--sf-valley-dark:#86410f;--sf-valley-light:#fff4e5;
  --sf-lagoon:#2e7850;--sf-lagoon-dark:#205037;--sf-lagoon-light:#eff8e9;
  --sf-oasis:#247ba2;--sf-oasis-dark:#145376;--sf-oasis-light:#eafaff;
 }
@@ -42,7 +42,7 @@
 .modal-kind-map .map-hotspot:focus-visible,.modal-kind-map .map-hotspot:hover{
  filter:brightness(1.07);outline:3px solid #fffdf5;outline-offset:3px;
 }
-.modal-kind-map .map-hotspot-valley{--sign-top:#d1eefe;--sign-bottom:#88c6e8;--sign-edge:#23638f;left:22%;top:24%}
+.modal-kind-map .map-hotspot-valley{--sign-top:#ffe8b7;--sign-bottom:#e9ac63;--sign-edge:#a25a1f;left:22%;top:24%}
 .modal-kind-map .map-hotspot-lagoon{--sign-top:#e4f6d1;--sign-bottom:#b9d68f;--sign-edge:#356d43;left:78%;top:23%}
 .modal-kind-map .map-hotspot-camp{--sign-top:#ffdaea;--sign-bottom:#e99dbb;--sign-edge:#a4426a;left:50%;top:57%}
 .modal-kind-map .map-hotspot-baobab{--sign-top:#ffedb3;--sign-bottom:#deb575;--sign-edge:#8e5b2b;left:22%;top:79%}
@@ -60,23 +60,23 @@
 .destination-screen button:focus-visible{
  outline:3px solid #236e82!important;outline-offset:2px;
 }
-/* DAY VALLEY · blue as hornbill's learning/organisation accent. */
+/* DAY VALLEY · warm orange; the hornbill remains blue for contrast. */
 .destination-screen.is-valley{
- background:linear-gradient(160deg,#d2eaf7,#b4d9ed 55%,#e4f1f6)!important;
+ background:linear-gradient(160deg,#ffecd1,#f7d8ad 55%,#fff6e8)!important;
 }
-.is-valley .destination-panel{background:#f7fcff!important;border-color:#70a8cf!important}
+.is-valley .destination-panel{background:#f7fcff!important;border-color:#d9a16a!important}
 .is-valley .dest-hero h1,.is-valley .integration-hero h2,
 .is-valley .integration-kicker,.is-valley .valley-heading h2{
  color:var(--sf-valley-dark)!important;
 }
 .is-valley .integration-hero,.is-valley .integration-context-card,
-.is-valley .integration-game-surface{background:var(--sf-valley-light)!important;border-color:#b3d2e6!important}
+.is-valley .integration-game-surface{background:var(--sf-valley-light)!important;border-color:#e7c398!important}
 .is-valley :is(.primary,.integration-back,.integration-game-card:hover,
-.integration-game-card:focus-visible){border-color:#2d76a4!important}
+.integration-game-card:focus-visible){border-color:#ab641e!important}
 .is-valley :is(.primary,.integration-back){
  background:var(--sf-valley)!important;color:white!important;
 }
-.is-valley .integration-back:hover{background:#174c77!important}
+.is-valley .integration-back:hover{background:#a95318!important}
 /* LAGOON · green active learning. */
 .destination-screen.is-lagoon{background:linear-gradient(155deg,#d6eacd,#b6d9bb 58%,#e5eed6)!important}
 .is-lagoon .destination-panel{background:#fbfff7!important;border-color:#7fae88!important}
@@ -163,3 +163,18 @@
 }
 .baobab-new-map>img:first-child{object-fit:contain!important}
 .modal-kind-map .safari-map>img:first-child{object-fit:contain!important}
+
+/* Accessible orange states: white labels on warm dark-orange controls. */
+.is-valley :is(.integration-back,.primary,.integration-action,.integration-start-game){
+ background:#ac581a!important;color:#fffef7!important;
+ -webkit-text-fill-color:#fffef7!important;border-color:#87400e!important;
+}
+.is-valley :is(.integration-back,.primary,.integration-action,.integration-start-game):hover{
+ background:#86420e!important;
+}
+.is-valley :is(.integration-game-card,.integration-context-card,.integration-tip-box){
+ color:#422e1c!important;
+}
+.is-valley :is(.integration-game-caption,.integration-context-card p,.integration-tip-box p){
+ color:#4d392a!important;
+}

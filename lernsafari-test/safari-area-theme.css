@@ -129,3 +129,17 @@
  .modal-kind-map .map-hotspot{font-size:clamp(8px,1.85vw,13px)!important;padding:1% 1%!important;border-width:2px!important;white-space:normal!important}
  .baobab-new-map .baobab-hotspot{border-width:2px!important}
 }
+
+/* Mascot images share each map landmark and never intercept the button click. */
+.modal-kind-map .safari-map .map-mascot{
+ position:absolute;display:block;object-fit:contain;pointer-events:none;
+ border:none;background:none;user-select:none;
+ filter:drop-shadow(0 4px 3px #4a331f50);
+ height:auto;z-index:1;
+}
+.modal-kind-map .safari-map .map-hotspot{z-index:2}
+.modal-kind-map .map-mascot-valley{left:27%;top:14%;width:8.5%}
+.modal-kind-map .map-mascot-lagoon{right:6%;top:23%;width:10%}
+.modal-kind-map .map-mascot-camp{left:60%;top:43%;width:8.5%}
+.modal-kind-map .map-mascot-baobab{left:3%;bottom:7%;width:11%}
+.modal-kind-map .map-mascot-oasis{right:6%;bottom:6%;width:13%}

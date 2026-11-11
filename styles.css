@@ -305,3 +305,58 @@
 .place,.agenda-entry,.letter{border-radius:16px}
 .eyebrow{letter-spacing:1.7px}
 @media(max-width:700px){.destination-panel{padding:18px 16px 22px;border-radius:22px}.dest-hero{gap:12px;margin-bottom:18px}.dest-emoji{font-size:62px}.brand{font-size:19px}.topbar{padding:8px 12px;min-height:58px}}
+
+
+/* LernSafari 3b · labelled wooden destination signs · 2026-11-11
+   The source illustrations are 1672 × 941 px. Keep that proportion so the
+   figures are not stretched and the hotspot positions remain aligned. */
+.safari-map,.baobab-map{aspect-ratio:1672 / 941}
+.safari-map img,.baobab-map img{object-fit:contain}
+.safari-wood-sign{
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  box-sizing:border-box;
+  color:#fff8e6;
+  background:linear-gradient(172deg,#b97937 0%,#9a5824 43%,#78401d 100%);
+  border:3px solid #583218;
+  border-radius:12px 16px 11px 14px;
+  box-shadow:inset 0 2px 1px #eac082aa,inset 0 -3px 0 #63371488,0 4px 0 #4b321ecc,0 6px 13px #34210e55;
+  text-shadow:0 1px 2px #281608;
+  font-family:'Trebuchet MS',Verdana,Arial,sans-serif;
+  font-size:clamp(12px,1.35vw,17px);
+  font-weight:900;line-height:1.1;letter-spacing:.01em;
+  padding:7px 9px;
+  white-space:nowrap;cursor:pointer;user-select:none;
+  touch-action:manipulation;
+  transition:filter .15s ease,box-shadow .15s ease;
+}
+.safari-wood-sign:hover,.safari-wood-sign:focus-visible{
+  color:#fff;
+  background:linear-gradient(172deg,#d39448 0%,#ab632b 48%,#85441f 100%);
+  border-color:#fff1b4;
+  outline:3px solid #61381c;
+  outline-offset:2px;
+  box-shadow:inset 0 2px 2px #eac082bb,0 4px 0 #4b321e,0 9px 19px #34210e66;
+}
+.safari-wood-sign:active{filter:brightness(.89)}
+.map-hotspot.safari-wood-sign{
+  position:absolute;width:clamp(114px,15.5%,190px);height:clamp(45px,7.5%,58px);
+  transform:translate(-50%,-50%);
+}
+.map-hotspot-valley.safari-wood-sign{left:24%;top:37%}
+.map-hotspot-lagoon.safari-wood-sign{left:76%;top:37%}
+.map-hotspot-camp.safari-wood-sign{left:49%;top:72%}
+.map-hotspot-baobab.safari-wood-sign{left:30%;top:90%}
+.map-hotspot-oasis.safari-wood-sign{left:77%;top:91%}
+.baobab-hotspot.safari-wood-sign{
+  position:absolute;width:clamp(140px,17%,212px);height:clamp(47px,8%,61px);
+  transform:translate(-50%,-50%);
+}
+.baobab-animals.safari-wood-sign{left:13%;top:36%}
+.baobab-memories.safari-wood-sign{left:79%;top:31%}
+.baobab-advent.safari-wood-sign{left:85%;top:88%}
+.baobab-polaroid-wall{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:20px;padding:20px 10px 26px;background:linear-gradient(#f5e7c9,#efe0c2);border-radius:16px}
+.baobab-memories-intro{text-align:center}
+.baobab-polaroid{width:min(250px,80vw);padding:13px 13px 19px;background:#fffdf8;box-shadow:0 6px 17px #4b352740;transform:rotate(-3deg);text-align:center;display:grid;gap:7px;color:#4d392a}
+.baobab-photo-placeholder{background:#dce9ce;border:2px solid #bad1b3;aspect-ratio:4/3;display:grid;place-items:center;font-size:48px}
+.baobab-polaroid strong{font-size:16px}.baobab-polaroid small{font-size:12px}
+@media(prefers-reduced-motion:reduce){.safari-wood-sign{transition:none}}

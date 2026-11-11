@@ -59,15 +59,36 @@
   const local=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   form.elements.until.value=local(initial);
   let registered=arr(assignments);
+  let selectedKey='';
+  let selectedIds=new Set();
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
   function update(){
    const kind=form.elements.kind.value,subject=form.elements.subject.value;
    subjectWrap.hidden=kind!=='subject';
    mount.querySelectorAll('[data-mode-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.modeKind===kind)));
    const found=matchingAssignments(registered,kind,subject);
    if(kind==='arrival'||kind==='subject'){
-    tasks.textContent=found.length?`${found.length} aktive Pflichtaufträge werden für diesen Modus berücksichtigt.`:'Keine passenden aktuellen Pflichtaufträge. Weise sie zuerst oben zu.';
-    form.querySelector('[type=submit]').disabled=!found.length;
-   }else{tasks.textContent='Keine Pflichtaufträge notwendig.';form.querySelector('[type=submit]').disabled=false}
+    const key=kind+'|'+subject;
+    if(selectedKey!==key){
+      selectedKey=key;
+      selectedIds=new Set(found.map(a=>Number(a.id)));
+    }
+    selectedIds=new Set([...selectedIds].filter(id=>found.some(a=>Number(a.id)===id)));
+    tasks.innerHTML=found.length?'<fieldset class="admin-mode-tasks"><legend>Welche Pflichtaufträge gelten während dieses Modus?</legend>'+
+      found.map(a=>'<label><input type="checkbox" value="'+Number(a.id)+'" '+(selectedIds.has(Number(a.id))?'checked':'')+'>'+
+        '<span><strong>'+esc(a.title)+'</strong><small>'+esc(a.audience==='all'?'Ganze Klasse':a.username||'Einzelnes Kind')+'</small></span></label>').join('')+'</fieldset>':
+      '<span class="pd-warning">Keine passenden aktuellen Pflichtaufträge. Weise sie zuerst unter «Lernaufträge» zu.</span>';
+    tasks.querySelectorAll('input[type="checkbox"]').forEach(b=>b.onchange=()=>{
+      const id=Number(b.value);
+      if(b.checked)selectedIds.add(id);else selectedIds.delete(id);
+      form.querySelector('[type=submit]').disabled=selectedIds.size===0;
+    });
+    form.querySelector('[type=submit]').disabled=selectedIds.size===0;
+   }else{
+    tasks.textContent='Alle Bereiche frei zugänglich – keine Pflichtaufträge notwendig.';
+    selectedKey='';
+    form.querySelector('[type=submit]').disabled=false;
+   }
   }
   async function load(){
    try{
@@ -78,7 +99,12 @@
     form.elements.subject.value=subjects[mode.subject]?mode.subject:'Mathe';
     if(mode.expires_at&&Date.parse(mode.expires_at)>Date.now())form.elements.until.value=local(new Date(mode.expires_at));
     status.textContent=`Aktueller Modus: ${form.elements.kind.options[form.elements.kind.selectedIndex].textContent}`;
-    update();
+    selectedKey='';update();
+    if(Array.isArray(mode.required_assignment_ids)&&['arrival','subject'].includes(mode.kind)){
+      selectedIds=new Set(mode.required_assignment_ids.map(Number));
+      selectedKey=form.elements.kind.value+'|'+form.elements.subject.value;
+      update();
+    }
    }catch(e){form.hidden=true;status.textContent='Noch nicht verfügbar: Die sichere Cloudflare-Steuerung muss zuerst eingerichtet werden. Die bisherigen Fokusregeln bleiben nutzbar.';}
   }
   mount.querySelectorAll('[data-mode-kind]').forEach(b=>b.onclick=()=>{form.elements.kind.value=b.dataset.modeKind;update()});
@@ -89,7 +115,7 @@
    e.preventDefault();
    const btn=form.querySelector('[type=submit]'),kind=form.elements.kind.value,subject=form.elements.subject.value;
    try{
-    const selected=matchingAssignments(registered,kind,subject);
+    const selected=matchingAssignments(registered,kind,subject).filter(a=>selectedIds.has(Number(a.id)));
     const payload=payloadOf({kind,subject,assignmentIds:selected.map(a=>a.id),expiresAt:new Date(form.elements.until.value).toISOString()});
     btn.disabled=true;status.textContent='Modus wird von Cloudflare gespeichert …';
     await saveMode(payload);status.textContent='Modus erfolgreich auf Cloudflare gespeichert.';await load();

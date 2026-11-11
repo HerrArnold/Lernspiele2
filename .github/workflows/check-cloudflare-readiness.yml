@@ -1,0 +1,54 @@
+name: Check Cloudflare test Worker readiness
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - name: Diagnose test API without credentials or pupil data
+        shell: bash
+        env:
+          BASE_URL: https://lernsafari-api.ergohd02.workers.dev
+        run: |
+          node --input-type=module <<'NODE'
+          const base=process.env.BASE_URL;
+          const checks=[
+            ['/admin-classroom-mode',403,'Lehrpersonen-Unterrichtsmodus'],
+            ['/admin-messages',403,'Lehrpersonen-Nachrichten'],
+            ['/messages',401,'Kinder-Postfach'],
+            ['/admin-live-activity',403,'Live-Aktivität'],
+            ['/admin-projects',403,'Projektverwaltung'],
+            ['/projects',200,'Polaroid-Fotoalbum']
+          ];
+          const records=[];
+          for(const [path,expected,name] of checks){
+            try{
+              const response=await fetch(base+path,{signal:AbortSignal.timeout(12000),headers:{accept:'application/json'}});
+              const text=await response.text();
+              let parsed={};try{parsed=JSON.parse(text)}catch{}
+              const valid=response.status===expected && (
+                expected===200?parsed.available===true:Array.isArray([401,403])&&Boolean(parsed.error)
+              );
+              records.push({Name:name,Path:path,HTTP:response.status,Expected:expected,Ready:valid?'JA':'NEIN'});
+              console.log((valid?'READY':'NOT READY')+' | '+name+' | HTTP '+response.status+' | '+path);
+            }catch(error){
+              records.push({Name:name,Path:path,HTTP:'Verbindung fehlgeschlagen',Expected:expected,Ready:'NEIN'});
+              console.log('NOT READY | '+name+' | '+String(error.message||error));
+            }
+          }
+          console.table(records);
+          const notReady=records.filter(x=>x.Ready==='NEIN');
+          const lines=['# LernSafari Cloudflare Test-Worker – Status','',
+            'Dies ist eine **lesende Prüfung ohne Login**. Kein Passwort, keine Kinder- oder Datenbankdaten wurden verwendet.','',
+            '| Funktion | Pfad | Erwarteter Status | Ergebnis |','|---|---|---|---|',
+            ...records.map(x=>'| '+x.Name+' | `'+x.Path+'` | '+x.Expected+' | '+x.Ready+' (HTTP '+x.HTTP+') |'),
+            '',notReady.length?'**Offen:** '+notReady.length+' von '+records.length+' Schnittstellen müssen noch verbunden werden.':'**Alle sechs Schnittstellen reagieren wie erwartet.**',
+            '','Ein erfolgreicher Status bedeutet **nicht**, dass Berechtigungen, Anmeldung oder D1-Datenbank mit Testkonten vollständig getestet wurden.',
+            ''];
+          const fs=await import('node:fs');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\n'));
+          // Diagnostic workflow always succeeds, so it cannot be mistaken for
+          // a failed application build or a production deployment.
+          NODE

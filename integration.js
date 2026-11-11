@@ -46,7 +46,8 @@ function wireIntegrationTrail(){
       return;
     }
     if(level===2 && state.destination==='lagoon'){
-      safariGame=null;safariSubject=safariGameOrigin||safariSubject;renderLagoon();
+      if(safariGame)safariSubject=safariGameOrigin;
+      safariGame=null;renderLagoon();
     }
   });
 }

@@ -93,7 +93,7 @@
   function gradeSentence(actual,corrected,keywords){
     const a=trim(actual),want=trim(corrected);
     const keywordMatch=keywords.every(k=>a.toLocaleLowerCase('de-CH').includes(swiss(k).toLocaleLowerCase('de-CH')));
-    const punctuation= a.endsWith('.')===want.endsWith('.') && /[.!?]$/.test(a);
+    const punctuation=a.length>8 && a.endsWith(want.slice(-1)) && /[.!?]$/.test(a);
     const spelling= a.replace(/[.!?]$/,'')===want.replace(/[.!?]$/,'');
     // Each of the three original criteria is one point.
     return Number(keywordMatch)+Number(punctuation)+Number(spelling);
@@ -103,7 +103,7 @@
     const details={gap:0,tf:0,pick:0,correct:0};
     for(let i=0;i<gapSolutions.length;i++){
       const el=current('[data-gap="'+i+'"]');
-      const ok=trim(el.value)===trim(gapSolutions[i]);
+      const ok=[gapSolutions[i],...(data.gapAlternatives?.[i]||[])].some(word=>trim(el.value)===trim(word));
       details.gap+=Number(ok);
       el.classList.toggle('hear-invalid',!ok);
       el.classList.toggle('hear-valid',ok);

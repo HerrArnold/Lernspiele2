@@ -1,0 +1,28 @@
+name: Check classroom communications
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/cloudflare-worker/communications-*'
+      - 'lernsafari-test/tests/cloudflare-communications.test.mjs'
+      - 'lernsafari-test/admin-dashboard.js'
+      - 'lernsafari-test/cloudflare-integration.js'
+      - '.github/workflows/check-classroom-communications.yml'
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify JavaScript syntax
+        run: |
+          node --check lernsafari-test/cloudflare-worker/communications-service.mjs
+          node --check lernsafari-test/cloudflare-worker/communications-d1-store.mjs
+          node --check lernsafari-test/admin-dashboard.js
+          node --check lernsafari-test/cloudflare-integration.js
+      - name: Test child privacy, teacher authorization, 2-minute activity timeout
+        run: node --test lernsafari-test/tests/cloudflare-communications.test.mjs
+      - name: Run existing classroom policy tests
+        run: |
+          node --test lernsafari-test/tests/cloudflare-classroom-service.test.mjs
+          node --test lernsafari-test/tests/unterrichtsmodus-admin.test.cjs

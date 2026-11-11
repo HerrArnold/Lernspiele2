@@ -163,5 +163,10 @@
         "Winterruhe"
       ]
     ]
-  ]
+  ],
+  "gapAlternatives": {
+    "1": [
+      "Tiere"
+    ]
+  }
 }

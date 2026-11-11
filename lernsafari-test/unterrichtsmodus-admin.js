@@ -7,7 +7,16 @@
  const arr=x=>Array.isArray(x)?x:[];
  const subjectFor=target=>{
   const id=String(target||'').replace(/^game:/,'');
-  return Object.entries(currentCatalog).find(([,games])=>arr(games).some(g=>g.file===id+'.html'))?.[0]||'';
+  const original=Object.entries(currentCatalog).find(([,games])=>arr(games).some(g=>g.file===id+'.html'))?.[0];
+  if(original)return original;
+  // Newly added games (e.g. Hörverständnisse) are grouped in the newer
+  // Lern-Lagune topic catalog, not in the old original-game registry.
+  const topics=root.LernSafariTopicCatalog||{};
+  for(const [subject,sections] of Object.entries(topics)){
+    if(arr(sections).some(section=>arr(section.games).some(game=>Array.isArray(game)&&game[1]===id+'.html')))
+      return subject;
+  }
+  return '';
  };
  function matchingAssignments(assignments,kind,subject,now=Date.now()){
   return arr(assignments).filter(a=>{

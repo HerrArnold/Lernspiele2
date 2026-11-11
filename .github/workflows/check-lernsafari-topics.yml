@@ -10,6 +10,10 @@ on:
       - 'lernsafari-test/original/assets/zahl-des-tages.css'
       - 'lernsafari-test/integration.css'
       - 'lernsafari-test/assets/*.svg'
+      - 'lernsafari-test/original/assets/hoerverstehen.js'
+      - 'lernsafari-test/original/assets/hoerverstehen.css'
+      - 'lernsafari-test/original/hoerverstehen-data/*.json'
+      - 'lernsafari-test/original/spiele/hoerverstehen-*.html'
       - '.github/workflows/check-lernsafari-topics.yml'
   workflow_dispatch:
 
@@ -24,6 +28,7 @@ jobs:
           node --check lernsafari-test/integration.js
           node --check lernsafari-test/topic-navigation.js
           node --check lernsafari-test/original/assets/zahl-des-tages.js
+          node --check lernsafari-test/original/assets/hoerverstehen.js
       - name: Topic navigation links and included game files
         run: |
           node - <<'NODE'
@@ -42,5 +47,13 @@ jobs:
           }
           const zdt=fs.readFileSync(root+'original/assets/zahl-des-tages.js','utf8');
           if(!zdt.includes('Math.abs(state.line-number)<=20'))throw Error('Zahl des Tages number line tolerance is incorrect');
-          console.log('Validated',files.length,'game references, topic labels and daily exercise changes');
+
+          for(const [animal,total] of Object.entries({dachs:55,eichhoernchen:54,igel:48,reh:60,rotfuchs:46})){
+            const data=JSON.parse(fs.readFileSync(root+'original/hoerverstehen-data/'+animal+'.json','utf8'));
+            const got=(data.gap.match(/\{\{/g)||[]).length+data.tf.length+data.pick.length+3*data.correct.length;
+            if(got!==total || data.total!==total) throw Error('Incorrect listening score for '+animal+': '+got+' / '+total);
+            if(!fs.existsSync(root+'original/spiele/hoerverstehen-'+animal+'.html')) throw Error('Missing listening exercise page '+animal);
+            if(!data.audio.startsWith('https://grundschul-blog.de/'))throw Error('Invalid publisher audio link '+animal);
+          }
+          console.log('Validated',files.length,'game references, topic labels, and all five Hörverständnis scoring sheets');
           NODE

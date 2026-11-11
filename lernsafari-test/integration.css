@@ -137,3 +137,32 @@
 .original-frame.original-daily{height:clamp(720px,86vh,1120px);min-height:720px}
 .destination-screen:has(.original-integration) .destination-actions{margin-top:14px;padding-top:10px}
 @media(max-width:700px){.destination-screen:has(.original-integration) .destination-panel,.destination-screen:has(.original-collection) .destination-panel,.destination-screen:has(.original-lagoon) .destination-panel,.destination-screen:has(.original-baobab) .destination-panel{padding:12px;border-width:2px}.integration-play-title{width:100%}.integration-play-title h2{font-size:22px}.integration-play-emoji{width:42px;height:42px;font-size:23px}.integration-game-surface{padding:4px;border-radius:14px}.original-frame{min-height:580px;height:78vh}.original-frame.original-daily{min-height:620px;height:80vh}.integration-game-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.integration-game-card{min-height:195px}.integration-game-card img{height:100px}}
+
+
+/* Laptop v2: In der Lagunen-Uebersicht ist die Illustration die Navigation.
+   Doppelte Einfuehrungs- und Infobloecke weichen, damit alle Felsen sichtbar sind.
+   Spieleauswahl und eigentliche Spiele bleiben unveraendert. */
+@media (min-width:900px) and (min-height:550px) {
+  .original-lagoon.integration-shell {gap:5px;max-width:none}
+  .original-lagoon > .integration-hero,
+  .original-lagoon > .integration-context-grid {display:none}
+  .original-lagoon > .integration-trail {margin:0 0 2px}
+  .original-lagoon .integration-scene-card {
+    padding:5px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .original-lagoon .integration-lagoon-scene {
+    width:fit-content;max-width:100%;
+    border-width:2px;
+  }
+  .original-lagoon .integration-lagoon-scene img {
+    display:block;width:auto;height:auto;max-width:100%;
+    max-height:calc(100dvh - 242px);
+  }
+  .original-lagoon > .integration-subjects {gap:5px}
+  .original-lagoon > .integration-subjects button {
+    padding:6px 12px;min-height:35px;font-size:13px;
+  }
+  .is-lagoon .destination-actions {margin-top:4px;padding-top:6px}
+  .is-lagoon .integration-trail {font-size:12px}
+}

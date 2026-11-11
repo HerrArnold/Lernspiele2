@@ -146,3 +146,11 @@
 .integration-unit{border:2px solid #d8bd8a;border-radius:18px;background:#fff9eb;padding:17px}
 .integration-unit-title{font-size:clamp(19px,2.1vw,25px);margin:0 0 12px;color:#694822}
 .integration-unit .integration-game-grid{margin:0}
+
+
+/* Clear Safari subject icons: English uses EN rather than the UK flag. */
+.safari-subject-logo{display:inline-grid;place-items:center;flex:none;width:clamp(37px,4.2vw,56px);aspect-ratio:1;background:var(--logo-bg);color:var(--logo-ink);border:3px solid #fff7e9;box-shadow:0 3px 0 #59452e55,0 0 0 2px #8a6949;border-radius:16px;vertical-align:middle;font-family:'Trebuchet MS',Arial,sans-serif;font-size:clamp(18px,2.5vw,29px);font-weight:950;line-height:1;letter-spacing:-.07em}
+.safari-subject-logo span{font:inherit}
+.integration-subjects button{display:inline-flex;align-items:center;gap:12px;justify-content:center}
+.integration-hero .integration-icon:has(.safari-subject-logo){background:transparent;border:0;box-shadow:none}
+.integration-game-card .safari-subject-logo{width:38px}

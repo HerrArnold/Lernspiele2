@@ -111,7 +111,7 @@ renderBaobab=function(){
  root.innerHTML=`<section class="integration-baobab-new" aria-label="Baobab-Baum und Klassenwelt">
    <div class="baobab-intro">🌳 Unser Baobab-Baum – entdecke unsere Klassentiere und Erlebnisse!</div>
    <div class="baobab-map baobab-new-map">
-     <img src="assets/baobab-ohne-schilder.svg" alt="Ein grosser Baobab-Baum in einer zusammenhängenden Savanne. Im Vordergrund ein Löwe, ein Warzenschwein und genau ein Erdmännchen. Links sitzt ein Hornvogel." draggable="false">
+     <img src="assets/baobab-stickerwelt.webp" onerror="this.onerror=null;this.src='assets/baobab-ohne-schilder.svg'" alt="Ein grosser Baobab-Baum in einer zusammenhängenden Savanne. Im Vordergrund ein Löwe, ein Warzenschwein und genau ein Erdmännchen. Links sitzt ein Hornvogel." draggable="false">
      <img class="baobab-extra-flamingo" src="original/assets/tiersticker/flamingo.png" alt="" aria-hidden="true" draggable="false">
      <button class="baobab-hotspot baobab-animals" type="button" data-baobab-new="animals"><span>🐾 Unsere Klassentiere</span></button>
      <button class="baobab-hotspot baobab-advent" type="button" data-baobab-new="advent"><span>🎄 Adventskalender<small>🔒 Noch nicht verfügbar</small></span></button>

@@ -92,6 +92,7 @@ function originalFrame(relative,title,opts={}){
  root.innerHTML=`<section class="original-integration integration-shell integration-area-${htmlSafe(areaId)}" aria-label="${htmlSafe(title)}">
  ${integrationTrail(area.label,context,title)}
  <div class="integration-play-heading"><div class="integration-play-title"><span class="integration-play-emoji" aria-hidden="true">${area.icon}</span><div><span class="integration-kicker">${htmlSafe(area.label)}${context?' · '+htmlSafe(context):''}</span><h2>${htmlSafe(title)}</h2></div></div><button type="button" class="integration-back" id="returnFromOriginal">${htmlSafe(back.label)}</button></div>
+ ${kind==='daily'?`<div class="valley-hornbill-banner" aria-label="Tages-Tal mit Hornvogel und Holzschild"><svg class="valley-hornbill-art" viewBox="0 0 170 180" aria-hidden="true"><path fill="#244e95" stroke="#183667" stroke-width="4" d="M44 82C16 49 17 26 33 20c12-6 24 10 31 26C86 26 111 40 108 69c0 22-7 36-18 54l8 27-31-6-31 6 12-36Z"/><path fill="#f8f4e7" d="M51 71c8-16 22-25 37-18 13 12 6 46-4 69l-32 5c-6-22-12-39-1-56Z"/><path fill="#ef8022" stroke="#9b421d" stroke-width="4" d="M87 55q46-26 72-5-7 32-63 28Z"/><circle cx="76" cy="47" r="14" fill="white" stroke="#173b6d" stroke-width="3"/><circle cx="80" cy="48" r="6" fill="#1b2441"/><path d="M63 147l-12 17m27-21 8 23" stroke="#ec8b29" stroke-width="7" stroke-linecap="round"/><path d="M32 88l-26 36m31-31-25 40" stroke="#3475be" stroke-width="8" stroke-linecap="round"/></svg><div class="valley-hornbill-sign"><span class="valley-sign-small">🌞 Willkommen im</span><strong>Tages-Tal</strong><span>Zahl des Tages und deine Aufgaben</span></div></div>` :''}
  <div class="integration-game-surface"><iframe class="original-frame ${kind==='daily'?'original-daily':''}" id="originalGameFrame" src="${htmlSafe(relative)}" title="${htmlSafe(title)}" loading="eager" referrerpolicy="same-origin" allow="fullscreen"></iframe></div>
  </section>`;
  wireIntegrationTrail();
@@ -126,7 +127,7 @@ renderLagoon=function(){
 renderValley=function(){
   originalFrame('original/index.html#aufgaben','Aufgaben des Tages',{areaId:'valley',contextLabel:'Tagesaufgaben',headline:'Deine Aufgaben des Tages',intro:'Die «Zahl des Tages» und die weiteren Tagesaufgaben bleiben in ihrer bekannten Struktur erhalten. Neu ist vor allem der engere LernSafari-Rahmen rundherum.',kind:'daily',toolbarLead:'🌞 Tages-Tal · Heutige Aufgaben',toolbarNote:'Auch hier bleiben Tageswechsel, Aufgabenserien und Auswertung aus der bisherigen LernSafari bestehen.',tip:'Oben im eingebetteten Bereich bearbeitest du die Aufgaben wie bisher. Mit «Zurück» gelangst du wieder sauber ins Tages-Tal.'});
 };
-// Use the original illustrated Baobab with its six interactive wood-sign hotspots.
+// Keep the original illustrated Baobab, now displaying the three current class sections.
 renderBaobab=function(){
   return originalBaobab();
 };

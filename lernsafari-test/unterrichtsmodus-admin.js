@@ -37,14 +37,19 @@
    <p>Steuere, welche Aufgaben die Kinder jetzt bearbeiten dürfen. Änderungen gelten erst, nachdem Cloudflare sie gespeichert hat.</p>
    <p id="classModeStatus" role="status">Unterrichtssteuerung wird geprüft …</p>
    <form id="classModeForm" hidden>
-    <label>Modus<select name="kind">
-     <option value="free">🌴 Freie LernSafari</option><option value="arrival">🌅 Ankunftszeit</option>
+    <div class="admin-mode-picker" role="group" aria-label="Unterrichtsmodus wählen">
+      <button type="button" data-mode-kind="arrival"><span>🌅</span><strong>Ankunftszeit</strong><small>Aufgaben des Tages zuerst</small></button>
+      <button type="button" data-mode-kind="subject"><span>📚</span><strong>Fachunterricht</strong><small>Nur das gewählte Fach</small></button>
+      <button type="button" data-mode-kind="free"><span>🌴</span><strong>Entdeckungszeit</strong><small>Alle Bereiche freigegeben</small></button>
+    </div>
+    <label class="admin-mode-advanced-label">Aktiver Modus<select name="kind">
+     <option value="free">🌴 Entdeckungszeit</option><option value="arrival">🌅 Ankunftszeit</option>
      <option value="subject">📚 Fachunterricht</option><option value="closed">🔒 Geschlossen</option>
     </select></label>
     <label id="classModeSubjectWrap" hidden>Schulfach<select name="subject">${Object.entries(subjects).map(([key,name])=>`<option value="${key}">${name}</option>`).join('')}</select></label>
     <label>Bis wann?<input name="until" type="datetime-local" required></label>
     <p id="classModeAssignments"></p>
-    <p class="pd-warning">Eine Kinder-Bestätigung ist kein Leistungsnachweis. Für automatische Freigaben wird eine bestätigte Erledigung benötigt.</p>
+    <p class="pd-warning">Aktuell verlangt Cloudflare die Bestätigung der Pflichtaufträge durch die Lehrperson. Eine automatische Freigabe nach tatsächlich gelösten Aufgaben erfordert zusätzlich eine serverseitige Ergebnisprüfung; ein Häkchen des Kindes genügt dafür nicht.</p>
     <button type="submit" class="pd-action">Modus für die Klasse aktivieren</button>
     <button type="button" class="pd-secondary" id="classModeReload">Aktualisieren</button>
    </form>
@@ -57,6 +62,7 @@
   function update(){
    const kind=form.elements.kind.value,subject=form.elements.subject.value;
    subjectWrap.hidden=kind!=='subject';
+   mount.querySelectorAll('[data-mode-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.modeKind===kind)));
    const found=matchingAssignments(registered,kind,subject);
    if(kind==='arrival'||kind==='subject'){
     tasks.textContent=found.length?`${found.length} aktive Pflichtaufträge werden für diesen Modus berücksichtigt.`:'Keine passenden aktuellen Pflichtaufträge. Weise sie zuerst oben zu.';
@@ -75,6 +81,7 @@
     update();
    }catch(e){form.hidden=true;status.textContent='Noch nicht verfügbar: Die sichere Cloudflare-Steuerung muss zuerst eingerichtet werden. Die bisherigen Fokusregeln bleiben nutzbar.';}
   }
+  mount.querySelectorAll('[data-mode-kind]').forEach(b=>b.onclick=()=>{form.elements.kind.value=b.dataset.modeKind;update()});
   form.elements.kind.onchange=update;
   form.elements.subject.onchange=update;
   form.querySelector('#classModeReload').onclick=async()=>{registered=arr(await refreshAssignments());await load()};

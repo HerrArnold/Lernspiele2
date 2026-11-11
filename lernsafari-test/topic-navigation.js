@@ -78,10 +78,11 @@
   function header(text,description,icon){
     return '<div class="safari-topic-header"><span class="safari-topic-icon">'+icon+'</span><div><span class="integration-kicker">Lern-Lagune · '+esc(subjectLabel(safariSubject))+'</span><h2>'+esc(text)+'</h2><p>'+esc(description)+'</p></div></div>';
   }
+  function subjectColorClass(){return 'safari-subject-'+({Mathe:'math',Deutsch:'german',NMG:'nmg',Musik:'music',Englisch:'english'}[safariSubject]||'neutral')}
   function renderSubjects(){
     const topics=currentTopics();
     selectedTopic=null;safariGame=null;
-    root().innerHTML='<section class="integration-shell safari-topic-page">'+trail('subjects')+
+    root().innerHTML='<section class="integration-shell safari-topic-page '+subjectColorClass()+'">'+trail('subjects')+
       '<div class="integration-top"><button type="button" class="integration-back" data-topic-nav="lagoon">← Zur Lern-Lagune</button></div>'+
       header('Wähle ein Thema!','Suche ein Thema aus und entdecke die Lernspiele.',SUBJECTS.find(s=>s[0]===safariSubject)?.[2]||'📖')+
       '<div class="safari-topic-grid">'+topics.map((t,i)=>{
@@ -93,14 +94,14 @@
     const topic=currentTopic();
     if(!topic){selectedTopic=null;renderSubjects();return}
     safariGame=null;
-    root().innerHTML='<section class="integration-shell safari-topic-page">'+trail('topic',topic)+
+    root().innerHTML='<section class="integration-shell safari-topic-page '+subjectColorClass()+'">'+trail('topic',topic)+
       '<div class="integration-top"><button type="button" class="integration-back" data-topic-nav="subject">← Zu '+esc(subjectLabel(safariSubject))+'</button></div>'+
       header(topic.name,'Wähle ein Spiel aus.',topic.icon)+
       '<div class="safari-topic-games">'+topic.games.map((g,i)=>{
         const available=!!g[1];
         const old=Object.values(ORIGINAL_GAMES).flat().find(x=>x.file===g[1]);
         return '<button type="button" class="safari-topic-game '+(available?'':'safari-topic-unavailable')+'" '+(available?'data-topic-game="'+i+'"':'disabled aria-disabled="true"')+'>'+
-          '<span class="safari-topic-game-icon">'+(available?'🎮':'🛠️')+'</span>'+
+          (available?'':'<span class="safari-topic-game-icon">🛠️</span>')+
           '<span class="safari-topic-game-text"><strong>'+esc(g[0])+'</strong><small>'+esc(available?(old?.description||'Wörter spielerisch üben'):'Bald verfügbar')+'</small></span>'+
           (available?'<span class="safari-topic-arrow">›</span>':'<span class="safari-topic-status">In Vorbereitung</span>')+
           '</button>';

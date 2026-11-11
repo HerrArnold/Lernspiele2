@@ -6,6 +6,10 @@ on:
       - 'lernsafari-test/topic-navigation.js'
       - 'lernsafari-test/integration.js'
       - 'lernsafari-test/index.html'
+      - 'lernsafari-test/original/assets/zahl-des-tages.js'
+      - 'lernsafari-test/original/assets/zahl-des-tages.css'
+      - 'lernsafari-test/integration.css'
+      - 'lernsafari-test/assets/*.svg'
       - '.github/workflows/check-lernsafari-topics.yml'
   workflow_dispatch:
 
@@ -19,6 +23,7 @@ jobs:
           node --check lernsafari-test/app.js
           node --check lernsafari-test/integration.js
           node --check lernsafari-test/topic-navigation.js
+          node --check lernsafari-test/original/assets/zahl-des-tages.js
       - name: Topic navigation links and included game files
         run: |
           node - <<'NODE'
@@ -32,5 +37,10 @@ jobs:
           for(const name of ['Einmaleins','Tausenderraum','Briefe','Vom Hören zum Sprechen','Hörverständnis','Rabenvögel','Solmisation und Rhythmus','I bi da für di','My body']){
             if(!script.includes(name))throw Error('Missing topic: '+name);
           }
-          console.log('Validated',files.length,'game references and topic labels');
+          for(const name of ['math-badge.svg','german-flag.svg','nmg-leaf.svg','music-badge.svg','uk-flag.svg']){
+            if(!fs.existsSync(root+'assets/'+name))throw Error('Missing subject badge: '+name);
+          }
+          const zdt=fs.readFileSync(root+'original/assets/zahl-des-tages.js','utf8');
+          if(!zdt.includes('Math.abs(state.line-number)<=20'))throw Error('Zahl des Tages number line tolerance is incorrect');
+          console.log('Validated',files.length,'game references, topic labels and daily exercise changes');
           NODE

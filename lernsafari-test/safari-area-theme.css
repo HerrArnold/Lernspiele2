@@ -155,3 +155,11 @@
    only the illustration fallback needs separately positioned stickers. */
 .modal-kind-map .map-has-character-art .map-mascot{display:none!important}
 .baobab-new-map.baobab-has-character-art>img.baobab-extra-flamingo{display:none!important}
+
+/* Generated panorama aspect ratio: never crop the hornbill, flamingo or tree. */
+.baobab-new-map{
+ aspect-ratio:1672 / 941!important;
+ width:min(100%,calc((75dvh - 15px) * 1672 / 941))!important;
+}
+.baobab-new-map>img:first-child{object-fit:contain!important}
+.modal-kind-map .safari-map>img:first-child{object-fit:contain!important}

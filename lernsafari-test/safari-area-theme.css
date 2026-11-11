@@ -178,3 +178,14 @@
 .is-valley :is(.integration-game-caption,.integration-context-card p,.integration-tip-box p){
  color:#4d392a!important;
 }
+
+/* Laptop map overlay: use the viewport, never force a hidden vertical scroll. */
+.modal-layer:has(.modal-kind-map){padding:8px 10px!important}
+.modal-kind-map{max-height:calc(100dvh - 16px)!important;overflow:hidden!important}
+.modal-kind-map .modal-body{overflow-y:auto!important;min-height:0}
+.modal-kind-map .map-scroll{max-height:min(78dvh,760px)}
+.modal-kind-map .safari-map{width:min(100%,calc(78dvh * 16 / 9))}
+@media(max-height:690px){
+ .modal-kind-map .map-scroll{max-height:70dvh}
+ .modal-kind-map .safari-map{width:min(100%,calc(70dvh * 16 / 9))}
+}

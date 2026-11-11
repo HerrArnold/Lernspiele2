@@ -13,7 +13,7 @@ function toast(message){const el=$('#toast');el.textContent=message;el.classList
 function showScreen(name){state.screen=name;DOM.login.hidden=name!=='login';DOM.camp.hidden=name!=='camp';DOM.destination.hidden=name!=='destination';DOM.topbar.hidden=name==='login';if($('#adminNav'))$('#adminNav').hidden=!['demo-admin','cloudflare-admin'].includes(state.role);if(name==='camp'){$('#userLabel').textContent=state.username;$('#greeting').textContent=state.role==='guest'?'🌴 Willkommen in der LernSafari!':'🌴 Schön, dass du da bist, '+state.username+'!';$('#mailIndicator').hidden=state.role==='guest'}window.scrollTo({top:0,behavior:'instant'});}
 function enter(role,username){if(state.introBusy)return;state.introBusy=true;state.role=role;state.username=username;$('#loginScene').classList.add('intro-exit');setTimeout(()=>{showScreen('camp');$('#campScene').classList.add('camp-enter');$('#loginScene').classList.remove('intro-exit');state.introBusy=false;history.replaceState({screen:'camp'},'','#camp');setTimeout(()=>$('#campScene').classList.remove('camp-enter'),700)},window.matchMedia('(prefers-reduced-motion:reduce)').matches?0:520)}
 $('#loginForm').addEventListener('submit',e=>{e.preventDefault();toast('Die sichere Anmeldung wird nach der Hosting-Prüfung eingerichtet. Wähle «Demo als Kind», um das persönliche Logbuch zu testen.');});
-$('#guestBtn').addEventListener('click',()=>enter('guest','Gast'));
+
 
 
 function exit(){cancelObjectAnimation();closeModal(true);showScreen('login');$('#username').value='';$('#password').value='';state.role='guest';state.username='Gast';history.replaceState({screen:'login'},'','#start')}

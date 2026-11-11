@@ -5,7 +5,7 @@ const onHome=!location.pathname.includes('/spiele/');
 const api=()=>String(window.LERNSAFARI_BACKEND_URL||'https://lernsafari-api.ergohd02.workers.dev').replace(/\/+$/,'');
 const escape=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cache=new Map();let eligible=false,refreshing=false,queue=null;
-function token(){try{return sessionStorage.getItem('lernsafari-token-v1')||'';}catch(_){return '';}}
+function token(){try{return localStorage.getItem('lernsafari-token-v1')||'';}catch(_){return '';}}
 function clean(){document.querySelectorAll('.ls-helper-card').forEach(x=>x.remove());}
 async function me(){if(!token()){eligible=false;clean();return false;}
  if(onHome){eligible=window.SafariLogin?.auth()?.role==='child';if(!eligible)clean();return eligible;}

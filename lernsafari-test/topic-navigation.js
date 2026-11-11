@@ -26,7 +26,7 @@
       {name:'Briefe',icon:'✉️',games:[['Briefe entdecken','briefe-entdecken.html']]},
       {name:'Vom Hören zum Sprechen',icon:'💬',games:[['Gefühle und direkte Rede','gefuehle-direkte-rede.html']]},
       {name:'Hörverständnis',icon:'👂',games:[
-        ['Der Dachs',null],['Das Eichhörnchen',null],['Der Igel',null],['Das Reh',null],['Der Rotfuchs',null]
+        ['Der Dachs','hoerverstehen-dachs.html'],['Das Eichhörnchen','hoerverstehen-eichhoernchen.html'],['Der Igel','hoerverstehen-igel.html'],['Das Reh','hoerverstehen-reh.html'],['Der Rotfuchs','hoerverstehen-rotfuchs.html']
       ]}
     ],
     NMG:[
@@ -116,6 +116,12 @@
       renderEnglishSection();
       const button=document.getElementById(entry[1]==='english:match'?'englishStartMatch':'englishStartCards');
       button?.click();
+      return;
+    }
+    if(entry[1].startsWith('hoerverstehen-')){
+      safariGame={title:entry[0],file:entry[1],description:'Hörverständnis mit Audio und vier Aufgaben'};
+      safariGameOrigin=safariSubject;
+      showSelectedGame();
       return;
     }
     const existing=Object.values(ORIGINAL_GAMES).flat().find(g=>g.file===entry[1]);

@@ -57,6 +57,8 @@
       ]}
     ]
   };
+  // Public read-only subject/topic catalog for teacher assignment selectors.
+  window.LernSafariTopicCatalog=Object.freeze(topicData);
   let selectedTopic=null;
   const esc=s=>htmlSafe(String(s));
   const currentTopics=()=>topicData[safariSubject]||[];

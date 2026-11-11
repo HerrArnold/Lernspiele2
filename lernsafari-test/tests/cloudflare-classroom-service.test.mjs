@@ -35,6 +35,7 @@ assert.equal((await call(req('/admin-classroom-mode','POST',{...mode,required_as
 assert.equal((await call(req('/admin-classroom-mode','POST',{...mode,subject:'NMG'},{'x-school-admin':'1'}))).status,400);
 assert.equal((await call(req('/admin-verify-assignment','POST',{username:'Loewe',assignment_id:3,verified:true},{'x-school-admin':'1'}))).status,400);
 assert.equal((await call(req('/admin-classroom-mode','POST',{kind:'free',expires_at:mode.expires_at},{'x-school-admin':'1'}))).status,200);
-assert.equal((await call(req('/classroom-access?game=einmaleins-dreier'))).data.allowed,true);
+assert.equal((await call(req('/classroom-access?game=einmaleins-dreier'))).data.allowed,false,'login is required even in Entdeckungszeit');
+assert.equal((await call(req('/classroom-access?game=einmaleins-dreier','GET',null,{'x-test-child':'Zebra'}))).data.allowed,true);
 assert.equal(activeMode({kind:'subject',expires_at:'2026-11-10T09:00:00Z'},at).kind,'free');
 console.log('PASS classroom worker logic');

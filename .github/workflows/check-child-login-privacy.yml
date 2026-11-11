@@ -1,4 +1,4 @@
-name: Check child login privacy
+name: Check dedicated pupil laptop login persistence
 on:
   push:
     branches: [lernsafari-camp-direkt]
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - name: Validate child session handling in all game and learning scripts
+      - name: Verify persistent child sessions in game and learning scripts
         run: |
           node - <<'NODE'
           const fs=require('node:fs');
@@ -35,14 +35,22 @@ jobs:
           ];
           for(const path of scripts){
             const src=fs.readFileSync(base+path,'utf8');
-            if(!src.includes('sessionStorage'))throw Error('Missing session storage in '+path);
-            if(/\b(?:root\.)?localStorage\.(?:getItem|setItem)\s*\(\s*['"]lernsafari-token-v1/.test(src))throw Error('Persistent child token detected in '+path);
-            if(/\b(?:root\.)?localStorage\.(?:getItem|setItem)\s*\(\s*(?:key|id)\)/.test(src)&&src.includes("'lernsafari-token-v1'"))
-               throw Error('Potential persistent child token alias in '+path);
+            if(!src.includes('localStorage'))throw Error('Missing persistent login in '+path);
+            // Teacher admin credentials must still use tab-only sessionStorage.
+            if(path==='cloudflare-integration.js'&&!src.includes('sessionStorage.setItem(ADMIN_KEY'))
+              throw Error('Admin must remain a tab session');
+            if(path==='original/assets/login.js'&&!src.includes('sessionStorage.setItem('+
+              "'lernsafari-admin-token-v2'"))throw Error('Legacy admin session no longer private');
           }
+          const cloud=fs.readFileSync(base+'cloudflare-integration.js','utf8');
+          if(!cloud.includes('localStorage.setItem(CHILD_KEY,childToken)')||
+             !cloud.includes('localStorage.getItem(CHILD_KEY)'))
+            throw Error('Children would be logged out after closing their browser');
+          if(!cloud.includes("enter('cloudflare-admin','Flamingo')"))
+            throw Error('Teacher account display name is not Flamingo');
           const html=fs.readFileSync(base+'index.html','utf8');
           for(const id of ['guestBtn','demoChild','demoTeacher','cloudTeacher'])if(html.includes('id="'+id+'"'))throw Error('Guest/demo control still visible: '+id);
-          console.log('PASS: child credentials are stored only for the tab, no guest or demo login.');
+          console.log('PASS: dedicated student devices remember their own login; teacher access remains tab-only; no guest or demo login.');
           NODE
       - name: Ensure syntax of modified scripts
         run: |

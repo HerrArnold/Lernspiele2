@@ -235,10 +235,24 @@
         const rec=attempts.filter(a=>(!kid||a.username===kid)&&(!games||games.has(String(a.game||a.game_id||''))));
         const scores=highs.filter(a=>(!kid||a.username===kid)&&(!games||games.has(String(a.game||a.game_id||''))));
         const completedGames=new Set(rec.map(x=>x.game||x.game_id).filter(Boolean));
+        const labels=new Map();
+        for(const subject of SUBJECTS)for(const topic of topics[subject])for(const g of topic.games){
+          if(g.file)labels.set(g.file.replace(/\.html$/,''),subject+' · '+topic.name+' · '+g.title);
+        }
+        const grouped=new Map();
+        for(const a of rec){
+          const id=String(a.game||a.game_id||'unbekannt');
+          const row=grouped.get(id)||{id,count:0,values:[]};
+          row.count++;
+          const score=numeric(a.score??a.points??a.correct_count??a.correctCount);
+          if(score!==null)row.values.push(score);
+          grouped.set(id,row);
+        }
         const points=rec.map(a=>numeric(a.score??a.points??a.correct_count??a.correctCount)).filter(x=>x!==null);
         const best=scores.map(a=>numeric(a.score??a.highscore??a.best_score)).filter(x=>x!==null);
         output.innerHTML='<div class="admin-metrics"><article><strong>'+rec.length+'</strong><span>gespeicherte Versuche</span></article><article><strong>'+completedGames.size+'</strong><span>verschiedene Spiele</span></article><article><strong>'+(points.length?Math.max(...points):'—')+'</strong><span>höchste Versuchspunkte*</span></article><article><strong>'+(best.length?Math.max(...best):'—')+'</strong><span>bester Highscore*</span></article></div>'+
           '<p class="admin-small-note">* Punkte nur, sofern die Cloudflare-Daten diesen Wert enthalten; verschiedene Spiele haben unterschiedliche Maximalpunktzahlen.</p>'+
+          (grouped.size?'<h5 class="admin-game-results-title">Ergebnisse nach Lernspiel</h5><div class="admin-game-result-list">'+[...grouped.values()].sort((a,b)=>b.count-a.count).map(g=>'<article><strong>'+html(labels.get(g.id)||g.id.replace(/-/g,' '))+'</strong><span>'+g.count+' Versuche</span><span>'+(g.values.length?'Bester Wert: '+Math.max(...g.values):'Keine Punkte übermittelt')+'</span></article>').join('')+'</div>':'')+
           (rec.length?'<div class="admin-result-rows">'+rec.slice(0,75).map(a=>{
             const rawDate=a.created_at||a.at||a.timestamp||'';
             const rawPoints=numeric(a.score??a.points??a.correct_count??a.correctCount);

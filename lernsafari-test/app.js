@@ -154,7 +154,7 @@ function renderEnglishSection(){
  if(englishMode==='match'){renderEnglishMatching();return}
  if(englishMode==='cards'){renderEnglishCards();return}
  root.innerHTML=`<section class="lagoon-subject english-home"><button class="lagoon-return" id="backToLagoon">← Zur Lern-Lagune</button>
- <div class="subject-header"><span class="subject-symbol" aria-hidden="true">🇬🇧</span><div><div class="eyebrow">Lern-Lagune · Englisch</div><h2>Body & Actions</h2><p>Übe deine Wörter und Sätze zum Körper und zu Bewegungen – ganz ohne Schreiben!</p></div></div>
+ <div class="subject-header"><span class="subject-symbol" aria-hidden="true"><img class="safari-uk-flag" src="assets/uk-flag.svg" alt="" aria-hidden="true"></span><div><div class="eyebrow">Lern-Lagune · Englisch</div><h2>Body & Actions</h2><p>Übe deine Wörter und Sätze zum Körper und zu Bewegungen – ganz ohne Schreiben!</p></div></div>
  <div class="english-mode-grid"><button id="englishStartMatch" class="english-mode-card"><span aria-hidden="true">🧩</span><strong>Wörter zuordnen</strong><small>Finde die passenden englischen und deutschen Ausdrücke. Immer 5 Paare.</small></button>
  <button id="englishStartCards" class="english-mode-card"><span aria-hidden="true">🗂️</span><strong>Karteikarten</strong><small>Sprich die Übersetzung laut aus und drehe die Karte um.</small></button></div>
  <p class="muted">${ENGLISH_VOCI.length} Wörter und Sätze aus deinem aktuellen Voci · Als Gast spielbar · Kein Schreiben nötig</p></section>`;
@@ -170,7 +170,7 @@ function renderEnglishMatching(){
  root.innerHTML=`<section class="music-game english-game"><button class="lagoon-return" id="englishBack">← Zu Englisch</button>
  <div class="game-top"><div><div class="eyebrow">Englisch · Body & Actions</div><h2>Wörter zuordnen</h2><p>${r.solved} von ${ENGLISH_VOCI.length} Paaren gefunden</p></div><strong>🧩 ${r.matched.length}/ ${r.batch.length}</strong></div>
  <div class="english-instruction">Tippe zuerst auf ein englisches Wort und dann auf die passende deutsche Bedeutung.</div>
- <div class="english-pair-columns"><div><h3>🇬🇧 Englisch</h3>${options(r.leftOrder,'left')}</div><div><h3>🇨🇭 Deutsch</h3>${options(r.rightOrder,'right')}</div></div>
+ <div class="english-pair-columns"><div><h3><img class="safari-uk-flag" src="assets/uk-flag.svg" alt="" aria-hidden="true"> Englisch</h3>${options(r.leftOrder,'left')}</div><div><h3>🇨🇭 Deutsch</h3>${options(r.rightOrder,'right')}</div></div>
  <p class="english-match-feedback" role="status">${escapeHtml(r.feedback||'Finde zwei passende Karten.')}</p>
  ${r.matched.length===r.batch.length?`<button class="primary" id="englishNextBatch">${r.remaining.length?'Nächste 5 Paare →':'Ergebnis ansehen'}</button>`:''}</section>`;
  $('#englishBack').onclick=englishBack;
@@ -187,7 +187,7 @@ function renderEnglishMatching(){
 function renderEnglishCards(){
  const root=$('#destinationContent'),r=englishCards,id=r.order[r.index],pair=ENGLISH_VOCI[id],front=pair[r.reversed?1:0],back=pair[r.reversed?0:1];
  root.innerHTML=`<section class="music-game english-game"><button class="lagoon-return" id="englishBack">← Zu Englisch</button>
- <div class="game-top"><div><div class="eyebrow">Englisch · Body & Actions</div><h2>Karteikarten</h2><p>Karte ${r.index+1} von ${r.order.length}</p></div><button type="button" class="english-direction" id="englishDirection">${r.reversed?'🇨🇭 Deutsch → Englisch':'🇬🇧 Englisch → Deutsch'} ↔</button></div>
+ <div class="game-top"><div><div class="eyebrow">Englisch · Body & Actions</div><h2>Karteikarten</h2><p>Karte ${r.index+1} von ${r.order.length}</p></div><button type="button" class="english-direction" id="englishDirection">${r.reversed?'🇨🇭 Deutsch → Englisch':'Englisch → Deutsch'} ↔</button></div>
  <p class="english-instruction">Sprich die Übersetzung laut aus. Tippe dann auf die Karte, um sie aufzudecken.</p>
  <button class="english-flashcard ${r.flipped?'is-flipped':''}" id="englishFlip" aria-label="Karte umdrehen"><span class="english-flash-label">${r.flipped?'Lösung':'Übersetze mündlich'}</span><span class="english-flash-text">${escapeHtml(r.flipped?back:front)}</span><span class="english-flash-hint">${r.flipped?'Tippe, um das Wort wieder zu sehen':'Tippe, um die Lösung zu sehen'}</span></button>
  <div class="english-card-nav"><button id="englishPrev" class="secondary" ${r.index===0?'disabled':''}>← Vorherige</button><button id="englishNext" class="primary">${r.index===r.order.length-1?'Neu mischen ↻':'Nächste Karte →'}</button></div>
@@ -572,7 +572,7 @@ const valleyTopics=[
  {id:'math',name:'Mathematik',symbol:'🔢',color:'blue'},
  {id:'nmg',name:'NMG',symbol:'🐦',color:'green'},
  {id:'music',name:'Musik',symbol:'🎵',color:'yellow'},
- {id:'english',name:'Englisch',symbol:'🇬🇧',color:'pink'}
+ {id:'english',name:'Englisch',symbol:'📘',color:'pink'}
 ];
 const valleyWordBank=[
  {word:'springen',kind:'Verb',hint:'Man kann sagen: ich springe, du springst.'},

@@ -350,3 +350,23 @@
 .safari-topic-page .safari-topic-game:not(:disabled) .safari-topic-arrow {
   font-size:27px;
 }
+
+
+/* SVG statt Flaggen-Emoji: wird auch auf Windows-Laptops korrekt gezeigt. */
+.safari-uk-flag {
+  display:inline-block;
+  width:1.35em;
+  height:auto;
+  aspect-ratio:5/3;
+  vertical-align:-.14em;
+  object-fit:contain;
+  border-radius:2px;
+  box-shadow:0 0 0 1px rgba(32,43,58,.18);
+}
+.safari-topic-card-icon .safari-uk-flag,
+.safari-topic-icon .safari-uk-flag,
+.integration-icon .safari-uk-flag,
+.subject-symbol .safari-uk-flag {
+  width:1.4em;
+  max-width:100%;
+}

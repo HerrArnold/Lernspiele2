@@ -5,7 +5,7 @@ const api=()=>String(window.LERNSAFARI_BACKEND_URL||'https://lernsafari-api.ergo
 let chain=Promise.resolve();
 const small=(v,n=300)=>String(v??'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
 async function send(data){
- let token='';try{token=sessionStorage.getItem('lernsafari-token-v1')||''}catch(_){};
+ let token='';try{token=localStorage.getItem('lernsafari-token-v1')||''}catch(_){};
  if(!token)return;
  const res=await fetch(api()+'/game-attempt',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({game,...data})});
  if(!res.ok){const j=await res.json().catch(()=>({}));throw Error(j.error||'Lernversuch konnte nicht gespeichert werden');}

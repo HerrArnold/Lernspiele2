@@ -1,0 +1,33 @@
+name: Check LernSafari calendar and shared class login
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/cloudflare-integration.js'
+      - 'lernsafari-test/cloudflare-integration.css'
+      - 'lernsafari-test/tests/cloudflare-agenda-browser.mjs'
+      - '.github/workflows/check-cloudflare-agenda-browser.yml'
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Start local development site
+        run: |
+          nohup python3 -m http.server 8765 --directory lernsafari-test >/tmp/agenda-browser.log 2>&1 &
+          sleep 3
+      - name: Test shared class accounts and week controls using mocked Worker responses
+        run: node lernsafari-test/tests/cloudflare-agenda-browser.mjs
+      - name: Save calendar preview screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lernsafari-agenda-1366x768
+          path: /tmp/safari-agenda-*.png
+          if-no-files-found: ignore

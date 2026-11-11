@@ -92,6 +92,49 @@ nach dem blossen Aktualisieren bleibt die Tab-Sitzung erhalten.
 10. Die Änderungen an einem zweiten Gerät und in einem privaten
     Browserfenster gegenprüfen, bevor Kinder sie benutzen.
 
+## Konten für eigene Laptops und Parallelklassen
+
+- **Klasse 3b:** Jedes Kind verwendet weiterhin sein eigenes Tierkonto und
+  bleibt auf seinem persönlichen Laptop auch nach Schliessen des Browsers
+  angemeldet. Das Frontend speichert dazu das **individuelle** Cloudflare-
+  Sitzungstoken im lokalen Browser-Speicher. Abmelden, vom Worker abgewiesene
+  Sitzungen und ein Bereinigen der Browserdaten beenden diese Anmeldung.
+- **Parallelklassen 3a, 3c und 3d:** Je ein gemeinsam verwendeter
+  Klassen-Benutzername (ohne einzelne Kinderkonten). Die Login-Rolle
+  `class` oder `child` wird im neuen Frontend akzeptiert. **Kennwörter
+  nur im Worker/D1 hinterlegen, nie in GitHub oder der Webseite.**
+- **Gleichzeitige Geräte:** Jeder Login muss auf Worker-Seite ein **eigenes
+  Sitzungstoken** bekommen. Beim Anmelden von Gerät B darf der Worker das
+  gültige Token von Gerät A **nicht** invalidieren. Beim Abmelden von Gerät A
+  ausschliesslich dessen Token widerrufen. Alle Konten müssen weiterhin
+  Passwortprüfung und Ablaufzeit besitzen.
+- **Geteilte Daten:** Ein Klassenkonto hat einen gemeinsamen Kontostand und
+  dadurch möglicherweise gemeinsame Punkte/Erfolge. Diese Daten dürfen nicht
+  als individuelle Lernfortschritte einzelner Kinder interpretiert werden.
+  Ein Klassenzugang sollte nicht ohne bewusste Freigabe persönliche
+  Schülerpost, persönliche Aufträge oder andere Tierkonten lesen können.
+- **Admin:** Die Lehrperson verwendet weiterhin `Flamingo` als
+  Benutzernamen und den **bereits bestehenden** Cloudflare-Admincode.
+  Das Admin-Token wird weiterhin nur für den Browser-Tab gespeichert.
+
+### Abnahmetest für parallele Anmeldung (unbedingt auf dem echten Worker)
+
+1. Auf Gerät A als `3a` anmelden und eine erlaubte Lernaufgabe öffnen.
+2. Parallel Gerät B als `3a` anmelden und eine **andere** Aufgabe öffnen.
+3. Auf beiden Geräten Seite aktualisieren, ohne erneut das Passwort einzugeben.
+4. Auf Gerät A abmelden; Gerät B muss weiterhin eingeloggt und arbeitsfähig
+   bleiben. Gerät A darf ab sofort keine geschützten Daten lesen.
+5. Test mit den Konten `3c` und `3d` wiederholen.
+6. Lernspiele und gemeinsame Fortschritte dürfen sich nicht gegenseitig
+   ausloggen oder Sitzungen überschreiben. Bei persönlichen Fortschritten
+   müssen getrennte Tierkonten aus Klasse 3b isoliert bleiben.
+
+**Status:** Persistente Browser-Anmeldung ist umgesetzt und per automatischem
+Frontendtest geprüft. Mehrere unabhängige Tabs/Browsersitzungen sind
+frontendseitig möglich. Ob der **bestehende Worker** gleichzeitig mehrere
+gültige Tokens je Klassenkonto ausgibt und akzeptiert, kann ohne seinen Code
+und echte Testkonten **noch nicht bestätigt werden**.
+
 ## Drei wichtige Sicherheitsgrenzen
 
 **A. Kein automatisches Bestehen durch ein Häkchen.** Die vorbereitete

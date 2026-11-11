@@ -1,0 +1,39 @@
+name: Check Safari light-mode browser
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/index.html'
+      - 'lernsafari-test/app.js'
+      - 'lernsafari-test/cloudflare-integration.js'
+      - 'lernsafari-test/original/index.html'
+      - 'lernsafari-test/original/assets/tierwelt.css'
+      - 'lernsafari-test/original/assets/lernsteuerung.css'
+      - 'lernsafari-test/original/assets/tages-tal-palette.css'
+      - 'lernsafari-test/safari-area-theme.css'
+      - 'lernsafari-test/tests/light-ui-browser.mjs'
+      - '.github/workflows/check-safari-light-browser.yml'
+  workflow_dispatch:
+jobs:
+  browser-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install headless browser
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Serve test site
+        run: |
+          nohup python3 -m http.server 8765 --directory lernsafari-test >/tmp/safari-browser-test.log 2>&1 &
+          sleep 3
+      - name: Check readable light mode at laptop size
+        run: node lernsafari-test/tests/light-ui-browser.mjs
+      - name: Save preview screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safari-light-preview-1366x768
+          path: /tmp/safari-*-light.png
+          if-no-files-found: ignore

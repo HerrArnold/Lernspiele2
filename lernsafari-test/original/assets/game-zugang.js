@@ -10,7 +10,7 @@
  const game=decodeURIComponent(root.location.pathname.split('/').pop().replace(/\.html$/i,''));
  const key='lernsafari-token-v1';
  let stopped=false, checking=false, lastAllowed=false;
- const token=()=>{try{return root.sessionStorage.getItem(key)||''}catch(_){return ''}};
+ const token=()=>{try{return root.localStorage.getItem(key)||''}catch(_){return ''}};
  function gameAllowedFromPlan(data){
   if(!data||typeof data!=='object')return false;
   if(root.LernSafariFocusGate?.makeState)return root.LernSafariFocusGate.makeState(data,{}).allowGame(game);

@@ -74,3 +74,10 @@
 .class-mode-panel #classModeForm[hidden]{display:none!important}
 .class-mode-panel .admin-mode-advanced-label{max-width:440px}
 @media(max-width:700px){.admin-mode-picker{grid-template-columns:1fr}.admin-mode-picker button{min-height:86px;grid-template-columns:48px 1fr;align-items:center;gap:4px}.admin-mode-picker button>span{grid-row:span 2}}
+
+.admin-game-results-title{margin:16px 0 8px;font-size:17px;color:#315c45}
+.admin-game-result-list{display:grid;gap:7px}
+.admin-game-result-list article{display:grid;grid-template-columns:minmax(200px,2fr) minmax(75px,.7fr) minmax(140px,1fr);align-items:center;gap:8px;border:1px solid #d4d8b7;background:#f7f7e8;border-radius:11px;padding:10px;font-size:13px}
+.admin-game-result-list article strong{color:#355d42}
+.admin-game-result-list article span{text-align:right;color:#665843}
+@media(max-width:700px){.admin-game-result-list article{grid-template-columns:1fr 1fr}.admin-game-result-list article strong{grid-column:1/-1}.admin-game-result-list article span{text-align:left}}

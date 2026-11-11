@@ -138,6 +138,12 @@
     if(selectedTopic){return renderGames()}
     return renderSubjects();
   };
+  /* After an English exercise, return to its topic's games instead of the old English menu. */
+  englishBack=function(){
+    englishMode=null;englishMatch=null;englishCards=null;
+    safariGame=null;
+    renderGames();
+  };
   const oldBack=integrationBackConfig;
   integrationBackConfig=function(){
     if(state.destination==='lagoon'&&safariGame&&selectedTopic){

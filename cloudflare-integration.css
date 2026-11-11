@@ -31,3 +31,10 @@
 .cloud-week-table .cloud-event{font-size:12px;line-height:1.3;margin-bottom:6px;padding:7px;background:#fff5d9;border:1px solid #d4bb89;border-radius:7px}
 .cloud-week-table .cloud-event p{margin:3px 0 0}
 .cloud-week-table .cloud-empty{color:#937e64}
+
+
+/* Agenda event colours from the existing classroom calendar. */
+.cloud-week-table .cloud-event.ha{background:#e4efff;border-color:#8db4ec;color:#244c85}
+.cloud-week-table .cloud-event.lk{background:#dff1d9;border-color:#83b979;color:#275e37}
+.cloud-week-table .cloud-event.special{background:#ffe3ed;border-color:#e8a2bb;color:#8c3553}
+.cloud-week-table .cloud-event.free{background:#ece8df;border-color:#b5a994;color:#645647}

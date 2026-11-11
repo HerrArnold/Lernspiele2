@@ -150,3 +150,8 @@
  filter:drop-shadow(0 5px 4px #4b361c55);
 }
 .baobab-new-map .baobab-hotspot{z-index:2}
+
+/* Full hand-painted artwork already includes the five animals;
+   only the illustration fallback needs separately positioned stickers. */
+.modal-kind-map .map-has-character-art .map-mascot{display:none!important}
+.baobab-new-map.baobab-has-character-art>img.baobab-extra-flamingo{display:none!important}

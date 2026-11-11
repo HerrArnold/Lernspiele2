@@ -154,3 +154,16 @@
 .integration-subjects button{display:inline-flex;align-items:center;gap:12px;justify-content:center}
 .integration-hero .integration-icon:has(.safari-subject-logo){background:transparent;border:0;box-shadow:none}
 .integration-game-card .safari-subject-logo{width:38px}
+
+
+/* Tages-Tal: wide reading area, orange sign and hornbill, preserving existing daily tasks. */
+.is-valley .destination-panel{width:min(1530px,98vw)!important;max-width:1530px!important}
+.integration-area-valley{max-width:1480px!important}
+.integration-area-valley .integration-game-surface{width:100%;max-width:none;padding:8px}
+.integration-area-valley .original-frame.original-daily{display:block;width:100%;min-height:850px;height:min(94vh,1100px);border-radius:12px}
+.valley-hornbill-banner{position:relative;min-height:205px;display:flex;align-items:center;gap:12px;justify-content:center;overflow:hidden;padding:10px 25px;border-radius:22px;background:linear-gradient(105deg,#f9d87d,#f6b154 55%,#ffde96);border:4px solid #c16f24;box-shadow:inset 0 2px #fff3b9,0 4px 11px #70451b35}
+.valley-hornbill-art{height:180px;width:160px;flex:none;filter:drop-shadow(3px 4px 1px #77451b40)}
+.valley-hornbill-sign{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:138px;min-width:320px;max-width:680px;width:65%;padding:17px 22px;background:linear-gradient(160deg,#c7833d,#aa612b 62%,#8d491f);color:#fff6d8;text-align:center;border:5px solid #77411f;border-radius:12px 20px 15px 18px;box-shadow:inset 0 3px #f4c784aa,0 6px #65371c70;text-shadow:0 2px 2px #4b281a}
+.valley-hornbill-sign strong{font-size:clamp(29px,4vw,48px);line-height:1}
+.valley-hornbill-sign span{font-size:clamp(13px,1.65vw,20px);font-weight:800}
+@media(max-width:650px){.is-valley .destination-panel{padding:10px!important}.valley-hornbill-banner{min-height:145px;padding:5px;gap:1px}.valley-hornbill-art{height:110px;width:95px}.valley-hornbill-sign{min-width:0;width:calc(100% - 95px);padding:9px 4px;min-height:108px}.valley-hornbill-sign strong{font-size:27px}.valley-hornbill-sign span{font-size:11px}.integration-area-valley .original-frame.original-daily{min-height:730px}}

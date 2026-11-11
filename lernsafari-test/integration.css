@@ -294,3 +294,59 @@
   .safari-topic-game{padding:12px}
   .safari-topic-status{white-space:normal}
 }
+
+
+/* Fachfarben – klar wiedererkennbar in Themen- UND Spieleansicht.
+   Mathe blau, Deutsch rot, NMG gruen, Musik weiss, Englisch gelb. */
+.safari-topic-page.safari-subject-math {
+  --subject-bg:#dcedff;--subject-light:#eff7ff;--subject-edge:#76a9d8;
+  --subject-ink:#24577e;--subject-hover:#c8e4ff;
+}
+.safari-topic-page.safari-subject-german {
+  --subject-bg:#f8dddd;--subject-light:#fff0ed;--subject-edge:#d9908e;
+  --subject-ink:#8b3434;--subject-hover:#f4cccc;
+}
+.safari-topic-page.safari-subject-nmg {
+  --subject-bg:#dcebd5;--subject-light:#edf5e5;--subject-edge:#8aaf7e;
+  --subject-ink:#32623b;--subject-hover:#cee5c3;
+}
+.safari-topic-page.safari-subject-music {
+  --subject-bg:#ffffff;--subject-light:#fffefa;--subject-edge:#c5c4be;
+  --subject-ink:#414c58;--subject-hover:#f0f1f3;
+}
+.safari-topic-page.safari-subject-english {
+  --subject-bg:#fff0ac;--subject-light:#fff9db;--subject-edge:#d7b951;
+  --subject-ink:#71551d;--subject-hover:#ffe887;
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-header {
+  background:linear-gradient(125deg,var(--subject-bg),var(--subject-light));
+  border-color:var(--subject-edge);
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-header h2,
+.safari-topic-page[class*="safari-subject-"] .integration-kicker {
+  color:var(--subject-ink);
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-icon {
+  background:var(--subject-light);border-color:var(--subject-edge);
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-card {
+  background:linear-gradient(145deg,var(--subject-light),var(--subject-bg));
+  border-color:var(--subject-edge);color:var(--subject-ink);
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-game:not(:disabled) {
+  background:var(--subject-light);
+  border-color:var(--subject-edge);
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-card:hover,
+.safari-topic-page[class*="safari-subject-"] .safari-topic-card:focus-visible,
+.safari-topic-page[class*="safari-subject-"] .safari-topic-game:not(:disabled):hover,
+.safari-topic-page[class*="safari-subject-"] .safari-topic-game:not(:disabled):focus-visible {
+  background:var(--subject-hover);
+  border-color:var(--subject-ink);
+}
+.safari-topic-page[class*="safari-subject-"] .safari-topic-arrow {
+  color:var(--subject-ink);
+}
+.safari-topic-page .safari-topic-game:not(:disabled) .safari-topic-arrow {
+  font-size:27px;
+}

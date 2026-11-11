@@ -10,7 +10,7 @@ const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const labels={schach:'Schach',tiere:'Tierwelt',lernportale:'Lernportale',advent:'Adventskalender','andere-spiele':'Andere Lernspiele'};
 const stepLabels={word:'Zahl als Wort',parity:'Gerade oder ungerade?',place:'Stellentafel mit Punkten',decomp:'Zerlegung',art:'Hunderter, Zehner und Einer',line:'Zahlenstrahl'};
 let plan={assignments:[],done:[],blocks:[]},report=null,activity='',planPromise=null,refreshing=false,onlineTimer=null,previousPage='',hasUser=false,lastPresence=0,adminTimer=null;
-function token(){try{return sessionStorage.getItem('lernsafari-token-v1')||'';}catch(_){return '';}}
+function token(){try{return localStorage.getItem('lernsafari-token-v1')||'';}catch(_){return '';}}
 async function childFetch(path,method='GET',body){if(!token())throw Error('Bitte melde dich an.');const r=await fetch(api()+path,{method,headers:{'content-type':'application/json',Authorization:'Bearer '+token()},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Verbindung fehlgeschlagen');return d;}
 async function adminFetch(path,method='GET',body){if(!window.SafariLogin?.adminRequest)throw Error('Admin-Zugang nicht bereit');return window.SafariLogin.adminRequest(path,method,body);}
 function account(){return onHome?window.SafariLogin?.auth()?.role==='child':hasUser;}

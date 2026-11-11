@@ -1,0 +1,36 @@
+name: Check LernSafari topic navigation
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/topic-navigation.js'
+      - 'lernsafari-test/integration.js'
+      - 'lernsafari-test/index.html'
+      - '.github/workflows/check-lernsafari-topics.yml'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check lernsafari-test/app.js
+          node --check lernsafari-test/integration.js
+          node --check lernsafari-test/topic-navigation.js
+      - name: Topic navigation links and included game files
+        run: |
+          node - <<'NODE'
+          const fs=require('fs');
+          const root='lernsafari-test/';
+          const html=fs.readFileSync(root+'index.html','utf8');
+          const script=fs.readFileSync(root+'topic-navigation.js','utf8');
+          if(!html.includes('src="topic-navigation.js"')) throw Error('topic navigation is not loaded');
+          const files=[...script.matchAll(/'([a-z0-9-]+\.html)'/g)].map(m=>m[1]);
+          for(const file of files)if(!fs.existsSync(root+'original/spiele/'+file))throw Error('Missing game: '+file);
+          for(const name of ['Einmaleins','Tausenderraum','Briefe','Vom Hören zum Sprechen','Hörverständnis','Rabenvögel','Solmisation und Rhythmus','I bi da für di','My body']){
+            if(!script.includes(name))throw Error('Missing topic: '+name);
+          }
+          console.log('Validated',files.length,'game references and topic labels');
+          NODE

@@ -15,7 +15,8 @@
   ['lagoon','🌊 Lern-Lagune','Fach → Thema → Spiel'],
   ['valley','🌞 Tages-Tal','Zahl des Tages und Tagesaufgaben'],
   ['baobab','🌳 Baobab-Baum','Wissensangebote und Advent'],
-  ['agenda','🧭 Kompass','Agenda und Termine']
+  ['agenda','🧭 Kompass','Agenda und Termine'],
+  ['help','🦩 Lernhilfen','Unterstützung und Lernportale']
  ];
  function catalog(allowed){
   const permitted=new Set(allowed.map(x=>x.v));
@@ -113,6 +114,7 @@
    }else{
     const ids=area==='valley'?targets.filter(x=>x.v.startsWith('daily:')||x.v.startsWith('number:')||x.v==='page:aufgaben'):
       area==='baobab'?safeTargetOptions(targets,['page:tiere','page:advent']):
+      area==='help'?safeTargetOptions(targets,['page:lernportale']):
       safeTargetOptions(targets,['page:agenda']);
     if(!ids.some(x=>x.v===selectedTarget))selectedTarget=ids[0]?.v||'';
     controls.innerHTML=createSelect('2. Lerninhalt','adminPickAreaTarget',ids.map(x=>[x.v,x.label]));
@@ -154,7 +156,7 @@
         selectedSubject=subject;selectedTopic=topic.name;
       }
     }else{area=selectedTarget.startsWith('daily:')||selectedTarget.startsWith('number:')||selectedTarget==='page:aufgaben'?'valley':
-      ['page:tiere','page:advent'].includes(selectedTarget)?'baobab':'agenda';scope='game'}
+      ['page:tiere','page:advent'].includes(selectedTarget)?'baobab':selectedTarget==='page:lernportale'?'help':'agenda';scope='game'}
     redraw();
   }));
   assignForm.addEventListener('submit',async e=>{

@@ -51,7 +51,7 @@
       ]}
     ],
     Englisch:[
-      {name:'Unit 2 "My body"',icon:'🇬🇧',games:[
+      {name:'Unit 2 "My body"',icon:'<img class="safari-uk-flag" src="assets/uk-flag.svg" alt="" aria-hidden="true">',games:[
         ['Vocabulary: Wörter zuordnen','english:match'],
         ['Vocabulary: Karteikarten','english:cards']
       ]}

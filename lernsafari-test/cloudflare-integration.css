@@ -76,3 +76,30 @@
 .cloud-event.cloud-event-lk strong,.cloud-event.cloud-event-lk p {color:#244c2b}
 .cloud-event.cloud-event-special strong,.cloud-event.cloud-event-special p {color:#642923}
 .cloud-event.cloud-event-free strong,.cloud-event.cloud-event-free p {color:#5c481a}
+
+/* Cloudflare calendar: accessible week controls and unmistakable noncurrent-week cue. */
+.modal-kind-agenda .cloud-agenda-nav{display:grid;grid-template-columns:minmax(145px,1fr) minmax(205px,2fr) minmax(145px,1fr);align-items:center;gap:11px;margin:7px 0 10px}
+.modal-kind-agenda .cloud-agenda-week-center{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;color:#3c3b2d}
+.modal-kind-agenda .cloud-agenda-week-center strong{font-size:clamp(15px,1.5vw,20px);color:#28543d;font-weight:900}
+.modal-kind-agenda .cloud-agenda-week-center small{font-size:12px;color:#645843}
+.modal-kind-agenda .cloud-agenda-week-button,
+.modal-kind-agenda .cloud-agenda-today-button{border:2px solid #9d7947;background:#fff2d7;border-radius:12px;padding:9px 13px;color:#4c3823;font:inherit;font-size:clamp(12px,1.15vw,16px);font-weight:850;cursor:pointer;box-shadow:0 3px 0 #a4835a45}
+.modal-kind-agenda .cloud-agenda-week-button:hover,
+.modal-kind-agenda .cloud-agenda-today-button:hover:not(:disabled){background:#f8dfaa;border-color:#8a622d}
+.modal-kind-agenda .cloud-agenda-week-button:focus-visible,
+.modal-kind-agenda .cloud-agenda-today-button:focus-visible{outline:3px solid #246a86;outline-offset:3px}
+.modal-kind-agenda .cloud-agenda-today-button{background:#dceee0;border-color:#6eac7b;color:#244e34}
+.modal-kind-agenda .cloud-agenda-today-button:disabled{opacity:.65;cursor:default;box-shadow:none}
+.modal-kind-agenda .cloud-agenda-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.modal-kind-agenda .cloud-agenda-other-week{padding:9px 13px;background:#fff0d7;border:2px solid #d39448;border-radius:10px;color:#744219;font-weight:850;margin:0;line-height:1.4}
+.modal-kind-agenda .cloud-agenda-current-week{padding:6px 0;color:#326344;font-weight:750;margin:0}
+.modal-kind-agenda .cloud-day-today{display:inline-block;padding:1px 5px;border-radius:5px;background:#b84b72;color:#fff;font-size:10px}
+.modal-kind-agenda .cloud-agenda-no-events{color:#655947}
+.modal-kind-agenda .cloud-agenda-loading{padding:32px;text-align:center;color:#476a4e}
+.modal-kind-agenda .cloud-agenda-error{background:#fff9ed;color:#5c3922;border:2px solid #d3b58b}
+@media(max-width:690px){
+ .modal-kind-agenda .cloud-agenda-nav{grid-template-columns:1fr 1fr;gap:6px}
+ .modal-kind-agenda .cloud-agenda-week-center{grid-column:1/-1;grid-row:1}
+ .modal-kind-agenda .cloud-agenda-week-button{padding:9px 6px;font-size:12px}
+ .modal-kind-agenda .cloud-agenda-other-week{font-size:12px}
+}

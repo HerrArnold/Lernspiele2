@@ -40,7 +40,7 @@
    const identity=await call('/me',{token:response.token});
    if(identity.role!=='child')throw Error('Dieses Konto ist kein Kinderkonto. Verwende den Lehrpersonenzugang.');
    childToken=response.token;person=identity;
-   try{localStorage.setItem(CHILD_KEY,childToken)}catch(_){/* transient session only */}
+   try{sessionStorage.setItem(CHILD_KEY,childToken);localStorage.removeItem(CHILD_KEY)}catch(_){/* transient session only */}
    document.querySelector('#password').value='';
    enter('cloudflare-child',String(identity.username||response.username||username));
    refreshClassFocus();
@@ -65,17 +65,17 @@
  async function signOut(){
   if(childToken){try{await call('/logout',{method:'POST',body:{}})}catch(_){/* invalidate locally anyway */}}
   childToken='';person=null;adminToken='';plan=null;adminData=null;focusGate=null;
-  try{localStorage.removeItem(CHILD_KEY);sessionStorage.removeItem(ADMIN_KEY)}catch(_){}
+  try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY);sessionStorage.removeItem(ADMIN_KEY)}catch(_){}
  }
  async function restore(){
-  try{childToken=localStorage.getItem(CHILD_KEY)||'';adminToken=sessionStorage.getItem(ADMIN_KEY)||''}catch(_){childToken='';adminToken=''}
+  try{localStorage.removeItem(CHILD_KEY);childToken=sessionStorage.getItem(CHILD_KEY)||'';adminToken=sessionStorage.getItem(ADMIN_KEY)||''}catch(_){childToken='';adminToken=''}
   if(adminToken){
    try{await call('/admin-session',{admin:true});enter('cloudflare-admin','Lehrperson');return}
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){
    try{const identity=await call('/me');if(identity.role!=='child')throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();return}
-   catch(_){childToken='';try{localStorage.removeItem(CHILD_KEY)}catch(_){}}
+   catch(_){childToken='';try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY)}catch(_){}}
   }
  }
  const originalRender=renderModal;

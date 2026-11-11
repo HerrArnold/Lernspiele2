@@ -56,7 +56,7 @@
    if(!result?.token)throw Error('Cloudflare hat keinen Adminzugang erteilt.');
    await call('/admin-session',{admin:true,token:result.token});
    adminToken=result.token;try{sessionStorage.setItem(ADMIN_KEY,adminToken)}catch(_){/* just this tab */}
-   document.querySelector('#teacherDialog').hidden=true;
+   const legacyDialog=document.querySelector('#teacherDialog');if(legacyDialog)legacyDialog.hidden=true;
    enter('cloudflare-admin','Lehrperson');
    setTimeout(()=>{if(loggedTeacher()&&state.screen==='camp')showModal('admin')},760);
   }catch(e){const el=document.querySelector('#teacherError');if(el)el.textContent=errorText(e);notify('Admin-Anmeldung fehlgeschlagen.');}
@@ -397,16 +397,9 @@
  setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},20000);
 
  // Existing app.js login placeholder handles submit in bubble phase; intercept for authenticated login.
- document.querySelector('#loginForm').addEventListener('submit',e=>{e.preventDefault();e.stopImmediatePropagation();childLogin(document.querySelector('#username').value,document.querySelector('#password').value)},{capture:true});
+ document.querySelector('#loginForm').addEventListener('submit',e=>{e.preventDefault();e.stopImmediatePropagation();const username=document.querySelector('#username').value.trim();const password=document.querySelector('#password').value;if(username.toLocaleLowerCase('de-CH')==='flamingo'){adminLogin(password).finally(()=>{document.querySelector('#password').value=''})}else{childLogin(username,password)}},{capture:true});
  document.querySelector('#logoutBtn').addEventListener('click',e=>{if(!loggedChild()&&!loggedTeacher())return;e.preventDefault();e.stopImmediatePropagation();signOut().finally(()=>exit())},{capture:true});
- document.querySelector('#cloudTeacher').addEventListener('click',()=>{document.querySelector('#teacherDialog').hidden=false;document.querySelector('#teacherCode').focus()});
- const dialog=document.createElement('div');dialog.id='teacherDialog';dialog.className='cloud-dialog';dialog.hidden=true;
- dialog.innerHTML='<div class="cloud-dialog-card" role="dialog" aria-modal="true" aria-labelledby="teacherTitle"><button type="button" id="teacherClose" class="cloud-dialog-close" aria-label="Schliessen">×</button><span class="pd-eyebrow">Cloudflare · Lehrperson</span><h2 id="teacherTitle">🔐 Sicher anmelden</h2><p>Gib den bisherigen Cloudflare-Admincode ein. Der Code wird nur an deinen Cloudflare Worker übermittelt.</p><form id="teacherForm"><label for="teacherCode">Admincode</label><input id="teacherCode" type="password" autocomplete="current-password" required><button type="submit" class="pd-action">Mit Cloudflare prüfen</button><p id="teacherError" role="status"></p></form><p class="pd-warning">Kein Demo-Zugang: Cloudflare prüft und erteilt die Berechtigung.</p></div>';
- document.body.append(dialog);
- document.querySelector('#teacherClose').onclick=()=>{dialog.hidden=true;document.querySelector('#teacherCode').value=''};
- dialog.onclick=e=>{if(e.target===dialog)dialog.hidden=true};
- document.querySelector('#teacherForm').onsubmit=e=>{e.preventDefault();const c=document.querySelector('#teacherCode');adminLogin(c.value).finally(()=>c.value='')};
- document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!dialog.hidden)dialog.hidden=true});
+
  restore();
  window.LernSafariCloud={getIdentity:()=>person?.username||null,hasChild:loggedChild,hasAdmin:loggedTeacher,refreshLogbook:renderChildLogbook};
 })();

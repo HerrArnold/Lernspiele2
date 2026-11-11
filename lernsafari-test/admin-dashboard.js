@@ -74,6 +74,8 @@
    banner.classList.toggle('admin-banner-compact',name!=='home');
    shell.scrollIntoView({block:'start',behavior:'smooth'});
    if(name==='progress')renderProgress();
+   if(name==='activity')renderLiveActivity();
+   if(name==='messages')checkMessagesAvailability();
   }
   deck.querySelectorAll('[data-admin-section]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.adminSection)));
 
@@ -192,9 +194,68 @@
       return '<article><strong>'+html(user)+'</strong><span>'+html(activity)+'</span><small>'+html(at?String(at):'Keine Uhrzeit übermittelt')+'</small></article>';
     }).join('')+'</div>':'<p>Cloudflare meldet momentan keine Anwesenheitsdaten.</p>');
   sections.activity.prepend(livePanel);
+  const liveRefresh=document.createElement('div');
+  liveRefresh.className='admin-live-refresh';liveRefresh.innerHTML='<button type="button" class="pd-secondary" id="adminLiveReload">🔄 Live-Aktivität aktualisieren</button><p class="admin-small-note" role="status" id="adminLiveStatus">Eine Aktivitätsanzeige wird nur nach serverseitiger Bestätigung aktiviert.</p>';
+  livePanel.prepend(liveRefresh);
+  async function renderLiveActivity(){
+    const status=livePanel.querySelector('#adminLiveStatus');
+    status.textContent='Sichere Aktivitätsmeldungen werden geprüft …';
+    try{
+      const data=await call('/admin-live-activity',{admin:true});
+      if(!livePanel.isConnected)return;
+      if(data.available!==true||!Array.isArray(data.students))throw Error('Dienst nicht verfügbar');
+      const areaNames={camp:'Camp',map:'Karte',logbook:'Logbuch',lagoon:'Lern-Lagune',valley:'Tages-Tal',baobab:'Baobab-Baum',oasis:'Oase',agenda:'Agenda',mail:'Briefkasten',help:'Lernhilfe',game:'Lernspiel'};
+      let grid=livePanel.querySelector('#adminLiveVerified');
+      if(!grid){grid=document.createElement('div');grid.id='adminLiveVerified';livePanel.append(grid)}
+      grid.innerHTML=data.students.length?'<div class="admin-presence-grid">'+data.students.map(a=>'<article><strong>'+html(a.username)+'</strong><span>'+html(a.game?'🎮 '+a.game:areaNames[a.area]||a.area)+'</span><small>'+html(a.last_seen||'')+'</small></article>').join('')+'</div>':
+        '<p>In den letzten zwei Minuten hat kein angemeldetes Kind Aktivität gemeldet.</p>';
+      status.textContent=data.students.length+' angemeldete Kinder in den letzten zwei Minuten gemeldet. Keine Daten älter als zwei Minuten.';
+    }catch(_){status.textContent='Live-Aktivität noch nicht freigeschaltet: Cloudflare muss den geschützten Aktivitätsdienst bereitstellen.'}
+  }
+  livePanel.querySelector('#adminLiveReload').onclick=renderLiveActivity;
   const messagePanel=document.createElement('div');messagePanel.className='pd-panel';
-  messagePanel.innerHTML='<h4>✉️ Mitteilung vorbereiten</h4><p>Du kannst hier eine Nachricht formulieren. Das Senden an Kinderkonten benötigt eine bestätigte Cloudflare-Nachrichtenfunktion; es wird nichts unbemerkt verschickt.</p><label>Betreff<input id="adminMessageSubject" maxlength="100" placeholder="z. B. Morgen mitbringen"></label><label>Nachricht<textarea id="adminMessageText" rows="5" maxlength="1500" placeholder="Deine Nachricht an die Kinder …"></textarea></label><div class="admin-message-actions"><button type="button" class="pd-action" id="adminMessageCopy">Text kopieren</button><button type="button" class="pd-secondary" id="adminMessageLegacy">Bestehende Verwaltung öffnen</button></div><p id="adminMessageStatus" role="status"></p>';
+  messagePanel.innerHTML='<h4>✉️ Nachricht an die Kinder</h4><p>Mitteilungen werden nur über die geprüfte Cloudflare-Lehrpersonen-Sitzung versendet.</p><label>Empfänger<select id="adminMessageRecipient"><option value="all">Ganze Klasse</option>'+kids.map(k=>'<option value="'+html(k.username)+'">'+html(k.username)+'</option>').join('')+'</select></label><label>Betreff<input id="adminMessageSubject" maxlength="100" placeholder="z. B. Morgen mitbringen"></label><label>Nachricht<textarea id="adminMessageText" rows="5" maxlength="1500" placeholder="Deine Nachricht an die Kinder …"></textarea></label><div class="admin-message-actions"><button type="button" class="pd-action" id="adminMessageSend" disabled>Sicher versenden</button><button type="button" class="pd-secondary" id="adminMessageCopy">Text kopieren</button><button type="button" class="pd-secondary" id="adminMessageLegacy">Bestehende Verwaltung öffnen</button></div><p id="adminMessageStatus" role="status">Nachrichtenfunktion wird beim Öffnen geprüft.</p><section id="adminSentMessages" aria-label="Zuletzt versendete Nachrichten"></section>';
   sections.messages.append(messagePanel);
+  let messageServiceAvailable=false;
+  async function checkMessagesAvailability(){
+    const status=messagePanel.querySelector('#adminMessageStatus');
+    status.textContent='Geschützte Nachrichtenfunktion wird geprüft …';
+    try{
+      const data=await call('/admin-messages',{admin:true});
+      if(data.available!==true||!Array.isArray(data.messages))throw Error('Keine Nachrichten-API');
+      messageServiceAvailable=true;
+      messagePanel.querySelector('#adminMessageSend').disabled=false;
+      status.textContent='Nachrichten können sicher über Cloudflare versendet werden.';
+      const list=messagePanel.querySelector('#adminSentMessages');
+      list.innerHTML='<h5>Zuletzt versendet</h5>'+(data.messages.length?
+        '<div class="admin-sent-list">'+data.messages.slice(0,20).map(m=>'<article><strong>'+html(m.subject)+'</strong><span>'+html(m.audience==='all'?'Ganze Klasse':m.recipient||'Ein Kind')+'</span><small>'+html(m.created_at||'')+'</small></article>').join('')+'</div>':
+        '<p>Es wurden noch keine Nachrichten versendet.</p>');
+    }catch(_){
+      messageServiceAvailable=false;
+      messagePanel.querySelector('#adminMessageSend').disabled=true;
+      status.textContent='Senden noch nicht möglich: Die Cloudflare-Nachrichten-API ist nicht aktiviert. Du kannst den Text weiterhin kopieren.';
+    }
+  }
+  messagePanel.querySelector('#adminMessageSend').onclick=async()=>{
+    if(!messageServiceAvailable)return;
+    const recipient=messagePanel.querySelector('#adminMessageRecipient').value;
+    const subject=messagePanel.querySelector('#adminMessageSubject').value.trim();
+    const body=messagePanel.querySelector('#adminMessageText').value.trim();
+    const status=messagePanel.querySelector('#adminMessageStatus');
+    if(!subject||!body){status.textContent='Bitte Betreff und Nachricht eingeben.';return;}
+    const audience=recipient==='all'?'all':'child';
+    const label=recipient==='all'?'die ganze Klasse':recipient;
+    if(!confirm('Nachricht wirklich an '+label+' senden?'))return;
+    const button=messagePanel.querySelector('#adminMessageSend');button.disabled=true;
+    try{
+      const result=await call('/admin-messages',{method:'POST',admin:true,body:{audience,recipient:audience==='child'?recipient:undefined,subject,body}});
+      if(result.ok!==true)throw Error('Keine Serverbestätigung');
+      status.textContent='✅ Nachricht wurde auf Cloudflare gespeichert und ist für '+label+' sichtbar.';
+      messagePanel.querySelector('#adminMessageSubject').value='';
+      messagePanel.querySelector('#adminMessageText').value='';
+      await checkMessagesAvailability();
+    }catch(err){status.textContent='Nicht gesendet: '+html(err.message||err);button.disabled=false;}
+  };
   messagePanel.querySelector('#adminMessageCopy').onclick=async()=>{
     const subject=messagePanel.querySelector('#adminMessageSubject').value.trim(),body=messagePanel.querySelector('#adminMessageText').value.trim();
     if(!body){messagePanel.querySelector('#adminMessageStatus').textContent='Bitte zuerst einen Nachrichtentext eingeben.';return}

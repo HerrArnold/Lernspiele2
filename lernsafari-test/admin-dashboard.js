@@ -205,14 +205,24 @@
       if(!livePanel.isConnected)return;
       if(data.available!==true||!Array.isArray(data.students))throw Error('Dienst nicht verfügbar');
       const areaNames={camp:'Camp',map:'Karte',logbook:'Logbuch',lagoon:'Lern-Lagune',valley:'Tages-Tal',baobab:'Baobab-Baum',oasis:'Oase',agenda:'Agenda',mail:'Briefkasten',help:'Lernhilfe',game:'Lernspiel'};
+      const gameTitles=new Map();
+      for(const subject of SUBJECTS)for(const topic of topics[subject]||[])for(const game of topic.games){
+        if(game.file)gameTitles.set(game.file.replace(/\\.html$/,''),game.title);
+      }
       let grid=livePanel.querySelector('#adminLiveVerified');
       if(!grid){grid=document.createElement('div');grid.id='adminLiveVerified';livePanel.append(grid)}
-      grid.innerHTML=data.students.length?'<div class="admin-presence-grid">'+data.students.map(a=>'<article><strong>'+html(a.username)+'</strong><span>'+html(a.game?'🎮 '+a.game:areaNames[a.area]||a.area)+'</span><small>'+html(a.last_seen||'')+'</small></article>').join('')+'</div>':
+      grid.innerHTML=data.students.length?'<div class="admin-presence-grid">'+data.students.map(a=>'<article><strong>'+html(a.username)+'</strong><span>'+html(a.game?'🎮 '+(gameTitles.get(a.game)||a.game):areaNames[a.area]||a.area)+'</span><small>'+html(a.last_seen||'')+'</small></article>').join('')+'</div>':
         '<p>In den letzten zwei Minuten hat kein angemeldetes Kind Aktivität gemeldet.</p>';
       status.textContent=data.students.length+' angemeldete Kinder in den letzten zwei Minuten gemeldet. Keine Daten älter als zwei Minuten.';
     }catch(_){status.textContent='Live-Aktivität noch nicht freigeschaltet: Cloudflare muss den geschützten Aktivitätsdienst bereitstellen.'}
   }
   livePanel.querySelector('#adminLiveReload').onclick=renderLiveActivity;
+  // Refresh only while the authenticated teacher is viewing this workspace.
+  // Stop the timer when the administration view is replaced.
+  const liveTimer=setInterval(()=>{
+    if(!livePanel.isConnected){clearInterval(liveTimer);return;}
+    if(sections.activity.isConnected&&!sections.activity.hidden)renderLiveActivity();
+  },30000);
   const messagePanel=document.createElement('div');messagePanel.className='pd-panel';
   messagePanel.innerHTML='<h4>✉️ Nachricht an die Kinder</h4><p>Mitteilungen werden nur über die geprüfte Cloudflare-Lehrpersonen-Sitzung versendet.</p><label>Empfänger<select id="adminMessageRecipient"><option value="all">Ganze Klasse</option>'+kids.map(k=>'<option value="'+html(k.username)+'">'+html(k.username)+'</option>').join('')+'</select></label><label>Betreff<input id="adminMessageSubject" maxlength="100" placeholder="z. B. Morgen mitbringen"></label><label>Nachricht<textarea id="adminMessageText" rows="5" maxlength="1500" placeholder="Deine Nachricht an die Kinder …"></textarea></label><div class="admin-message-actions"><button type="button" class="pd-action" id="adminMessageSend" disabled>Sicher versenden</button><button type="button" class="pd-secondary" id="adminMessageCopy">Text kopieren</button><button type="button" class="pd-secondary" id="adminMessageLegacy">Bestehende Verwaltung öffnen</button></div><p id="adminMessageStatus" role="status">Nachrichtenfunktion wird beim Öffnen geprüft.</p><section id="adminSentMessages" aria-label="Zuletzt versendete Nachrichten"></section>';
   sections.messages.append(messagePanel);

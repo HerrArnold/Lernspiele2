@@ -1,0 +1,52 @@
+name: Check Safari Karte & Baobab
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/app.js'
+      - 'lernsafari-test/integration.js'
+      - 'lernsafari-test/baobab-projects.*'
+      - 'lernsafari-test/admin-dashboard.js'
+      - 'lernsafari-test/assets/karte-ohne-schilder.svg'
+      - 'lernsafari-test/assets/baobab-ohne-schilder.svg'
+      - 'lernsafari-test/cloudflare-worker/projects-*'
+      - 'lernsafari-test/tests/cloudflare-projects.test.mjs'
+      - '.github/workflows/check-safari-map-baobab.yml'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax
+        run: |
+          node --check lernsafari-test/app.js
+          node --check lernsafari-test/integration.js
+          node --check lernsafari-test/baobab-projects.js
+          node --check lernsafari-test/admin-dashboard.js
+          node --check lernsafari-test/cloudflare-worker/projects-service.mjs
+          node --check lernsafari-test/cloudflare-worker/projects-d1-store.mjs
+      - name: Validate image-background buttons and destination targets
+        run: |
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const root='lernsafari-test/';
+          const app=fs.readFileSync(root+'app.js','utf8');
+          const integration=fs.readFileSync(root+'integration.js','utf8');
+          const project=fs.readFileSync(root+'baobab-projects.js','utf8');
+          const admin=fs.readFileSync(root+'admin-dashboard.js','utf8');
+          for(const name of ['karte-ohne-schilder.svg','baobab-ohne-schilder.svg']){
+            const svg=fs.readFileSync(root+'assets/'+name,'utf8');
+            if(!svg.includes('<svg')||!svg.includes('</svg>'))throw Error('Invalid SVG container '+name);
+            if(/<text[\s>]|<foreignObject/i.test(svg))throw Error('Baked text in illustration '+name);
+          }
+          for(const place of ['valley','lagoon','camp','baobab','oasis'])if(!app.includes("['"+place+"'"))throw Error('Missing map location '+place);
+          for(const section of ['animals','projects','advent'])if(!integration.includes('data-baobab-new="'+section+'"'))throw Error('Missing Baobab button '+section);
+          for(const obsolete of ['data-baobab-new="stories"','data-baobab-new="motto"','data-baobab-new="compliments"'])if(integration.includes(obsolete))throw Error('Obsolete Baobab section '+obsolete);
+          if(!integration.includes("original/index.html#tiere"))throw Error('Class animals link missing');
+          if(!admin.includes("id:'projects'"))throw Error('Project admin workspace missing');
+          if(!project.includes('/admin-projects'))throw Error('Secure photo publishing missing');
+          console.log('Sign-free map, Baobab buttons, direct animal link and project admin verified');
+          NODE
+      - name: Project API security tests
+        run: node --test lernsafari-test/tests/cloudflare-projects.test.mjs

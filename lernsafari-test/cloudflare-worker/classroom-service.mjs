@@ -68,7 +68,15 @@ export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
   const m=activeMode(saved,now());
   const assignments=await store.childAssignments(username);
   const allowed=requiredForChild(m,assignments,username,Object.fromEntries(games),now());
-  const verified=idsOf(await store.verifiedIds(username));
+  const teacherVerified=idsOf(await store.verifiedIds(username));
+  // Optional TRUSTED server grading adapter. This must only return assignment
+  // IDs independently graded by the Worker itself from canonical answers or
+  // teacher-reviewed submissions. Never use client-submitted points as proof.
+  const autoVerified=typeof store.trustedCompletionIds==='function'
+    ? idsOf(await store.trustedCompletionIds(username,{assignments,mode:m}))
+    : [];
+  const eligible=new Set(assignments.filter(a=>validForChild(a,username,now())).map(a=>numberId(a.id)));
+  const verified=[...new Set([...teacherVerified,...autoVerified].filter(id=>eligible.has(id)))];
   // Until the teacher explicitly enables a mode, preserve the existing
   // /learning-plan focus rules instead of accidentally overriding them with 'free'.
   if(!saved)return {...basePlan,assignments,verified};

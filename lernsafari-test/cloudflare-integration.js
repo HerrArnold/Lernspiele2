@@ -384,11 +384,17 @@
  // the compass/letterbox available, as they are navigational and informational.
  document.addEventListener('click',e=>{
   if(!loggedChild()||!focusGate?.restricted)return;
-  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-open],[data-baobab-section]');
+  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-open],[data-baobab-section],[data-baobab-new]');
   if(!button)return;
   let locked=false;
   if(button.hasAttribute('data-map-destination'))locked=blockedInClass(button.dataset.mapDestination,'area');
   else if(button.hasAttribute('data-lagoon-subject'))locked=blockedInClass(button.dataset.lagoonSubject,'subject');
+  else if(button.hasAttribute('data-baobab-new')){
+   const section=button.dataset.baobabNew;
+   locked=section==='animals'?blockedInClass('page:tiere','page'):
+     section==='advent'?blockedInClass('page:advent','page'):
+     !!focusGate?.restricted;
+  }
   else if(button.hasAttribute('data-baobab-section'))locked=blockedInClass('page:tiere','page');
   else if(button.dataset.open&&!['logbook','map','agenda','mail','clock','help','admin'].includes(button.dataset.open))locked=true;
   if(locked){e.preventDefault();e.stopImmediatePropagation();showFocusNotice();}

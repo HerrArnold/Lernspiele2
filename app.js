@@ -43,20 +43,19 @@ function renderLogbook(){if(state.role==='guest'){DOM.modalBody.innerHTML=`<div 
 const completed=tasks.filter(([id])=>state.tasks[id]).length;DOM.modalBody.innerHTML=`<div class="two-pages"><div class="page"><h3>📝 Meine Aufgaben</h3>${tasks.map(([id,label])=>`<label class="task"><input type="checkbox" data-task="${id}" ${state.tasks[id]?'checked':''}><span>${label}</span></label>`).join('')}<p class="muted">Aufgaben dieses Prototyps sind nur zur Demonstration vorhanden.</p></div><div class="page"><h3>⭐ Meine Erfolge</h3><p>Du hast <strong>${completed} von ${tasks.length}</strong> Demo-Aufgaben abgehakt.</p><div class="progress"><span style="width:${completed/tasks.length*100}%"></span></div><p>${completed===tasks.length?'Super! Du hast alle Demo-Aufgaben geschafft! 🎉':'Schritt für Schritt kommst du ans Ziel. 🐾'}</p><div class="notice">💚 Fehler sind erlaubt – du lernst jeden Tag dazu!</div></div></div><p class="muted">Hinweis: Diese Demo speichert keine Lernleistungen auf einem Server. Beim Neuladen werden die Häkchen zurückgesetzt.</p>`;$$('[data-task]',DOM.modalBody).forEach(c=>c.addEventListener('change',()=>{state.tasks[c.dataset.task]=c.checked;renderLogbook()}))}
 const places=[{id:'lagoon',emoji:'🌊',title:'Lern-Lagune',sub:'Schulfächer & Lernspiele',description:'Hier erwarten dich Lernspiele und Übungen für Mathematik, Deutsch, NMG, Musik und weitere Fächer.'},{id:'valley',emoji:'🌞',title:'Tages-Tal',sub:'Deine tägliche Herausforderung',description:'Eine Zahl des Tages und abwechslungsreiche kurze Aufgaben begleiten deine täglichen Lernabenteuer.'},{id:'baobab',emoji:'🌳',title:'Baobab-Baum',sub:'Hakuna Matata & Klassenwelt',description:'Entdecke unsere Klassentiere, gemeinsame Erinnerungen und den Adventskalender.'},{id:'oasis',emoji:'🏝️',title:'Oase',sub:'Rätsel, Spielen & Kreativität',description:'Ein Ort für freiwillige Knobelspiele, Sudokus, Schach, Malen und weitere Entdeckungen.'}];
 function renderMap(){
-  // Transparent hit zones follow the six illustrated signs; no duplicate text or image layers.
+  // Visible wooden signs placed near each destination on the illustrated map.
   const zones=[
-    ['lagoon','Lern-Lagune','lagoon'],
-    ['valley','Tages-Tal','valley'],
-    ['baobab','Baobab-Baum','baobab'],
-    ['oasis','Oase','oasis'],
-    ['camp','Camp','camp'],
-    ['camp-return','Zum Camp','camp']
+    ['valley','Tages-Tal','valley','🌞'],
+    ['lagoon','Lern-Lagune','lagoon','🌊'],
+    ['camp','Camp','camp','⛺'],
+    ['baobab','Baobab-Baum','baobab','🌳'],
+    ['oasis','Oase','oasis','🏝️']
   ];
   DOM.modalBody.innerHTML=`<p class="map-intro">Wähle einen Ort auf der Karte!</p>
     <div class="map-scroll" tabindex="0" aria-label="Safari-Karte; auf kleinen Bildschirmen seitlich verschiebbar">
       <div class="safari-map">
-        <img src="assets/karte.png" alt="Illustrierte LernSafari-Karte: Das Camp in der Mitte, die Lern-Lagune oben links, das Tages-Tal oben rechts, der Baobab-Baum unten links und die Oase unten rechts." draggable="false">
-        ${zones.map(([id,label,dest])=>`<button type="button" class="map-hotspot map-hotspot-${id}" data-map-destination="${dest}" aria-label="${label} besuchen" title="${label}"><span class="sr-only">${label}</span></button>`).join('')}
+        <img src="assets/karte.png" alt="Illustrierte LernSafari-Karte: Das Camp in der Mitte, die Lern-Lagune oben rechts, das Tages-Tal oben links, der Baobab-Baum unten links und die Oase unten rechts." draggable="false">
+        ${zones.map(([id,label,dest,icon])=>`<button type="button" class="map-hotspot map-hotspot-${id} safari-wood-sign" data-map-destination="${dest}" aria-label="${label} besuchen" title="${label}"><span aria-hidden="true">${icon}</span> ${label}</button>`).join('')}
       </div>
     </div>
     <div class="map-mobile-links" aria-label="Orte auf der Karte">${places.map(p=>`<button class="map-mobile-place" data-map-destination="${p.id}">${p.emoji} ${p.title}</button>`).join('')}<button class="map-mobile-place" data-map-destination="camp">⛺ Camp</button></div>
@@ -666,7 +665,7 @@ function renderBaobab(){
     root.innerHTML=`<div class="baobab-intro">🌳 Entdecke unsere Klassenwelt! Klicke auf ein Holzschild.</div>
       <div class="baobab-map" aria-label="Baobab-Baum mit drei Klassenbereichen">
         <img src="assets/baobab.jpg" alt="Grosser Baobab-Baum mit Löwe, Warzenschwein und Erdmännchen. Drei Holzschilder führen zu Klassentieren, Erinnerungen und Advent." draggable="false">
-        ${baobabMenus.map(([id,label])=>`<button class="baobab-hotspot baobab-${id}" data-baobab-section="${id}" aria-label="${label} öffnen" title="${label}"><span class="sr-only">${label}</span></button>`).join('')}
+        ${baobabMenus.map(([id,label,icon])=>`<button type="button" class="baobab-hotspot baobab-${id} safari-wood-sign" data-baobab-section="${id}" aria-label="${label} öffnen" title="${label}"><span aria-hidden="true">${icon}</span> ${label}</button>`).join('')}
       </div>
       <div class="baobab-mobile-links">${baobabMenus.map(([id,label,icon])=>`<button data-baobab-section="${id}">${icon} ${label}</button>`).join('')}</div>
       <p class="muted">Hier erscheinen später unsere eigenen Klasseninhalte. Die Tierinformationen sind Beispiele, keine Zuordnung zu einzelnen Kindern.</p>`;

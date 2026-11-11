@@ -57,7 +57,7 @@
    await call('/admin-session',{admin:true,token:result.token});
    adminToken=result.token;try{sessionStorage.setItem(ADMIN_KEY,adminToken)}catch(_){/* just this tab */}
    const legacyDialog=document.querySelector('#teacherDialog');if(legacyDialog)legacyDialog.hidden=true;
-   enter('cloudflare-admin','Lehrperson');
+   enter('cloudflare-admin','Flamingo');
    setTimeout(()=>{if(loggedTeacher()&&state.screen==='camp')showModal('admin')},760);
   }catch(e){const el=document.querySelector('#teacherError');if(el)el.textContent=errorText(e);notify('Admin-Anmeldung fehlgeschlagen.');}
   finally{pending=false}
@@ -70,7 +70,7 @@
  async function restore(){
   try{childToken=localStorage.getItem(CHILD_KEY)||'';adminToken=sessionStorage.getItem(ADMIN_KEY)||''}catch(_){childToken='';adminToken=''}
   if(adminToken){
-   try{await call('/admin-session',{admin:true});enter('cloudflare-admin','Lehrperson');return}
+   try{await call('/admin-session',{admin:true});enter('cloudflare-admin','Flamingo');return}
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){

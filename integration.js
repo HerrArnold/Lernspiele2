@@ -22,6 +22,7 @@ const SAFARI_SUBJECT_MARKS={
 };
 function safariSubjectLogo(subject){
  const config=SAFARI_SUBJECT_MARKS[subject]||SAFARI_SUBJECT_MARKS.Deutsch;
+ if(subject==='Englisch')return '<span class="safari-subject-logo safari-subject-flag" aria-hidden="true"><svg viewBox="0 0 60 60" focusable="false"><rect width="60" height="60" fill="#17377f"/><path d="M0 0L60 60M60 0L0 60" stroke="#fff" stroke-width="16"/><path d="M0 0L60 60M60 0L0 60" stroke="#cb273f" stroke-width="6"/><path d="M30 0V60M0 30H60" stroke="#fff" stroke-width="21"/><path d="M30 0V60M0 30H60" stroke="#cb273f" stroke-width="10"/></svg></span>';
  return `<span class="safari-subject-logo" style="--logo-bg:${config.color};--logo-ink:${config.ink}" aria-hidden="true"><span>${config.symbol}</span></span>`;
 }
 

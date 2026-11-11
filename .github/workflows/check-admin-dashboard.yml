@@ -29,7 +29,7 @@ jobs:
           const html=fs.readFileSync('lernsafari-test/index.html','utf8');
           const cloud=fs.readFileSync('lernsafari-test/cloudflare-integration.js','utf8');
           const topic=fs.readFileSync('lernsafari-test/topic-navigation.js','utf8');
-          const dash=require('./lernsafari-test/admin-dashboard.js').LernSafariAdminDashboard;
+          const dash=require('./lernsafari-test/admin-dashboard.js');
           for(const file of ['admin-dashboard.css','admin-dashboard.js'])if(!html.includes(file))throw Error('Missing '+file);
           if(!cloud.includes('LernSafariAdminDashboard?.mount('))throw Error('Dashboard is not connected to Cloudflare teacher view');
           for(const title of ['Lernaufträge','Unterrichtsmodus','Lernfortschritte','Aktivität','Nachrichten'])if(!fs.readFileSync('lernsafari-test/admin-dashboard.js','utf8').includes(title))throw Error('Missing '+title);

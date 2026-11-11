@@ -189,3 +189,19 @@
  .modal-kind-map .map-scroll{max-height:70dvh}
  .modal-kind-map .safari-map{width:min(100%,calc(70dvh * 16 / 9))}
 }
+
+/* Sign locations are based on the supplied final images (1672x941).
+   Avoid covering faces, the waterfall, the logbook and the Polaroid props. */
+.modal-kind-map .map-hotspot-valley{left:23%;top:22%}
+.modal-kind-map .map-hotspot-lagoon{left:73%;top:31%}
+.modal-kind-map .map-hotspot-camp{left:50%;top:58%}
+.modal-kind-map .map-hotspot-baobab{left:23%;top:83%}
+.modal-kind-map .map-hotspot-oasis{left:75%;top:76%}
+.baobab-new-map .baobab-animals{left:75%;top:16%;width:27%}
+.baobab-new-map .baobab-advent{left:80%;top:33%;width:27%}
+.baobab-new-map .baobab-projects{left:77%;top:50%;width:29%}
+@media(max-width:800px){
+ .baobab-new-map .baobab-animals{left:73%;top:16%;width:30%}
+ .baobab-new-map .baobab-advent{left:80%;top:34%;width:30%}
+ .baobab-new-map .baobab-projects{left:77%;top:51%;width:32%}
+}

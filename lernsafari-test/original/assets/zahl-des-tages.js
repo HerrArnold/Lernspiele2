@@ -34,7 +34,7 @@ function solvedExample(){
  const dots=n=>Array.from({length:n},()=>'<span class="zdt-example-dot"></span>').join('');
  const art=(cls,n)=>`<span class="zdt-example-tiles zdt-artitems ${cls}">${Array.from({length:10},(_,i)=>`<span class="zdt-artitem ${cls} ${i<n?'chosen':''}"></span>`).join('')}</span>`;
  return `<aside class="zdt-example" aria-label="Gelöstes Beispiel für die Zahl des Tages">
- <div class="zdt-example-head"><div><h3>So geht’s: Ein gelöstes Beispiel</h3><p>Der Hornvogel zeigt die Zahl 324. Schau zuerst die sechs Lösungen an.</p></div><img class="zdt-example-flamingo" src="assets/hornvogel-zahl-des-tages.svg" alt="Hornvogel mit Schild: Beispielzahl 324"></div>
+ <div class="zdt-example-head"><div><h3>So geht’s: Ein gelöstes Beispiel</h3><p>Der Hornvogel zeigt die Zahl 324. Schau zuerst die sechs Lösungen an.</p></div><img class="zdt-example-flamingo" src="assets/hornvogel-zahl-des-tages.webp" onerror="this.onerror=null;this.src='assets/hornvogel-zahl-des-tages.svg'" alt="Hornvogel mit Schild: Beispielzahl 324"></div>
  <div class="zdt-example-grid">
  <div class="zdt-example-card"><h4>1. Zahl als Wort</h4><p class="zdt-example-answer">dreihundertvierundzwanzig</p></div>
  <div class="zdt-example-card"><h4>2. Gerade oder ungerade?</h4><p><b class="zdt-example-answer">Gerade</b> – die Zahl endet auf 4.</p></div>

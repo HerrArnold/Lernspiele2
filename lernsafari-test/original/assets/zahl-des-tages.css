@@ -110,3 +110,60 @@
 .zdt-artitems.e .zdt-artitem:nth-child(6){grid-column:7}
 .zdt-artitem.t{width:124px;height:18px;background:repeating-linear-gradient(90deg,#ebf0e9 0,#ebf0e9 calc(10% - 1px),#96a4a2 calc(10% - 1px),#96a4a2 10%)}
 @media(max-width:700px){.zdt-artitems.h{grid-template-columns:repeat(5,48px);gap:6px}.zdt-artitems.t{grid-template-rows:repeat(5,14px);grid-auto-columns:88px;column-gap:12px;row-gap:5px}.zdt-artitem.t{width:88px;height:14px}.zdt-artitems.e{grid-template-columns:repeat(5,20px) 14px repeat(5,20px);gap:5px}.zdt-artitem.e{width:20px;height:20px}}
+
+
+/* 2026-11-11 Laptop layout: number task gets the full available lesson width. */
+.shell:has(#view-aufgaben:not([hidden])){width:min(1640px,calc(100% - 28px));max-width:none}
+.today-flow{width:100%;min-width:0}
+.today-intro-duo{display:block;grid-template-columns:none;width:100%}
+.today-intro-duo>.today-mascot{display:none}
+.today-intro-duo>.today-example{width:100%;max-width:none}
+.today-example .zdt-example{width:100%}
+.zdt-example-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,210px);align-items:center;gap:18px}
+.zdt-example-flamingo{display:block;width:100%;max-width:195px;height:auto;max-height:190px;object-fit:contain;justify-self:end}
+.zdt-example-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.zdt-example-material{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,292px),1fr));gap:12px;align-items:start}
+.zdt-example-material>span{min-width:0;max-width:100%}
+.zdt-example-material .zdt-example-tiles{max-width:100%;min-width:0}
+.zdt-example-material .zdt-artitems.h{grid-template-columns:repeat(5,minmax(0,52px));gap:6px}
+.zdt-example-material .zdt-artitem.h{width:52px;height:52px}
+.zdt-example-material .zdt-artitems.t{grid-template-rows:repeat(5,17px);grid-auto-columns:110px;column-gap:12px;row-gap:6px}
+.zdt-example-material .zdt-artitem.t{width:110px;height:17px}
+.zdt-example-material .zdt-artitems.e{grid-template-columns:repeat(5,19px) 10px repeat(5,19px);gap:5px}
+.zdt-example-material .zdt-artitem.e{width:19px;height:19px}
+
+/* Clear material labels: prevent older site-wide text/button styles
+   from turning the names into coloured bars. */
+#zahl-des-tages .zdt-artrow{display:grid;grid-template-columns:minmax(142px,170px) minmax(0,1fr);align-items:start;gap:12px;margin:14px 0}
+#zahl-des-tages .zdt-artrow>strong{display:block;position:static;background:none!important;background-image:none!important;color:var(--zdt-green-dark)!important;width:auto!important;height:auto!important;min-height:0!important;padding:6px 0!important;margin:0!important;box-shadow:none!important;border:0!important;font-size:15px;line-height:1.4;white-space:normal}
+#zahl-des-tages .zdt-artrow>div{min-width:0;max-width:100%}
+#zahl-des-tages .zdt-artitems{max-width:100%;min-width:0}
+#zahl-des-tages .zdt-artitem{appearance:none;-webkit-appearance:none;border-style:solid;box-shadow:none}
+#zahl-des-tages .zdt-artitem.chosen{outline-color:#c89942;box-shadow:none}
+#zahl-des-tages .zdt-artitems.h{grid-template-columns:repeat(5,61px)}
+#zahl-des-tages .zdt-artitems.t{grid-template-rows:repeat(5,18px);grid-auto-flow:column;grid-auto-columns:124px}
+#zahl-des-tages .zdt-artitems.e{grid-template-columns:repeat(5,25px) 19px repeat(5,25px)}
+
+/* The number remains visible while scrolling, without covering exercise text. */
+#zahl-des-tages .zdt-number{
+  position:sticky;top:72px;z-index:6;
+  width:max-content;max-width:33vw;margin:4px 2% 10px auto;
+  padding:5px 17px;border-radius:19px;border-width:2px;
+  font-size:clamp(30px,4.1vw,54px);line-height:1.05;letter-spacing:0;
+  box-shadow:0 5px 14px rgba(56,87,54,.14);
+}
+@media(max-width:840px){
+  .zdt-example-head{grid-template-columns:minmax(0,1fr) minmax(100px,145px)}
+  .zdt-example-flamingo{max-width:140px}
+  .zdt-example-grid{grid-template-columns:1fr}
+  #zahl-des-tages .zdt-artrow{grid-template-columns:1fr;gap:3px}
+  #zahl-des-tages .zdt-number{top:58px;max-width:40vw;font-size:clamp(29px,6vw,43px);padding:4px 12px}
+}
+@media(max-width:560px){
+  .zdt-example-head{grid-template-columns:minmax(0,1fr) 90px}
+  .zdt-example-flamingo{max-width:88px}
+  .zdt-example-material{grid-template-columns:1fr}
+  #zahl-des-tages .zdt-artitems.h{grid-template-columns:repeat(5,48px)}
+  #zahl-des-tages .zdt-artitems.t{grid-auto-columns:88px;grid-template-rows:repeat(5,14px)}
+  #zahl-des-tages .zdt-artitems.e{grid-template-columns:repeat(5,20px) 14px repeat(5,20px)}
+}

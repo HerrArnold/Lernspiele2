@@ -1,0 +1,45 @@
+name: Check LernSafari five-area design
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/app.js'
+      - 'lernsafari-test/integration.js'
+      - 'lernsafari-test/safari-area-theme.css'
+      - 'lernsafari-test/original/assets/tierwelt-palette.css'
+      - 'lernsafari-test/original/assets/tages-tal-palette.css'
+      - 'lernsafari-test/original/assets/zahl-des-tages.js'
+      - 'lernsafari-test/original/index.html'
+      - 'lernsafari-test/index.html'
+      - '.github/workflows/check-safari-five-area-design.yml'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript syntax and structural checks
+        run: |
+          node --check lernsafari-test/app.js
+          node --check lernsafari-test/integration.js
+          node --check lernsafari-test/original/assets/zahl-des-tages.js
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const root='lernsafari-test/';
+          const c=fs.readFileSync(root+'safari-area-theme.css','utf8');
+          for(const key of ['--sf-pink:','--sf-brown:','--sf-valley:','--sf-lagoon:','--sf-oasis:'])if(!c.includes(key))throw Error('Missing color '+key);
+          const outer=fs.readFileSync(root+'index.html','utf8');
+          const inside=fs.readFileSync(root+'original/index.html','utf8');
+          if(!outer.includes('safari-area-theme.css'))throw Error('Theme not loaded');
+          for(const name of ['tierwelt-palette.css','tages-tal-palette.css'])if(!inside.includes(name))throw Error('Legacy theme not loaded '+name);
+          const daily=fs.readFileSync(root+'original/assets/zahl-des-tages.js','utf8');
+          if(!daily.includes('hornvogel-zahl-des-tages.webp')||daily.includes('Der Flamingo zeigt die Zahl'))throw Error('Hornbill number mascot missing');
+          const app=fs.readFileSync(root+'app.js','utf8'),integration=fs.readFileSync(root+'integration.js','utf8');
+          if(!app.includes('karte-stickerwelt.webp')||!integration.includes('baobab-stickerwelt.webp'))throw Error('New artwork source not configured');
+          if(!app.includes('is-oasis'))throw Error('Oasis page palette not enabled');
+          for(const name of ['flamingo','erdmaennchen','loewe','warzenschwein'])if(!app.includes('tiersticker/'+name+'.png'))throw Error('Missing fallback animal: '+name);
+          if(!fs.existsSync(root+'assets/hornvogel-sticker.svg')||!fs.existsSync(root+'original/assets/hornvogel-zahl-des-tages.svg'))throw Error('Missing hornbill fallback images');
+          const animals=fs.readFileSync(root+'original/assets/tierwelt-palette.css','utf8');
+          for(const name of ['.animal-story','.animal-card','.fact','.quiz-options','.animal-tab-head'])if(!animals.includes(name))throw Error('Animal contrast selector missing '+name);
+          console.log('Five area palettes, number mascot, map, Baobab and animal contrast: valid');
+          NODE

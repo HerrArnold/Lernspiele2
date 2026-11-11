@@ -1,0 +1,56 @@
+name: Check child login privacy
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/cloudflare-integration.js'
+      - 'lernsafari-test/original/assets/login.js'
+      - 'lernsafari-test/original/assets/lernsteuerung.js'
+      - 'lernsafari-test/original/assets/lernhelfer.js'
+      - 'lernsafari-test/original/assets/exit-ticket.js'
+      - 'lernsafari-test/original/assets/game-telemetry.js'
+      - 'lernsafari-test/original/assets/game-zugang.js'
+      - 'lernsafari-test/original/assets/highscore.js'
+      - '.github/workflows/check-child-login-privacy.yml'
+  workflow_dispatch:
+jobs:
+  session:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate child session handling in all game and learning scripts
+        run: |
+          node - <<'NODE'
+          const fs=require('node:fs');
+          const base='lernsafari-test/';
+          const scripts=[
+            'cloudflare-integration.js',
+            'original/assets/login.js',
+            'original/assets/lernsteuerung.js',
+            'original/assets/lernhelfer.js',
+            'original/assets/exit-ticket.js',
+            'original/assets/game-telemetry.js',
+            'original/assets/game-zugang.js',
+            'original/assets/highscore.js'
+          ];
+          for(const path of scripts){
+            const src=fs.readFileSync(base+path,'utf8');
+            if(!src.includes('sessionStorage'))throw Error('Missing session storage in '+path);
+            if(/\b(?:root\.)?localStorage\.(?:getItem|setItem)\s*\(\s*['"]lernsafari-token-v1/.test(src))throw Error('Persistent child token detected in '+path);
+            if(/\b(?:root\.)?localStorage\.(?:getItem|setItem)\s*\(\s*(?:key|id)\)/.test(src)&&src.includes("'lernsafari-token-v1'"))
+               throw Error('Potential persistent child token alias in '+path);
+          }
+          const html=fs.readFileSync(base+'index.html','utf8');
+          for(const id of ['guestBtn','demoChild','demoTeacher','cloudTeacher'])if(html.includes('id="'+id+'"'))throw Error('Guest/demo control still visible: '+id);
+          console.log('PASS: child credentials are stored only for the tab, no guest or demo login.');
+          NODE
+      - name: Ensure syntax of modified scripts
+        run: |
+          node --check lernsafari-test/cloudflare-integration.js
+          node --check lernsafari-test/original/assets/login.js
+          node --check lernsafari-test/original/assets/lernsteuerung.js
+          node --check lernsafari-test/original/assets/lernhelfer.js
+          node --check lernsafari-test/original/assets/exit-ticket.js
+          node --check lernsafari-test/original/assets/game-telemetry.js
+          node --check lernsafari-test/original/assets/game-zugang.js
+          node --check lernsafari-test/original/assets/highscore.js

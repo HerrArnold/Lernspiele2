@@ -1,0 +1,26 @@
+name: Check original Hörtext audio URLs
+on:
+  workflow_dispatch:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - '.github/workflows/check-hoertext-audio.yml'
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify publisher-hosted audio streams
+        shell: bash
+        run: |
+          set -eu
+          for file in \
+            Grundschulblog_Deutsch_Piri_Hoertext_Der_Dachs.mp3 \
+            Grundschulblog_Deutsch_Piri_Hoertext_Das_Eichhoernchen.mp3 \
+            Grundschulblog_Deutsch_Piri_Hoertext_Der_Igel.mp3 \
+            Grundschulblog_Deutsch_Piri_Hoertext_Das_Reh.mp3 \
+            der_rotfuchs.mp3; do
+            url="https://grundschul-blog.de/wp-content/uploads/filebase/unterrichten/deutsch/$file"
+            status=$(curl --location --silent --show-error --max-time 35 --range 0-1024 --output /dev/null --write-out '%{http_code}' "$url")
+            echo "$file: HTTP $status"
+            test "$status" = 200 -o "$status" = 206 || exit 1
+          done

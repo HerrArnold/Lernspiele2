@@ -143,3 +143,10 @@
 .modal-kind-map .map-mascot-camp{left:60%;top:43%;width:8.5%}
 .modal-kind-map .map-mascot-baobab{left:3%;bottom:7%;width:11%}
 .modal-kind-map .map-mascot-oasis{right:6%;bottom:6%;width:13%}
+
+.baobab-new-map>img.baobab-extra-flamingo{
+ position:absolute;left:58%;top:46%;width:12%;height:auto;
+ max-height:41%;object-fit:contain;z-index:1;pointer-events:none;
+ filter:drop-shadow(0 5px 4px #4b361c55);
+}
+.baobab-new-map .baobab-hotspot{z-index:2}

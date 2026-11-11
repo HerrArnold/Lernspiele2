@@ -41,7 +41,7 @@ const tasks=[['math','🔢 Zahl des Tages'],['music','🎵 Solmisation üben'],[
 function renderModal(){switch(state.modal){case 'logbook':renderLogbook();break;case 'map':renderMap();break;case 'agenda':renderAgenda();break;case 'mail':renderMail();break;case 'clock':renderClock();break;case 'help':renderHelp();break;}}
 function renderLogbook(){if(state.role==='guest'){DOM.modalBody.innerHTML=`<div class="today-card"><div style="font-size:52px">🔒</div><h3>Dieses Logbuch gehört nur dir!</h3><p>Persönliche Aufgaben und Erfolge sind nur für angemeldete Kinder sichtbar.</p><p class="muted">Du bist als Gast unterwegs. Die Lernspiele, die Karte und die öffentlichen Informationen darfst du trotzdem entdecken.</p><button class="primary" id="switchDemo">Demo als Kind ausprobieren</button></div>`;$('#switchDemo').addEventListener('click',()=>{closeModal(true);state.role='demo';state.username='Demo-Kind';$('#userLabel').textContent=state.username;$('#greeting').textContent='🌴 Schön, dass du da bist, Demo-Kind!';$('#mailIndicator').hidden=false;showModal('logbook')});return}
 const completed=tasks.filter(([id])=>state.tasks[id]).length;DOM.modalBody.innerHTML=`<div class="two-pages"><div class="page"><h3>📝 Meine Aufgaben</h3>${tasks.map(([id,label])=>`<label class="task"><input type="checkbox" data-task="${id}" ${state.tasks[id]?'checked':''}><span>${label}</span></label>`).join('')}<p class="muted">Aufgaben dieses Prototyps sind nur zur Demonstration vorhanden.</p></div><div class="page"><h3>⭐ Meine Erfolge</h3><p>Du hast <strong>${completed} von ${tasks.length}</strong> Demo-Aufgaben abgehakt.</p><div class="progress"><span style="width:${completed/tasks.length*100}%"></span></div><p>${completed===tasks.length?'Super! Du hast alle Demo-Aufgaben geschafft! 🎉':'Schritt für Schritt kommst du ans Ziel. 🐾'}</p><div class="notice">💚 Fehler sind erlaubt – du lernst jeden Tag dazu!</div></div></div><p class="muted">Hinweis: Diese Demo speichert keine Lernleistungen auf einem Server. Beim Neuladen werden die Häkchen zurückgesetzt.</p>`;$$('[data-task]',DOM.modalBody).forEach(c=>c.addEventListener('change',()=>{state.tasks[c.dataset.task]=c.checked;renderLogbook()}))}
-const places=[{id:'lagoon',emoji:'🌊',title:'Lern-Lagune',sub:'Schulfächer & Lernspiele',description:'Hier erwarten dich Lernspiele und Übungen für Mathematik, Deutsch, NMG, Musik und weitere Fächer.'},{id:'valley',emoji:'🌞',title:'Tages-Tal',sub:'Deine tägliche Herausforderung',description:'Eine Zahl des Tages und abwechslungsreiche kurze Aufgaben begleiten deine täglichen Lernabenteuer.'},{id:'baobab',emoji:'🌳',title:'Baobab-Baum',sub:'Hakuna Matata & Klassenwelt',description:'Entdecke deine Klassentiere, Geschichten, Projekte und besondere Aktionen wie den Adventskalender.'},{id:'oasis',emoji:'🏝️',title:'Oase',sub:'Rätsel, Spielen & Kreativität',description:'Ein Ort für freiwillige Knobelspiele, Sudokus, Schach, Malen und weitere Entdeckungen.'}];
+const places=[{id:'lagoon',emoji:'🌊',title:'Lern-Lagune',sub:'Schulfächer & Lernspiele',description:'Hier erwarten dich Lernspiele und Übungen für Mathematik, Deutsch, NMG, Musik und weitere Fächer.'},{id:'valley',emoji:'🌞',title:'Tages-Tal',sub:'Deine tägliche Herausforderung',description:'Eine Zahl des Tages und abwechslungsreiche kurze Aufgaben begleiten deine täglichen Lernabenteuer.'},{id:'baobab',emoji:'🌳',title:'Baobab-Baum',sub:'Hakuna Matata & Klassenwelt',description:'Entdecke unsere Klassentiere, gemeinsame Erinnerungen und den Adventskalender.'},{id:'oasis',emoji:'🏝️',title:'Oase',sub:'Rätsel, Spielen & Kreativität',description:'Ein Ort für freiwillige Knobelspiele, Sudokus, Schach, Malen und weitere Entdeckungen.'}];
 function renderMap(){
   // Transparent hit zones follow the six illustrated signs; no duplicate text or image layers.
   const zones=[
@@ -642,12 +642,9 @@ function renderValleyQuestion(){
 // Baobab: shared class space. No child names/photos or classroom announcements are invented.
 let baobabSection=null;
 const baobabMenus=[
- ['animals','Unsere Klassentiere','🐾'],
- ['projects','Projekte & Erlebnisse','📷'],
- ['stories','Geschichten & Werken','📚'],
- ['motto','Hakuna Matata','🌅'],
- ['advent','Adventskalender','🎄'],
- ['extras','Spiele & Extras','⭐']
+ ['animals','Klassentiere','🐾'],
+ ['memories','Erinnerungen','📸'],
+ ['advent','Advent','🎁']
 ];
 const baobabAnimals=[
  ['Löwe','Die Löwen leben in Gruppen, die man Rudel nennt.'],
@@ -667,8 +664,8 @@ function renderBaobab(){
   const root=$('#destinationContent');
   if(!baobabSection){
     root.innerHTML=`<div class="baobab-intro">🌳 Entdecke unsere Klassenwelt! Klicke auf ein Holzschild.</div>
-      <div class="baobab-map" aria-label="Baobab-Baum mit sechs Klassenbereichen">
-        <img src="assets/baobab.jpg" alt="Grosser Baobab-Baum mit Löwe, Warzenschwein und Erdmännchen. Sechs Holzschilder führen zu den Klassenbereichen." draggable="false">
+      <div class="baobab-map" aria-label="Baobab-Baum mit drei Klassenbereichen">
+        <img src="assets/baobab.jpg" alt="Grosser Baobab-Baum mit Löwe, Warzenschwein und Erdmännchen. Drei Holzschilder führen zu Klassentieren, Erinnerungen und Advent." draggable="false">
         ${baobabMenus.map(([id,label])=>`<button class="baobab-hotspot baobab-${id}" data-baobab-section="${id}" aria-label="${label} öffnen" title="${label}"><span class="sr-only">${label}</span></button>`).join('')}
       </div>
       <div class="baobab-mobile-links">${baobabMenus.map(([id,label,icon])=>`<button data-baobab-section="${id}">${icon} ${label}</button>`).join('')}</div>
@@ -680,20 +677,14 @@ function renderBaobab(){
     if(baobabSection==='animals'){
       area.innerHTML=`<p>Welches Tier möchtest du kennenlernen? Unsere persönlichen Klassentier-Zuordnungen werden später ergänzt.</p><div class="baobab-animal-grid">${baobabAnimals.map(([n,desc])=>`<button class="baobab-animal" data-animal="${escapeHtml(n)}"><strong>${escapeHtml(n)}</strong><span class="muted">Mehr erfahren</span></button>`).join('')}</div><div class="baobab-fact" id="animalFact" aria-live="polite">Wähle ein Tier aus.</div>`;
       $$('[data-animal]',area).forEach(btn=>btn.onclick=()=>{let fact=baobabAnimals.find(a=>a[0]===btn.dataset.animal);$('#animalFact').innerHTML=`<strong>${escapeHtml(fact[0])}</strong><p>${escapeHtml(fact[1])}</p>`});
-    } else if(baobabSection==='projects'){
-      area.innerHTML=`<div class="baobab-info"><h3>Unsere gemeinsamen Abenteuer</h3><p>Hier kann die Lehrperson später Fotos und kurze Berichte zu Ausflügen, Aufführungen und Klassenprojekten veröffentlichen.</p><p class="muted">Noch keine echten Klassenbeiträge veröffentlicht. Es werden keine Kinderfotos ohne passende Freigabe angezeigt.</p></div>`;
-    } else if(baobabSection==='stories'){
-      area.innerHTML=`<div class="baobab-info"><h3>Unsere Geschichten-Bibliothek</h3><p>Hier können wir gemeinsam Geschichten lesen und unsere Werke entdecken.</p><p class="muted">Die ersten Klassengeschichten und Arbeiten werden später von der Lehrperson freigeschaltet.</p></div>`;
-    } else if(baobabSection==='motto'){
-      area.innerHTML=`<div class="baobab-info"><h3>Hakuna Matata – gemeinsam wachsen</h3><p>Im Baobab-Baum geht es um unsere Klasse und darum, wie wir freundlich miteinander lernen.</p><div class="baobab-values"><span>🪨 Schritt für Schritt</span><span>🦁 Mein Bestes genügt</span><span>🌿 Fehler sind erlaubt</span><span>🌟 Meine Stärken entdecken</span><span>🧘 Ruhe bewahren</span></div></div>`;
+    } else if(baobabSection==='memories'){
+      // No pupil photos are published without the teacher's approval.
+      area.innerHTML=`<div class="baobab-memories-intro"><h3>📸 Unsere Erinnerungen</h3><p>Hier sammeln wir die schönsten Momente unserer Klasse – wie Fotos in einem Erinnerungsalbum.</p></div><div class="baobab-polaroid-wall"><div class="baobab-polaroid baobab-polaroid-empty"><div class="baobab-photo-placeholder" aria-hidden="true">📷</div><strong>Unser nächstes Abenteuer</strong><small>Hier ist Platz für unsere Fotos.</small></div></div><p class="muted">Noch keine Klassenfotos veröffentlicht. Bilder werden erst nach Freigabe durch die Lehrperson gezeigt.</p>`;
     } else if(baobabSection==='advent'){
       const current=new Date();const month=Number(dt(current,{month:'numeric'}));const day=Number(dt(current,{day:'numeric'}));const year=Number(dt(current,{year:'numeric'}));
       const isDecember=month===12;
       area.innerHTML=`<p>24 Türchen warten auf die Adventszeit! 🎁</p><div class="baobab-advent-grid">${Array.from({length:24},(_,i)=>{let n=i+1;let canOpen=isDecember && day>=n;return `<button data-advent="${n}" ${canOpen?'':'disabled'} aria-label="Türchen ${n}${canOpen?' öffnen':' ist noch geschlossen'}" class="${canOpen?'unlocked':'locked'}">${n}${canOpen?'':' 🔒'}</button>`}).join('')}</div><div class="baobab-fact" id="adventMessage">${isDecember?'Du kannst alle Türchen bis heute öffnen.':'Die Türchen öffnen sich vom 1. bis 24. Dezember.'}</div><p class="muted">Die Inhalte sind vorläufig freundliche Demo-Botschaften. Später kann die Lehrperson echte Überraschungen hinzufügen.</p>`;
       $$('[data-advent]',area).forEach(btn=>btn.onclick=()=>{const n=Number(btn.dataset.advent);if(month!==12||day<n)return;$('#adventMessage').textContent=['Du kannst mehr, als du denkst! 🌟','Gemeinsam geht vieles leichter. 💚','Eine gute Frage ist ein erster Schritt. 🔎','Heute darfst du stolz auf dich sein. 🦁'][((n-1)%4)]});
-    } else if(baobabSection==='extras'){
-      area.innerHTML=`<div class="baobab-info"><h3>Auch Spass gehört zur Safari!</h3><p>Schach, Sudoku, Malen und weitere freie Spiele werden in der Oase zu finden sein.</p><button class="primary" id="goOasisFromBaobab">Zur Oase</button></div>`;
-      $('#goOasisFromBaobab').onclick=()=>travelTo('oasis');
     }
     $('#baobabReturn').onclick=()=>{baobabSection=null;renderBaobab()};
   }
@@ -712,7 +703,7 @@ function renderDestination(place){
   }
   if(place.id==='valley'){renderValley();return;}
   if(place.id==='baobab'){baobabSection=null;renderBaobab();return;}
-  const contents={baobab:`<div class="topic-cards"><div class="topic-card"><span>🦁</span>Unsere Klassentiere</div><div class="topic-card"><span>📖</span>Geschichten</div><div class="topic-card"><span>🎄</span>Adventskalender</div></div>`,oasis:`<div class="topic-cards"><div class="topic-card"><span>♟️</span>Schach</div><div class="topic-card"><span>🔢</span>Sudoku</div><div class="topic-card"><span>🎨</span>Malen</div></div>`};
+  const contents={baobab:`<div class="topic-cards"><div class="topic-card"><span>🦁</span>Unsere Klassentiere</div><div class="topic-card"><span>📸</span>Erinnerungen</div><div class="topic-card"><span>🎄</span>Adventskalender</div></div>`,oasis:`<div class="topic-cards"><div class="topic-card"><span>♟️</span>Schach</div><div class="topic-card"><span>🔢</span>Sudoku</div><div class="topic-card"><span>🎨</span>Malen</div></div>`};
   $('#destinationContent').innerHTML=contents[place.id]||'';
 }
 $('#destinationBack').addEventListener('click',()=>{activeLagoonSubject=null;goCamp();showModal('map')});

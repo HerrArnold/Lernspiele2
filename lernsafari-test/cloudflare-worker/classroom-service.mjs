@@ -96,7 +96,8 @@ export function createClassroomService({auth,store,catalog,now=()=>Date.now()}){
     // free to bypass old focus rules. Until migration, use the legacy child
     // plan in the browser and keep anonymous direct-game access closed.
     if(!saved)return json({allowed:false},200);
-    if(!child?.username)return json({allowed:current.kind==='free'},200);
+    // Every classroom user must be logged in, even during discovery time.
+    if(!child?.username)return json({allowed:false},200);
     const p=await childPlan(child.username,{});
     return json({allowed:evaluate(p.classroomMode,p,game,Object.fromEntries(games))});
    }

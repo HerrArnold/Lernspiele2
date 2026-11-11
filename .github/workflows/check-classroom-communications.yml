@@ -25,4 +25,5 @@ jobs:
       - name: Run existing classroom policy tests
         run: |
           node --test lernsafari-test/tests/cloudflare-classroom-service.test.mjs
+          node --test lernsafari-test/tests/classroom-trusted-completion.test.mjs
           node --test lernsafari-test/tests/unterrichtsmodus-admin.test.cjs

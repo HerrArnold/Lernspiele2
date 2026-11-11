@@ -6,7 +6,7 @@ const api=()=>String(window.LERNSAFARI_BACKEND_URL||'https://lernsafari-api.ergo
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let children=[],history={tickets:[],responses:[]},activeDraws=new Map();
 let adminRefresh=null,childRefresh=null;let dirty=false;
-function token(){try{return localStorage.getItem('lernsafari-token-v1')||'';}catch(_){return '';}}
+function token(){try{return sessionStorage.getItem('lernsafari-token-v1')||'';}catch(_){return '';}}
 function isChild(){return window.SafariLogin?.auth()?.role==='child'&&!!token();}
 function isAdmin(){return !!window.SafariSite?.isAdminUnlocked?.();}
 async function childFetch(path,method='GET',body){const r=await fetch(api()+path,{method,headers:{Authorization:'Bearer '+token(),'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),cache:'no-store'});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.error||'Keine Verbindung');return d;}

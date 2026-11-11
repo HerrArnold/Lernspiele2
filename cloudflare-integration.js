@@ -272,16 +272,21 @@
   }catch(e){host.innerHTML=`<div class="pd-panel"><h3>Verwaltung nicht erreichbar</h3><p>${html(errorText(e))}</p><button class="pd-action" id="retryCloudAdmin">Erneut versuchen</button></div>`;host.querySelector('#retryCloudAdmin').onclick=renderCloudAdmin;}
  }
  function mondayOfZurich(){const day=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Zurich',weekday:'short'}).format(new Date());const idx={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[day]||0;const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const utc=new Date(today+'T12:00:00Z');utc.setUTCDate(utc.getUTCDate()-((idx+6)%7));return utc.toISOString().slice(0,10)}
+ let cloudAgendaOffset=0;
  async function renderCloudAgenda(){
   const host=DOM.modalBody;
-  const week=mondayOfZurich();
+  const base=mondayOfZurich();const d0=new Date(base+'T12:00:00Z');d0.setUTCDate(d0.getUTCDate()+cloudAgendaOffset*7);const week=d0.toISOString().slice(0,10);
   host.innerHTML='<div class="pd-panel">🧭 Wochenagenda wird von Cloudflare geladen …</div>';
   try{
    const result=await call((loggedTeacher()?'/admin-agenda':'/agenda')+'?week='+week,{admin:loggedTeacher()});if(state.modal!=='agenda')return;
    const events=Array.isArray(result.events)?result.events:[];
    const days=Array.from({length:7},(_,i)=>{const d=new Date(week+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10)});
    const names=['Mo','Di','Mi','Do','Fr','Sa','So'];
-   host.innerHTML=`<div class="pd-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🧭 Cloudflare-Agenda</span><h3>Diese Woche</h3><p>Hausaufgaben, Lernkontrollen und Termine aus deiner bisherigen LernSafari.</p></div></div><div class="cloud-week">${days.map((date,i)=>`<article class="cloud-day"><h4>${names[i]} · ${html(dateFormat(date))}</h4>${events.filter(e=>e.day_date===date).map(e=>`<div class="cloud-event"><strong>${html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')}</strong><p>${html(e.text||'')}</p></div>`).join('')||'<p>Keine Einträge</p>'}</article>`).join('')}</div>${loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: in der erweiterten Verwaltung unter «Agenda».</p>':''}</div>`;
+   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+   host.innerHTML=`<div class="pd-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🧭 Cloudflare-Agenda</span><h3>Diese Woche</h3><p>Hausaufgaben, Lernkontrollen und Termine aus deiner bisherigen LernSafari.</p></div></div><div class="cloud-agenda-toolbar"><button type="button" id="cloudWeekPrev">← Vorherige</button><strong>${html(dateFormat(days[0]))} – ${html(dateFormat(days[6]))}</strong><button type="button" id="cloudWeekToday">Heute</button><button type="button" id="cloudWeekNext">Nächste →</button></div><div class="cloud-week">${days.map((date,i)=>`<article class="cloud-day ${date===today?'is-today':''}"><h4>${names[i]} · ${html(dateFormat(date))}${date===today?' · Heute':''}</h4>${events.filter(e=>e.day_date===date).map(e=>`<div class="cloud-event"><strong>${html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')}</strong><p>${html(e.text||'')}</p></div>`).join('')||'<p>Keine Einträge</p>'}</article>`).join('')}</div>${loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: in der erweiterten Verwaltung unter «Agenda».</p>':''}</div>`;
+   host.querySelector('#cloudWeekPrev').onclick=()=>{cloudAgendaOffset--;renderCloudAgenda()};
+   host.querySelector('#cloudWeekNext').onclick=()=>{cloudAgendaOffset++;renderCloudAgenda()};
+   host.querySelector('#cloudWeekToday').onclick=()=>{cloudAgendaOffset=0;renderCloudAgenda()};
   }catch(e){host.innerHTML=`<div class="pd-panel"><h3>Agenda nicht erreichbar</h3><p>${html(errorText(e))}</p></div>`}
  }
 

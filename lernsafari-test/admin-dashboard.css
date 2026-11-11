@@ -81,3 +81,11 @@
 .admin-game-result-list article strong{color:#355d42}
 .admin-game-result-list article span{text-align:right;color:#665843}
 @media(max-width:700px){.admin-game-result-list article{grid-template-columns:1fr 1fr}.admin-game-result-list article strong{grid-column:1/-1}.admin-game-result-list article span{text-align:left}}
+
+.admin-mode-tasks{border:1px solid #c8d1a5;border-radius:13px;padding:10px;margin:8px 0;background:#fcfbf1;display:grid;gap:6px}
+.admin-mode-tasks legend{color:#385d43;font-weight:850;padding:0 7px}
+.admin-mode-tasks label{display:flex;align-items:center;gap:10px;border-radius:9px;padding:8px;background:#f0f4e6;cursor:pointer}
+.admin-mode-tasks input{width:20px;height:20px;accent-color:#397b5a;flex:none}
+.admin-mode-tasks label span{display:grid;gap:3px}
+.admin-mode-tasks label strong{color:#3b563f;font-size:14px}
+.admin-mode-tasks label small{font-size:11px;color:#6b5f4b}

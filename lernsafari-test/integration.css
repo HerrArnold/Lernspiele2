@@ -376,3 +376,23 @@
 .safari-subject-badge{display:inline-block;width:1.55em;height:auto;aspect-ratio:5/3;object-fit:contain;vertical-align:-.16em;border-radius:3px;box-shadow:0 0 0 1px rgba(47,63,53,.17)}
 .integration-subjects .safari-subject-badge{width:1.85em}
 .safari-topic-icon .safari-subject-badge,.integration-icon .safari-subject-badge,.subject-symbol .safari-subject-badge{width:1.45em;max-width:100%}
+
+
+/* Tages-Tal: the original daily exercise fills its Safari workspace.
+   Preserve the internal task scrolling, but avoid narrow side gutters. */
+@media(min-width:900px){
+  .destination-screen.is-valley{padding:10px 12px 24px}
+  .destination-screen.is-valley .destination-panel,
+  .destination-screen.is-valley:has(.original-integration) .destination-panel{
+    width:min(100%,1740px);
+    max-width:1740px;
+    padding:12px 15px 18px;
+  }
+  .original-integration.integration-area-valley{width:100%;max-width:none}
+  .original-integration.integration-area-valley .integration-game-surface,
+  .original-integration.integration-area-valley .integration-frame-wrap{width:100%;max-width:none}
+  .original-integration.integration-area-valley .original-frame.original-daily{
+    width:100%;
+    height:clamp(700px,84dvh,1200px);
+  }
+}

@@ -38,9 +38,9 @@
    if(typeof response.token!=='string'||!response.token)throw Error('Cloudflare hat kein gültiges Sitzungstoken geliefert.');
    // Check role server-side before granting a personal area.
    const identity=await call('/me',{token:response.token});
-   if(identity.role!=='child')throw Error('Dieses Konto ist kein Kinderkonto. Verwende den Lehrpersonenzugang.');
+   if(!['child','class'].includes(identity.role))throw Error('Dieses Konto ist kein Kinder- oder Klassenkonto.');
    childToken=response.token;person=identity;
-   try{sessionStorage.setItem(CHILD_KEY,childToken);localStorage.removeItem(CHILD_KEY)}catch(_){/* transient session only */}
+   try{localStorage.setItem(CHILD_KEY,childToken)}catch(_){/* browser storage unavailable */}
    document.querySelector('#password').value='';
    enter('cloudflare-child',String(identity.username||response.username||username));
    refreshClassFocus();
@@ -57,7 +57,7 @@
    await call('/admin-session',{admin:true,token:result.token});
    adminToken=result.token;try{sessionStorage.setItem(ADMIN_KEY,adminToken)}catch(_){/* just this tab */}
    const legacyDialog=document.querySelector('#teacherDialog');if(legacyDialog)legacyDialog.hidden=true;
-   enter('cloudflare-admin','Lehrperson');
+   enter('cloudflare-admin','Flamingo');
    setTimeout(()=>{if(loggedTeacher()&&state.screen==='camp')showModal('admin')},760);
   }catch(e){const el=document.querySelector('#teacherError');if(el)el.textContent=errorText(e);notify('Admin-Anmeldung fehlgeschlagen.');}
   finally{pending=false}
@@ -68,13 +68,13 @@
   try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY);sessionStorage.removeItem(ADMIN_KEY)}catch(_){}
  }
  async function restore(){
-  try{localStorage.removeItem(CHILD_KEY);childToken=sessionStorage.getItem(CHILD_KEY)||'';adminToken=sessionStorage.getItem(ADMIN_KEY)||''}catch(_){childToken='';adminToken=''}
+  try{childToken=localStorage.getItem(CHILD_KEY)||sessionStorage.getItem(CHILD_KEY)||'';adminToken=sessionStorage.getItem(ADMIN_KEY)||'';if(childToken)localStorage.setItem(CHILD_KEY,childToken);sessionStorage.removeItem(CHILD_KEY)}catch(_){childToken='';adminToken=''}
   if(adminToken){
-   try{await call('/admin-session',{admin:true});enter('cloudflare-admin','Lehrperson');return}
+   try{await call('/admin-session',{admin:true});enter('cloudflare-admin','Flamingo');return}
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){
-   try{const identity=await call('/me');if(identity.role!=='child')throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();return}
+   try{const identity=await call('/me');if(!['child','class'].includes(identity.role))throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();return}
    catch(_){childToken='';try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY)}catch(_){}}
   }
  }

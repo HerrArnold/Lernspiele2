@@ -51,3 +51,28 @@
     background:#fff6f6;
   }
 }
+
+
+/* Terminfarben aus der bisherigen LernSafari:
+   Hausaufgaben blau, Lernkontrollen gruen, Spezialtermine rot/rosa,
+   Ferien und schulfrei gelb. Unabhaengig von Laptop- oder Handyansicht. */
+.cloud-event.cloud-event-ha {
+  background:#a9d8fb;
+  border:1px solid #6eaed8;
+}
+.cloud-event.cloud-event-lk {
+  background:#bceab6;
+  border:1px solid #7cbd72;
+}
+.cloud-event.cloud-event-special {
+  background:#f4bad1;
+  border:1px solid #dc7f9b;
+}
+.cloud-event.cloud-event-free {
+  background:#f9df73;
+  border:1px solid #d1aa36;
+}
+.cloud-event.cloud-event-ha strong,.cloud-event.cloud-event-ha p {color:#213d57}
+.cloud-event.cloud-event-lk strong,.cloud-event.cloud-event-lk p {color:#244c2b}
+.cloud-event.cloud-event-special strong,.cloud-event.cloud-event-special p {color:#61263f}
+.cloud-event.cloud-event-free strong,.cloud-event.cloud-event-free p {color:#5c481a}

@@ -65,8 +65,8 @@
   border:1px solid #7cbd72;
 }
 .cloud-event.cloud-event-special {
-  background:#f4bad1;
-  border:1px solid #dc7f9b;
+  background:#f6b8b4;
+  border:1px solid #d77a72;
 }
 .cloud-event.cloud-event-free {
   background:#f9df73;
@@ -74,5 +74,5 @@
 }
 .cloud-event.cloud-event-ha strong,.cloud-event.cloud-event-ha p {color:#213d57}
 .cloud-event.cloud-event-lk strong,.cloud-event.cloud-event-lk p {color:#244c2b}
-.cloud-event.cloud-event-special strong,.cloud-event.cloud-event-special p {color:#61263f}
+.cloud-event.cloud-event-special strong,.cloud-event.cloud-event-special p {color:#642923}
 .cloud-event.cloud-event-free strong,.cloud-event.cloud-event-free p {color:#5c481a}

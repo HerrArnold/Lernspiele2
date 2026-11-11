@@ -55,6 +55,11 @@ function renderMap(){
     <div class="map-scroll" aria-label="Karte der LernSafari mit fünf auswählbaren Orten">
       <div class="safari-map">
         <img src="assets/karte-ohne-schilder.svg" alt="Safari-Landschaft mit Tages-Tal links oben, Lern-Lagune rechts oben, Camp in der Mitte, Baobab links unten und Oase rechts unten." draggable="false">
+        <img class="map-mascot map-mascot-valley" src="assets/hornvogel-sticker.svg" alt="" aria-hidden="true" draggable="false">
+        <img class="map-mascot map-mascot-lagoon" src="original/assets/tiersticker/erdmaennchen.png" alt="" aria-hidden="true" draggable="false">
+        <img class="map-mascot map-mascot-camp" src="original/assets/tiersticker/flamingo.png" alt="" aria-hidden="true" draggable="false">
+        <img class="map-mascot map-mascot-baobab" src="original/assets/tiersticker/loewe.png" alt="" aria-hidden="true" draggable="false">
+        <img class="map-mascot map-mascot-oasis" src="original/assets/tiersticker/warzenschwein.png" alt="" aria-hidden="true" draggable="false">
         ${zones.map(([id,label,dest])=>`<button type="button" class="map-hotspot map-hotspot-${id}" data-map-destination="${dest}" aria-label="${label} besuchen"><span>${label}</span></button>`).join('')}
       </div>
     </div>

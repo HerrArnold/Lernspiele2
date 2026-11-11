@@ -207,7 +207,7 @@
       const areaNames={camp:'Camp',map:'Karte',logbook:'Logbuch',lagoon:'Lern-Lagune',valley:'Tages-Tal',baobab:'Baobab-Baum',oasis:'Oase',agenda:'Agenda',mail:'Briefkasten',help:'Lernhilfe',game:'Lernspiel'};
       const gameTitles=new Map();
       for(const subject of SUBJECTS)for(const topic of topics[subject]||[])for(const game of topic.games){
-        if(game.file)gameTitles.set(game.file.replace(/\\.html$/,''),game.title);
+        if(game.file)gameTitles.set(game.file.replace(/\.html$/,''),game.title);
       }
       let grid=livePanel.querySelector('#adminLiveVerified');
       if(!grid){grid=document.createElement('div');grid.id='adminLiveVerified';livePanel.append(grid)}

@@ -307,74 +307,53 @@
 @media(max-width:700px){.destination-panel{padding:18px 16px 22px;border-radius:22px}.dest-hero{gap:12px;margin-bottom:18px}.dest-emoji{font-size:62px}.brand{font-size:19px}.topbar{padding:8px 12px;min-height:58px}}
 
 
-/* Laptop-Ansicht: interaktive Safari-Karten vollständig im sichtbaren Bereich.
-   Die Bilder werden proportional verkleinert, Hotspots bleiben ausgerichtet.
-   Mobilansichten und eigentliche Spiele behalten ihr bisheriges Layout. */
-@media (min-width: 900px) and (min-height: 550px) {
-  .modal-kind-map {
-    width:min(1320px,98vw);
-    max-height:calc(100dvh - 22px);
+/* Laptoplayout v2: Camp gross, Karten passend zur Fensterhoehe.
+   Keine Veraenderung an der produktiven Webseite herrarnold/lernspiele. */
+@media (min-width:900px) and (min-height:550px) {
+  /* Das Camp soll wie zuvor die verfuegbare Breite und Hoehe ausnutzen. */
+  .camp-screen .scene {
+    width:min(100vw,calc((100dvh - 108px) * 1.7768));
   }
-  .modal-kind-map .modal-header {padding:8px 18px 6px}
-  .modal-kind-map .modal-body {padding:5px 10px 7px}
-  .modal-kind-map .modal-footer {padding:5px 16px}
-  .modal-kind-map .map-intro {font-size:13px;margin:0 0 4px}
-  .modal-kind-map .map-footnote {margin:4px 0 0}
+
+  /* Die Karte ist ein Panorama in einem kompakten Dialog.
+     Die komplette Illustration inkl. unterer Orte bleibt sichtbar. */
+  .modal-layer {padding:12px 10px}
+  .modal-kind-map {
+    width:min(97vw,calc((100dvh - 158px) * 1.5 + 36px));
+    max-height:calc(100dvh - 24px);
+  }
+  .modal-kind-map .modal-header {padding:7px 16px 5px}
+  .modal-kind-map .modal-header h2 {font-size:clamp(23px,2.6vw,30px)}
+  .modal-kind-map .modal-icon {font-size:26px}
+  .modal-kind-map .modal-body {padding:5px 8px 7px;overflow:visible}
+  .modal-kind-map .modal-footer {padding:5px 14px}
+  .modal-kind-map .map-intro {font-size:13px;margin:0 0 3px}
+  .modal-kind-map .map-footnote {margin:3px 0 0}
   .modal-kind-map .map-scroll {
-    display:flex;
-    justify-content:center;
-    overflow:visible;
+    display:flex;justify-content:center;overflow:visible;
   }
   .modal-kind-map .safari-map {
-    flex:none;
-    min-width:0;
-    width:min(100%, calc((100dvh - 184px) * 1.5));
+    min-width:0;flex:none;
+    width:min(100%,calc((100dvh - 166px) * 1.5));
     aspect-ratio:3/2;
   }
 
-  /* Die Fachstein-Grafik der Lern-Lagune passt sich ebenfalls der Fensterhöhe an. */
+  /* Weniger Rahmen um die grossen illustrierten Bereichskarten. */
+  .destination-screen.is-lagoon,
+  .destination-screen.is-baobab {padding:7px 9px 12px}
   .is-lagoon .destination-panel,
   .is-baobab .destination-panel {
-    width:min(1380px,100%);
-    padding:9px 13px 10px;
+    width:min(1400px,100%);
+    padding:8px 12px 10px;
   }
-  .destination-screen.is-lagoon,
-  .destination-screen.is-baobab {padding:8px 10px 12px}
-  .is-lagoon .lagoon-heading {margin-bottom:4px}
-  .is-lagoon .lagoon-footnote {margin-top:4px}
-  .is-lagoon .lagoon-scroller {
-    display:flex;
-    justify-content:center;
-    overflow:visible;
-  }
+  .is-lagoon .lagoon-scroller {display:flex;justify-content:center;overflow:visible}
   .is-lagoon .lagoon-scene {
-    flex:none;
-    min-width:0;
-    width:min(100%, calc((100dvh - 225px) * 1.5));
+    min-width:0;flex:none;
+    width:min(100%,calc((100dvh - 210px) * 1.5));
     aspect-ratio:3/2;
   }
   .is-baobab .baobab-map {
-    width:min(100%, calc((100dvh - 190px) * 2.0024));
+    width:min(100%,calc((100dvh - 175px) * 2.0024));
     margin-inline:auto;
-  }
-  /* Auch die neu eingebundenen Bereichsillustrationen nicht über die
-     sichtbare Höhe hinauswachsen lassen. */
-  .integration-lagoon-scene,
-  .integration-baobab-scene {
-    width:fit-content;
-    max-width:100%;
-    margin-inline:auto;
-  }
-  .integration-lagoon-scene img {
-    width:auto;
-    max-width:100%;
-    max-height:calc(100dvh - 245px);
-    height:auto;
-  }
-  .integration-baobab-scene img {
-    width:auto;
-    max-width:100%;
-    max-height:calc(100dvh - 245px);
-    height:auto;
   }
 }

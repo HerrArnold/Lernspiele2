@@ -258,3 +258,39 @@
   outline-offset:2px;
 }
 .integration-trail .integration-pill.is-current {cursor:default}
+
+
+/* Lern-Lagune: Fach -> Thema -> Spiel (November 2026). */
+.safari-topic-page{max-width:1200px;margin:auto;gap:12px;color:#553e29}
+.safari-topic-header{display:flex;gap:17px;align-items:center;padding:15px 20px;border:2px solid #b3c59c;border-radius:20px;background:linear-gradient(120deg,#e3edce,#f5e6c4)}
+.safari-topic-icon{display:grid;place-items:center;flex:none;width:64px;height:64px;font-size:35px;background:#f8f3df;border:2px solid #d4bc8c;border-radius:18px}
+.safari-topic-header h2{font-size:clamp(25px,3vw,36px);margin:2px 0 5px;color:#35593d}
+.safari-topic-header p{margin:0;color:#5a5038;font-size:15px}
+.safari-topic-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px}
+.safari-topic-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:9px;text-align:left;min-height:180px;padding:22px;border:3px solid #d0b783;border-radius:22px;background:linear-gradient(150deg,#fff3d7,#e4edcb);color:#503b29;cursor:pointer;box-shadow:0 6px 14px #66452712}
+.safari-topic-card:hover,.safari-topic-card:focus-visible{border-color:#5e9869;background:#e5efcf}
+.safari-topic-card-icon{font-size:39px}
+.safari-topic-card strong{font-size:clamp(19px,2vw,25px);line-height:1.2}
+.safari-topic-card small{font-size:13px;color:#61543d}
+.safari-topic-arrow{margin-left:auto;color:#537d55;font-size:25px;font-weight:bold}
+.safari-topic-card .safari-topic-arrow{position:absolute;right:20px;bottom:16px}
+.safari-topic-games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.safari-topic-game{display:flex;align-items:center;gap:14px;min-height:82px;padding:13px 17px;text-align:left;background:#fff4db;border:2px solid #dbc28e;border-radius:17px;color:#523c28;cursor:pointer}
+.safari-topic-game:not(:disabled):hover,.safari-topic-game:focus-visible{background:#e5efcf;border-color:#66916b}
+.safari-topic-game-icon{font-size:28px;flex:none}
+.safari-topic-game-text{display:grid;gap:4px;min-width:0;flex:1}
+.safari-topic-game-text strong{font-size:clamp(15px,1.3vw,19px);line-height:1.25}
+.safari-topic-game-text small{font-size:12px;color:#705b44;line-height:1.35}
+.safari-topic-unavailable{background:#eee7d4;color:#726453;border-color:#d7cbb8;cursor:not-allowed;opacity:.87}
+.safari-topic-status{font-size:11px;white-space:nowrap;border-radius:15px;padding:5px 8px;background:#e3d6bd;color:#67563c;font-weight:bold}
+@media(max-width:700px){
+  .safari-topic-header{padding:12px;gap:10px}
+  .safari-topic-icon{width:48px;height:48px;font-size:26px}
+  .safari-topic-games{grid-template-columns:1fr}
+  .safari-topic-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .safari-topic-card{min-height:145px;padding:13px}
+  .safari-topic-card-icon{font-size:29px}
+  .safari-topic-card strong{font-size:16px}
+  .safari-topic-game{padding:12px}
+  .safari-topic-status{white-space:normal}
+}

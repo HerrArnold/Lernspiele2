@@ -5,6 +5,11 @@ on:
     paths:
       - 'lernsafari-test/cloudflare-worker/communications-*'
       - 'lernsafari-test/tests/cloudflare-communications.test.mjs'
+      - 'lernsafari-test/tests/cloudflare-classroom-service.test.mjs'
+      - 'lernsafari-test/tests/classroom-trusted-completion.test.mjs'
+      - 'lernsafari-test/tests/unterrichtsmodus.test.cjs'
+      - 'lernsafari-test/unterrichtsmodus.js'
+      - 'lernsafari-test/cloudflare-worker/classroom-service.mjs'
       - 'lernsafari-test/admin-dashboard.js'
       - 'lernsafari-test/cloudflare-integration.js'
       - '.github/workflows/check-classroom-communications.yml'

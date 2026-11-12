@@ -89,3 +89,77 @@
 .admin-mode-tasks label span{display:grid;gap:3px}
 .admin-mode-tasks label strong{color:#3b563f;font-size:14px}
 .admin-mode-tasks label small{font-size:11px;color:#6b5f4b}
+
+/* 2026-11-12: the secure teacher cockpit is a full-size Safari page. */
+#adminScreen.admin-screen{
+ display:flex;flex:1;flex-direction:column;align-items:stretch;
+ width:100%;min-height:calc(100dvh - 65px);
+ padding:clamp(14px,2.5vw,32px);gap:18px;
+ background:linear-gradient(155deg,#fff2df 0%,#f7e4d8 52%,#efdae1 100%);
+ color:#392f25;
+}
+#adminScreen[hidden]{display:none!important}
+.admin-screen-top{
+ display:flex;align-items:center;gap:clamp(14px,2.2vw,32px);
+ border:2px solid #d4ad91;border-radius:22px;padding:13px clamp(14px,2.5vw,28px);
+ background:#fffbf4;box-shadow:0 7px 24px #60412416;
+}
+.admin-screen-top h1{font-size:clamp(26px,2.8vw,42px);line-height:1.1;margin:3px 0;color:#41583d}
+.admin-screen-top p{margin:3px 0;color:#655340}
+.admin-screen-kicker{font-size:13px;font-weight:900;letter-spacing:.08em;color:#a04d6a}
+.admin-screen-back{font:inherit;font-weight:850;color:#6b3147;background:#f8dce6;border:2px solid #d7a1b5;padding:12px 17px;border-radius:14px;cursor:pointer;flex-shrink:0}
+.admin-screen-back:hover{background:#f2c5d5}
+.admin-screen-body{width:100%;min-width:0;max-width:1800px;margin:0 auto;flex:1}
+.admin-screen-body .pd-shell{width:100%!important;max-width:none!important;padding:0!important}
+.admin-screen-body .pd-banner{display:none!important}
+.admin-screen-body .admin-deck{gap:20px;padding:3px 0}
+.admin-screen-body .admin-deck-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,1.8vw,24px)}
+.admin-screen-body .admin-deck-card{min-height:215px;padding:clamp(18px,2.3vw,31px);border-radius:24px}
+.admin-screen-body .admin-deck-card strong{font-size:clamp(20px,1.9vw,27px)}
+.admin-screen-body .admin-deck-card small{font-size:clamp(13px,1.05vw,16px)}
+.admin-screen-body .admin-deck-icon{font-size:42px}
+.admin-screen-body .admin-workspace{width:100%;max-width:none}
+.admin-screen-body .admin-workspace > .pd-panel{width:100%;max-width:none}
+.admin-screen-body .admin-assignment-picker{width:100%}
+.admin-screen-body .admin-area-pills{grid-template-columns:repeat(3,minmax(0,1fr))}
+.admin-agenda-controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0}
+.admin-agenda-controls button{background:#f3e6cc;color:#4f3e28;border:2px solid #cda96f;border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer}
+.admin-agenda-week-label{font-weight:900;color:#315942}
+.admin-agenda-week-away{background:#fff0d8;border:2px solid #ddaa61;border-radius:12px;padding:9px 12px;color:#80471e}
+.admin-agenda-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+.admin-agenda-day{background:#fffcf5;border:2px solid #e2d0ac;border-radius:15px;padding:10px;min-width:0;min-height:120px}
+.admin-agenda-day h5{font-size:clamp(12px,.95vw,17px);margin:0 0 9px;color:#385b44}
+.admin-agenda-events{display:grid;gap:7px}
+.admin-agenda-entry{font:inherit;text-align:left;background:#e9f2e0;color:#36523a;border:1px solid #bdd4b0;border-radius:10px;padding:8px;cursor:pointer;overflow-wrap:anywhere}
+.admin-agenda-entry[data-type="lk"]{background:#def1e0;border-color:#91bb9a}
+.admin-agenda-entry[data-type="free"]{background:#fff3cb;border-color:#e4c678}
+.admin-agenda-entry[data-type="special"]{background:#f6e0df;border-color:#d7acaa}
+.admin-agenda-entry small{display:block;margin-top:3px;color:#645744}
+.admin-agenda-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;align-items:end;padding:16px;background:#fff9ed;border:2px solid #ddc69e;border-radius:17px;margin-top:13px}
+.admin-agenda-form label{display:grid;gap:5px;font-weight:800;color:#463726}
+.admin-agenda-form :is(input,select,textarea){width:100%;min-width:0;padding:10px;background:white;color:#3a3327;border:2px solid #c8b38f;border-radius:9px;font:inherit}
+.admin-agenda-form .admin-agenda-wide{grid-column:1/-1}
+.admin-agenda-form .admin-agenda-form-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;grid-column:1/-1}
+.admin-agenda-form-actions button{padding:10px 16px;border-radius:10px;border:2px solid #9ab68f;background:#e5efdc;color:#294d31;font:inherit;font-weight:800;cursor:pointer}
+.admin-agenda-form-actions button[type="submit"]{background:#376746;color:white}
+.admin-agenda-form-actions button:disabled{opacity:.5;cursor:not-allowed}
+.admin-agenda-status{font-weight:750;color:#6d4b24}
+.admin-detail-attempt{margin:9px 0;padding:12px;background:#fffcf3;border:1px solid #e1cfaa;border-radius:11px}
+.admin-detail-attempt summary{cursor:pointer;font-weight:800;color:#3e5f44}
+.admin-detail-attempt dl{display:grid;grid-template-columns:max-content 1fr;gap:5px 12px}
+.admin-detail-attempt dt{font-weight:850}
+.admin-detail-attempt dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:1000px){
+ .admin-screen-body .admin-deck-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .admin-agenda-days{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+ .admin-agenda-day{padding:5px}
+ .admin-agenda-day h5{font-size:11px}
+ .admin-agenda-entry{font-size:10px;padding:4px}
+}
+@media(max-width:750px){
+ .admin-screen-top{flex-wrap:wrap}
+ .admin-screen-body .admin-deck-grid{grid-template-columns:1fr}
+ .admin-screen-body .admin-deck-card{min-height:120px}
+ .admin-agenda-days{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .admin-agenda-form{grid-template-columns:1fr}
+}

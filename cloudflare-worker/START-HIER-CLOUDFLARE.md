@@ -1,38 +1,41 @@
-# LernSafari 2 – START HIER: Cloudflare anschliessen
+# LernSafari2 – Cloudflare-Aktivierung auf main (12. November 2026)
 
-**Stand:** 11. November 2026. Nur auf dem Test-Worker/Test-D1 einrichten.
-**Hauptseite:** `HerrArnold/lernspiele` niemals ändern.
+**Aktueller Quellcode:** Repository `HerrArnold/Lernspiele2`, Branch **`main`**. Die Kinder-Produktionsseite `HerrArnold/lernspiele` bleibt unberührt.
 
-## Aktueller Stand der Live-API (11. November 2026)
+**Wichtig: Die Webseite wurde auf main aktualisiert, die Cloudflare-Worker-Erweiterungen sind aber noch NICHT im laufenden Worker installiert.** Ein erfolgreicher GitHub-Test ersetzt weder eine Worker-Veröffentlichung noch die Überprüfung mit einem echten Schüler- und Adminlogin.
 
-Der **lesende GitHub-Actions-Test** erreicht die Worker-Adresse. Mit dem
-`Origin` der LernSafari-Testseite antworten die sechs neuen Endpunkte
-`/admin-classroom-mode`, `/admin-messages`, `/messages`,
-`/admin-live-activity`, `/admin-projects` und `/projects` aktuell
-alle mit **HTTP 401**. Eine zufällig gewählte unbekannte Adresse dient
-als Vergleich, damit ein allgemeines 401/403 **nicht als installierter
-Endpunkt** fehlgedeutet wird. Die neuen Funktionen sind daher noch
-**nicht als aktiv nachgewiesen**. Vollständige Anbindung und
-Authentifizierungstests sind weiterhin notwendig.
+## Präzise Schritte am bestehenden Cloudflare-Worker (keinen neuen Worker anlegen)
 
-[Cloudflare-Testreport auf GitHub](https://github.com/HerrArnold/Lernspiele2/actions/workflows/check-cloudflare-readiness.yml)
+1. Gehe in Cloudflare zu **Workers & Pages → lernsafari-api** (bzw. dem Worker mit der Adresse `https://lernsafari-api.ergohd02.workers.dev`). Lade seine **vollständige bisherige Quelle** herunter oder sichere sie in einem privaten Repository. Notiere seine **D1-Bindungsbezeichnung** und erstelle ein Datenbank-Backup.
+2. Erstelle eine **separate Testumgebung** mit Test-D1. Verwende **nicht** direkt die laufende Kinder-Datenbank, solange die Authentisierungs-Adapter nicht fertig eingebaut und getestet sind.
+3. Importiere in dieser Reihenfolge die drei SQL-Dateien aus diesem Ordner: `classroom-migration.sql`, `communications-migration.sql`, `projects-migration.sql`. Sie legen additive Tabellen an. Die bisherige Authentisierung und vorhandene Tabelle für Lernaufträge bleiben erhalten.
+4. Übernimm die sechs Module (drei `*-service.mjs` und drei `*-d1-store.mjs`) **zusätzlich** in die bestehende Worker-Quellstruktur. Ersetze niemals den gesamten bisherigen Worker durch ein Service-Modul.
+5. Verbinde die Module mit den **tatsächlich bestehenden** und serverseitig geprüften Authentisierungsfunktionen für Admin-/Kinder-Sitzungen und den existierenden Auftragsabfragen. Die erforderlichen Adapter und Codebeispiele sind in `INTEGRATION.md`, `COMMUNICATIONS-INTEGRATION.md` und `PROJECTS-INTEGRATION.md` angegeben.
+6. Der Worker muss auf den bereits im Frontend verwendeten Adressen antworten:
+   - `GET /admin-classroom-mode` und `POST /admin-classroom-mode` – Verwaltung Ankunftszeit, Fach und Entdeckungszeit;
+   - `POST /admin-verify-assignment` – Lehrperson bestätigt die Pflichtaufträge;
+   - `GET /classroom-access?game=...` – serverseitige Zugangsentscheidung;
+   - `GET /messages`, `GET/POST /admin-messages` – Kinderpost und Lehrpersonenmitteilungen;
+   - `POST /activity-heartbeat`, `GET /admin-live-activity` – aktuelle Aktivität, keine dauerhafte Verhaltenschronik;
+   - `GET /projects`, `GET/POST/DELETE /admin-projects` – Polaroid-Erinnerungen.
+7. **Vor der Veröffentlichung** müssen die bereits bestehenden Routen `/login`, `/me`, `/learning-plan`, `/admin-learning`, `/admin-agenda`, `/game-attempt` und die Sitzungsverwaltung unverändert funktionieren. Die Methoden zum Laden des Lernplans müssen den aktiven Unterrichtsmodus berücksichtigen, damit die Kinder-Sperren und serverseitigen Antworten übereinstimmen.
+8. Für **3a, 3c und 3d** müssen mehrere Geräte mit jeweils **unabhängigen gültigen Sitzungs-Tokens** gleichzeitig arbeiten dürfen. Beim Login von Gerät B darf der Worker das Token von Gerät A nicht invalidieren. Ein Logout widerruft nur die betreffende Sitzung. Benutzernamen und Passwörter ausschliesslich serverseitig, niemals in GitHub speichern.
+9. Teste mit Admin, Kinderkonto und zwei getrennten Geräten je Klassenkonto. Teste, ob Fremde auf geschützten Routen 401/403 erhalten. Prüfe Ankunftszeit, Pflichtaufträge/Bestätigung, Fachmodus, freie Erkundung, Termine, Nachrichten und Erinnerungsupload.
+10. Erst **nach** diesen Tests die geprüfte Worker-Version an die Testseiten-URL anschliessen. Die erlaubte Origin für CORS muss die tatsächliche Testdomain `https://lernsafari-klasse3b-test.pages.dev` enthalten. Danach im Dashboard auf die Statusmeldungen achten; bei fehlendem API-Zugriff keine falschen Erfolgsbestätigungen anzeigen.
 
-**Neue Anmeldung:** Kinder-Sitzungen werden auf der Testseite nur noch in
-`sessionStorage` gehalten. Ein Tab-Neustart verlangt eine Anmeldung;
-nach dem blossen Aktualisieren bleibt die Tab-Sitzung erhalten.
+### Konkrete Funktion der Erinnerungen
 
-## Was im GitHub-Entwicklungszweig bereits fertig ist
+Die vorhandene `projects-service.mjs` verwendet **D1 für Bilddaten und Metadaten**. Ein neuer R2-Bucket ist für diesen vorbereiteten Umfang nicht nötig. Der Browser verkleinert Fotos vor dem Hochladen. Ein Upload benötigt die ausdrückliche Bestätigung, dass das Bild veröffentlicht werden darf. Die Galerie zeigt nur tatsächlich vom Worker zurückgelieferte Veröffentlichungen.
 
-- Anmeldung über dasselbe Logbuch (Flamingo + bestehender Admincode für Lehrperson,
-  Kinder über ihre Cloudflare-Konten). **Keine Passwörter in GitHub.**
-- Kein Gastzugang, keine Demo als Kind, keine Demo-Verwaltung, kein separates Lehrer-Login.
-- Lehrpersonen-Dashboard mit Lernaufträgen, Unterrichtsmodus, Berichten,
-  Live-Aktivität, Nachrichten, Projekten.
-- Für Unterrichtsmodi und Nachrichten **authentifizierte** API-Routen als
-  separat getestete Erweiterungen vorbereitet; das Frontend erkennt
-  `available:true` von echten Worker-Antworten.
-- Die drei Bilddateien sind als WebP im Bildpaket vorbereitet.
-  **Sie liegen noch nicht im GitHub-Branch**, siehe unten.
+### Nicht vergessen: Datenqualität der Lernfortschritte
+
+`/admin-report` muss die **Einzelversuche** liefern, soweit sie wirklich gespeichert werden (`username, game, created_at, correct_count, total, answer, expected, details`). Die neue Verwaltungsansicht berechnet Punktquoten nur bei vorhandener Gesamtpunktzahl und zeigt Einzelantworten/Fehler nur, wenn diese übermittelt wurden. Bestehende Spiele müssen diese Informationen tatsächlich senden, sonst steht dort zu Recht, dass keine Fehlerdetails vorliegen.
+
+### Bilder nach main hochladen
+
+Die vier aus den Originalanhängen vorbereiteten WebP-Dateien gehören unter `assets/karte-stickerwelt.webp`, `assets/baobab-stickerwelt.webp`, `assets/hornvogel-froehlich.webp` und `original/assets/hornvogel-zahl-des-tages.webp`. Der Code verwendet diese Dateinamen bereits. **Die GitHub-Verbindung in diesem Chat kann UTF-8-Code und SVG-Text schreiben, aber keine lokalen Bild-Binärdateien als Quelle übernehmen.** Solange die WebPs fehlen, wird zuerst `assets/karte.png` bzw. `assets/baobab.jpg` angezeigt; für den Zahl-Hornvogel bleibt der SVG-Ersatz. Das originale Bildpaket liegt im Chat als ZIP mit den richtigen Zielpfaden vor.
+
+---
 
 ## Vorbereitete Worker-Dateien (alle in diesem Ordner)
 

@@ -163,3 +163,12 @@
  .admin-agenda-days{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
  .admin-agenda-form{grid-template-columns:1fr}
 }
+
+/* Agenda colours match the pupils' Kompass: HA blue, LK green,
+   Schulfrei yellow, special events red. */
+.admin-agenda-entry[data-type="ha"]{background:#c7e4f9!important;border-color:#77afda!important;color:#244d70!important}
+.admin-agenda-entry[data-type="lk"]{background:#d1edcc!important;border-color:#83bb80!important;color:#28572c!important}
+.admin-agenda-entry[data-type="free"]{background:#fff0a6!important;border-color:#d2b44d!important;color:#645019!important}
+.admin-agenda-entry[data-type="special"]{background:#f4ceca!important;border-color:#d68d87!important;color:#682f2b!important}
+.admin-agenda-entry[data-new-date]{background:#faf3e2!important;border-color:#c7b697!important;color:#5d4c37!important}
+.admin-agenda-entry:focus-visible{outline:3px solid #23658c!important;outline-offset:2px}

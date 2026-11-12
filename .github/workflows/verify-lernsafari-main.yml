@@ -1,0 +1,52 @@
+name: Verify LernSafari2 main (website)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'admin-progress.js'
+      - 'admin-progress.css'
+      - 'admin-dashboard.js'
+      - 'admin-dashboard.css'
+      - 'app.js'
+      - 'integration.js'
+      - 'cloudflare-integration.js'
+      - 'index.html'
+      - 'tests/admin-progress.test.cjs'
+      - '.github/workflows/verify-lernsafari-main.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: |
+          node --check app.js
+          node --check integration.js
+          node --check cloudflare-integration.js
+          node --check admin-dashboard.js
+          node --check admin-progress.js
+          node --check original/assets/zahl-des-tages.js
+      - name: Check learning statistics and source files
+        run: |
+          node --test tests/admin-progress.test.cjs
+          node - <<'NODE'
+          const fs=require('node:fs');
+          for(const name of ['admin-progress.css','admin-progress.js','topic-navigation.js','safari-area-theme.css',
+            'assets/karte.png','assets/baobab.jpg','original/assets/hornvogel-zahl-des-tages.svg']){
+            if(!fs.existsSync(name))throw Error('Missing: '+name);
+          }
+          const html=fs.readFileSync('index.html','utf8');
+          if(!html.includes('admin-progress.js'))throw Error('New report is not loaded');
+          const source=fs.readFileSync('app.js','utf8');
+          if(!source.includes("this.src='assets/karte.png'"))throw Error('Real map fallback missing');
+          const baobab=fs.readFileSync('integration.js','utf8');
+          if(!baobab.includes("this.src='assets/baobab.jpg'"))throw Error('Real Baobab fallback missing');
+          const cf=fs.readFileSync('cloudflare-integration.js','utf8');
+          if(!cf.includes('agendaDisplayText'))throw Error('Calendar prefixes missing');
+          const admin=fs.readFileSync('admin-dashboard.js','utf8');
+          if(!admin.includes('LernSafariProgress.render'))throw Error('Detailed learning stats not wired');
+          if(!admin.includes('admin-activity-assignments'))throw Error('Assignment completion overview missing');
+          console.log('PASS: LernSafari main code and asset fallback references');
+          NODE

@@ -88,3 +88,19 @@ jobs:
           if(woods.includes("section('1. Ergänze den Lückentext'")||!woods.includes('Zusatzaufgabe – freiwillig'))throw Error('Woodland layout not updated');
           console.log('PASS five hearing stories with 20 points and four-choice answers');
           NODE
+
+      - name: Audit expert help coverage in other scored games
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs');
+          let eligible=0,covered=0;const missing=[];
+          for(const name of fs.readdirSync('original/spiele').filter(x=>x.endsWith('.html'))){
+            const html=fs.readFileSync('original/spiele/'+name,'utf8');
+            const tracked=/game-telemetry\\.js|highscore\\.js|\/game-attempt|scoreCount|correctCount/.test(html);
+            if(!tracked)continue;
+            eligible++;
+            if(/lernhelfer\\.js/.test(html))covered++;else missing.push(name);
+          }
+          console.log('Tracked scored game pages: '+eligible+', with learner helper: '+covered);
+          console.log('Missing helper:',missing.join(', ')||'none');
+          NODE

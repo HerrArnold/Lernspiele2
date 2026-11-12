@@ -3,6 +3,7 @@ on:
   push:
     branches: [lernsafari-camp-direkt]
     paths:
+      - 'lernsafari-test/**'
       - '.github/workflows/publish-test-pages.yml'
   workflow_dispatch:
 permissions:

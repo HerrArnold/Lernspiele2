@@ -10,6 +10,10 @@ on:
       - 'admin-dashboard.css'
       - 'cloudflare-integration.js'
       - 'index.html'
+      - 'assets/karte-stickerwelt.webp'
+      - 'assets/baobab-stickerwelt.webp'
+      - 'original/assets/hornvogel-zahl-des-tages.webp'
+      - 'assets/hornvogel-froehlich.webp'
   workflow_dispatch:
 jobs:
   browser:

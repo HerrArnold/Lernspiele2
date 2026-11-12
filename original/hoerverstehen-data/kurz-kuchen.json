@@ -1,0 +1,224 @@
+{
+  "id": "lesen_5",
+  "title": "Der heimliche Kuchen",
+  "task1": [
+    {
+      "id": "a1",
+      "statement": "Mia und Noah wollen ihren Vater überraschen.",
+      "correct": true,
+      "reason": "Sie backen für seinen Geburtstag."
+    },
+    {
+      "id": "a2",
+      "statement": "Der Vater hat Geburtstag.",
+      "correct": true,
+      "reason": "Das wird im ersten Satz erklärt."
+    },
+    {
+      "id": "a3",
+      "statement": "Mia und Noah backen eine Pizza.",
+      "correct": false,
+      "reason": "Sie backen einen Kuchen."
+    },
+    {
+      "id": "a4",
+      "statement": "Noah gibt den Zucker zum Teig.",
+      "correct": false,
+      "reason": "Mia gibt den Zucker dazu."
+    },
+    {
+      "id": "a5",
+      "statement": "Sie stellen die Kuchenform in den Ofen.",
+      "correct": true,
+      "reason": "Die Kuchenform kommt in den Ofen."
+    },
+    {
+      "id": "a6",
+      "statement": "Die Schokolade liegt noch auf dem Tisch.",
+      "correct": true,
+      "reason": "Mia entdeckt dort die ganze Tafel."
+    },
+    {
+      "id": "a7",
+      "statement": "Die beiden haben die Milch vergessen.",
+      "correct": false,
+      "reason": "Sie haben die Schokolade vergessen."
+    },
+    {
+      "id": "a8",
+      "statement": "Sie werfen den Kuchen weg.",
+      "correct": false,
+      "reason": "Er schmeckt trotzdem und wird behalten."
+    }
+  ],
+  "task2": [
+    {
+      "id": "b1",
+      "question": "Wen möchten Mia und Noah überraschen?",
+      "core": "Ihren Vater.",
+      "accepted_examples": [
+        "Papa",
+        "ihren Papi",
+        "den Vater",
+        "Mias und Noahs Vater"
+      ],
+      "essential": [
+        "Vater"
+      ],
+      "incorrect_if": [
+        "Mutter",
+        "Grossmutter"
+      ]
+    },
+    {
+      "id": "b2",
+      "question": "Warum möchten sie ihn überraschen?",
+      "core": "Weil er Geburtstag hat.",
+      "accepted_examples": [
+        "zum Geburtstag",
+        "weil Papa Geburtstag feiert",
+        "es ist sein Geburtstag",
+        "als Geburtstagsgeschenk"
+      ],
+      "essential": [
+        "Geburtstag"
+      ],
+      "incorrect_if": [
+        "weil Weihnachten ist"
+      ]
+    },
+    {
+      "id": "b3",
+      "question": "Wer gibt den Zucker zum Teig?",
+      "core": "Mia.",
+      "accepted_examples": [
+        "Mia",
+        "das Mädchen Mia",
+        "Mia gibt Zucker dazu"
+      ],
+      "essential": [
+        "Mia"
+      ],
+      "incorrect_if": [
+        "Noah",
+        "Vater"
+      ]
+    },
+    {
+      "id": "b4",
+      "question": "Was haben die beiden im Kuchen vergessen?",
+      "core": "Die Schokolade.",
+      "accepted_examples": [
+        "Schokolade",
+        "eine Tafel Schokolade",
+        "die Schoggi",
+        "die Schokoladentafel"
+      ],
+      "essential": [
+        "Schokolade"
+      ],
+      "incorrect_if": [
+        "Zucker",
+        "Mehl"
+      ]
+    },
+    {
+      "id": "b5",
+      "question": "Was machen sie am Schluss mit der Schokolade?",
+      "core": "Sie legen die Tafel als Geschenk neben den Kuchen.",
+      "accepted_examples": [
+        "sie legen sie neben den Kuchen",
+        "die Schokolade wird ein Geschenk",
+        "sie schenken dem Vater die Tafel dazu",
+        "sie stellen die Schoggi daneben"
+      ],
+      "essential": [
+        "Tafel neben Kuchen / als zusätzliches Geschenk"
+      ],
+      "incorrect_if": [
+        "sie schmelzen sie im Kuchen",
+        "sie werfen sie weg"
+      ]
+    }
+  ],
+  "task3": [
+    {
+      "id": "c1",
+      "term": "überraschen",
+      "meaning": "Etwas tun, womit jemand nicht rechnet, um Freude zu machen.",
+      "accepted_examples": [
+        "eine Freude machen, ohne dass die Person es erwartet",
+        "etwas Unerwartetes machen",
+        "jemand weiss vorher nichts davon",
+        "jemanden mit etwas überraschen"
+      ],
+      "essential": [
+        "unerwartet/nicht damit rechnen"
+      ],
+      "incorrect_if": [
+        "jemandem vorher genau alles verraten"
+      ]
+    },
+    {
+      "id": "c2",
+      "term": "Teig",
+      "meaning": "Eine weiche Masse aus Zutaten, aus der man zum Beispiel Kuchen backt.",
+      "accepted_examples": [
+        "Mischung zum Backen",
+        "Mehl und andere Zutaten zusammengerührt",
+        "Masse aus der ein Kuchen wird",
+        "Backmasse",
+        "das, was vor dem Backen im Kuchen ist"
+      ],
+      "essential": [
+        "Masse/Mischung zum Backen"
+      ],
+      "incorrect_if": [
+        "fertig gebackener Kuchen",
+        "Ofen"
+      ]
+    },
+    {
+      "id": "c3",
+      "term": "vergessen",
+      "meaning": "Nicht mehr daran denken, etwas zu tun oder mitzunehmen.",
+      "accepted_examples": [
+        "nicht daran gedacht",
+        "aus Versehen nicht gemacht",
+        "es ist ihnen nicht eingefallen",
+        "übersehen",
+        "nicht mehr daran denken"
+      ],
+      "essential": [
+        "nicht daran denken/etwas auslassen"
+      ],
+      "incorrect_if": [
+        "extra weglassen",
+        "sich gut erinnern"
+      ]
+    }
+  ],
+  "task4": [
+    {
+      "id": "d1",
+      "text": "Mia entdeckt die Schokolade auf dem Tisch.",
+      "correct_position": 3
+    },
+    {
+      "id": "d2",
+      "text": "Die beiden legen die Schokolade neben den Kuchen.",
+      "correct_position": 4
+    },
+    {
+      "id": "d3",
+      "text": "Mia und Noah rühren den Teig an.",
+      "correct_position": 1
+    },
+    {
+      "id": "d4",
+      "text": "Sie schieben die Kuchenform in den Ofen.",
+      "correct_position": 2
+    }
+  ],
+  "audio": "../hoerverstehen-audio/kuchen.m4a"
+}

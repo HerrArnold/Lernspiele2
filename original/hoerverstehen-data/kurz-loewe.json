@@ -1,0 +1,223 @@
+{
+  "id": "lesen_2",
+  "title": "Der kleine Löwe",
+  "task1": [
+    {
+      "id": "a1",
+      "statement": "Leo ist ein junges Löwenkind.",
+      "correct": true,
+      "reason": "Leo wird als Löwenkind eingeführt."
+    },
+    {
+      "id": "a2",
+      "statement": "Leo möchte so schnell rennen wie sein Vater.",
+      "correct": false,
+      "reason": "Er möchte so laut brüllen wie sein Vater."
+    },
+    {
+      "id": "a3",
+      "statement": "Leo übt jeden Abend im Wasser.",
+      "correct": false,
+      "reason": "Er übt jeden Morgen auf einem Felsen."
+    },
+    {
+      "id": "a4",
+      "statement": "Zuerst kommt nur ein leises Quieken aus Leos Maul.",
+      "correct": true,
+      "reason": "Das ist der erste Laut."
+    },
+    {
+      "id": "a5",
+      "statement": "Zwei Zebras hören Leo zu.",
+      "correct": true,
+      "reason": "Es sind zwei Zebras."
+    },
+    {
+      "id": "a6",
+      "statement": "Die Zebras beginnen zu weinen.",
+      "correct": false,
+      "reason": "Sie lachen."
+    },
+    {
+      "id": "a7",
+      "statement": "Nach dem lauten Geräusch rennen die Zebras davon.",
+      "correct": true,
+      "reason": "Die Zebras erschrecken und fliehen."
+    },
+    {
+      "id": "a8",
+      "statement": "Am Schluss gelingt Leo ein besonders lautes Brüllen.",
+      "correct": false,
+      "reason": "Der laute Laut ist ein Niesen."
+    }
+  ],
+  "task2": [
+    {
+      "id": "b1",
+      "question": "Was möchte Leo lernen?",
+      "core": "Laut brüllen wie sein Vater.",
+      "accepted_examples": [
+        "laut brüllen",
+        "wie sein Vater brüllen",
+        "so laut werden wie Papa",
+        "brüllen lernen"
+      ],
+      "essential": [
+        "brüllen"
+      ],
+      "incorrect_if": [
+        "schnell rennen",
+        "fliegen"
+      ]
+    },
+    {
+      "id": "b2",
+      "question": "Wo übt Leo jeden Morgen?",
+      "core": "Auf einem hohen Felsen.",
+      "accepted_examples": [
+        "auf einem Felsen",
+        "auf einem Stein",
+        "oben auf dem hohen Felsen"
+      ],
+      "essential": [
+        "Felsen oder grosser Stein"
+      ],
+      "incorrect_if": [
+        "im Wasser",
+        "im Baum"
+      ]
+    },
+    {
+      "id": "b3",
+      "question": "Was kommt zuerst aus Leos Maul?",
+      "core": "Ein leises Quieken.",
+      "accepted_examples": [
+        "ein Quieken",
+        "ein leises Piepsen",
+        "er quietscht nur",
+        "ein hoher leiser Ton"
+      ],
+      "essential": [
+        "leiser hoher Laut/Quieken"
+      ],
+      "incorrect_if": [
+        "ein lautes Brüllen"
+      ]
+    },
+    {
+      "id": "b4",
+      "question": "Wie reagieren die zwei Zebras zuerst?",
+      "core": "Sie lachen.",
+      "accepted_examples": [
+        "sie lachen ihn aus",
+        "sie müssen lachen",
+        "sie finden es lustig"
+      ],
+      "essential": [
+        "lachen"
+      ],
+      "incorrect_if": [
+        "rennen zuerst weg",
+        "weinen"
+      ]
+    },
+    {
+      "id": "b5",
+      "question": "Warum rennen die Zebras am Schluss davon?",
+      "core": "Weil Leo so laut niest und sie erschrecken.",
+      "accepted_examples": [
+        "weil er laut niesen muss",
+        "ein lauter Nieser erschreckt sie",
+        "sie erschrecken wegen des Niesens",
+        "Leo niest laut"
+      ],
+      "essential": [
+        "lautes Niesen/Nieser als Auslöser"
+      ],
+      "incorrect_if": [
+        "wegen eines echten Brüllens",
+        "weil ein Elefant kommt"
+      ]
+    }
+  ],
+  "task3": [
+    {
+      "id": "c1",
+      "term": "Quieken",
+      "meaning": "Ein kurzer, hoher, oft leiser Laut.",
+      "accepted_examples": [
+        "piepsen",
+        "ein hoher Ton",
+        "helles Quietschen",
+        "ein dünner hoher Laut",
+        "wie ein kleines Quietschen"
+      ],
+      "essential": [
+        "hoher/quietschender Laut"
+      ],
+      "incorrect_if": [
+        "lautes Löwengebrüll"
+      ]
+    },
+    {
+      "id": "c2",
+      "term": "enttäuscht",
+      "meaning": "Traurig oder unzufrieden, weil etwas nicht so klappt wie gehofft.",
+      "accepted_examples": [
+        "traurig, weil es nicht klappt",
+        "frustriert",
+        "er hat sich mehr erhofft",
+        "schade finden, dass es nicht funktioniert"
+      ],
+      "essential": [
+        "Erwartung nicht erfüllt und negative Gefühle"
+      ],
+      "incorrect_if": [
+        "sehr stolz",
+        "glücklich weil alles klappt"
+      ]
+    },
+    {
+      "id": "c3",
+      "term": "erschrecken",
+      "meaning": "Plötzlich Angst bekommen oder zusammenzucken.",
+      "accepted_examples": [
+        "sich fürchten",
+        "Angst bekommen",
+        "sich plötzlich erschrocken fühlen",
+        "zusammenzucken",
+        "sich wegen eines Geräuschs fürchten"
+      ],
+      "essential": [
+        "plötzliche Angst/Überraschung"
+      ],
+      "incorrect_if": [
+        "lachen",
+        "einschlafen"
+      ]
+    }
+  ],
+  "task4": [
+    {
+      "id": "d1",
+      "text": "Die Zebras rennen erschrocken davon.",
+      "correct_position": 4
+    },
+    {
+      "id": "d2",
+      "text": "Leo übt auf einem hohen Felsen.",
+      "correct_position": 1
+    },
+    {
+      "id": "d3",
+      "text": "Leo niest sehr laut.",
+      "correct_position": 3
+    },
+    {
+      "id": "d4",
+      "text": "Zuerst hört man nur ein leises Quieken.",
+      "correct_position": 2
+    }
+  ],
+  "audio": "../hoerverstehen-audio/loewe.m4a"
+}

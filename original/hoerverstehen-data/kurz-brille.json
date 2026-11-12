@@ -1,0 +1,230 @@
+{
+  "id": "lesen_3",
+  "title": "Die verschwundene Brille",
+  "task1": [
+    {
+      "id": "a1",
+      "statement": "Lena möchte ein Buch lesen.",
+      "correct": true,
+      "reason": "Das ist der Grund für die Suche."
+    },
+    {
+      "id": "a2",
+      "statement": "Lena sucht ihren neuen Hut.",
+      "correct": false,
+      "reason": "Sie sucht ihre Brille."
+    },
+    {
+      "id": "a3",
+      "statement": "Lena schaut auch im Badezimmer nach.",
+      "correct": true,
+      "reason": "Sie sucht sogar dort."
+    },
+    {
+      "id": "a4",
+      "statement": "Lena findet die Brille unter dem Bett.",
+      "correct": false,
+      "reason": "Dort findet sie nichts."
+    },
+    {
+      "id": "a5",
+      "statement": "Lena wird langsam nervös.",
+      "correct": true,
+      "reason": "Das steht direkt im Text."
+    },
+    {
+      "id": "a6",
+      "statement": "Ihr Vater kommt ins Zimmer.",
+      "correct": false,
+      "reason": "Ihre Mutter kommt."
+    },
+    {
+      "id": "a7",
+      "statement": "Die Brille steckt in Lenas Haaren.",
+      "correct": true,
+      "reason": "Sie steckt auf ihrem Kopf zwischen den Haaren."
+    },
+    {
+      "id": "a8",
+      "statement": "Lena beginnt am Schluss zu weinen.",
+      "correct": false,
+      "reason": "Sie muss lachen und ist erleichtert."
+    }
+  ],
+  "task2": [
+    {
+      "id": "b1",
+      "question": "Was möchte Lena machen?",
+      "core": "Ein Buch lesen.",
+      "accepted_examples": [
+        "lesen",
+        "ein Buch lesen",
+        "sie will ein Buch anschauen und lesen"
+      ],
+      "essential": [
+        "Buch lesen"
+      ],
+      "incorrect_if": [
+        "fernsehen",
+        "schlafen"
+      ]
+    },
+    {
+      "id": "b2",
+      "question": "Welche Sache sucht Lena?",
+      "core": "Ihre neue Brille.",
+      "accepted_examples": [
+        "Brille",
+        "die Brille",
+        "ihre Lesebrille",
+        "die neue Brille"
+      ],
+      "essential": [
+        "Brille"
+      ],
+      "incorrect_if": [
+        "Hut",
+        "Schuhe"
+      ]
+    },
+    {
+      "id": "b3",
+      "question": "Nenne zwei Orte, an denen Lena sucht.",
+      "core": "Zum Beispiel unter dem Bett und hinter dem Schrank.",
+      "accepted_examples": [
+        "unter dem Bett und hinter dem Schrank",
+        "beim Bett und im Badezimmer",
+        "hinter dem Schrank und im Badezimmer",
+        "Bett und Schrank",
+        "Bett und Badezimmer",
+        "Schrank und Badezimmer"
+      ],
+      "essential": [
+        "mindestens zwei verschiedene aus: Bett, Schrank, Badezimmer"
+      ],
+      "incorrect_if": [
+        "Küche",
+        "Garten"
+      ]
+    },
+    {
+      "id": "b4",
+      "question": "Wer entdeckt, wo die Brille ist?",
+      "core": "Ihre Mutter.",
+      "accepted_examples": [
+        "Mama",
+        "die Mutter",
+        "Lenas Mami",
+        "ihre Mama"
+      ],
+      "essential": [
+        "Mutter"
+      ],
+      "incorrect_if": [
+        "Vater",
+        "Lena allein"
+      ]
+    },
+    {
+      "id": "b5",
+      "question": "Wo ist die Brille die ganze Zeit?",
+      "core": "Auf Lenas Kopf zwischen ihren Haaren.",
+      "accepted_examples": [
+        "auf dem Kopf",
+        "in ihren Haaren",
+        "zwischen den Haaren",
+        "oben bei Lena",
+        "sie trägt sie auf dem Kopf"
+      ],
+      "essential": [
+        "Lenas Kopf/Haar"
+      ],
+      "incorrect_if": [
+        "unter dem Bett",
+        "im Badezimmer"
+      ]
+    }
+  ],
+  "task3": [
+    {
+      "id": "c1",
+      "term": "verschwunden",
+      "meaning": "Man weiss nicht, wo etwas ist; es ist nicht zu finden.",
+      "accepted_examples": [
+        "weg",
+        "verloren",
+        "nicht auffindbar",
+        "sie findet es nicht",
+        "nicht mehr da, wo man es erwartet"
+      ],
+      "essential": [
+        "nicht auffindbar"
+      ],
+      "incorrect_if": [
+        "kaputt",
+        "schmutzig"
+      ]
+    },
+    {
+      "id": "c2",
+      "term": "nervös",
+      "meaning": "Unruhig oder aufgeregt, weil man sich Sorgen macht.",
+      "accepted_examples": [
+        "aufgeregt",
+        "unruhig",
+        "angespannt",
+        "besorgt",
+        "sie weiss nicht weiter und wird hektisch"
+      ],
+      "essential": [
+        "Unruhe/Aufregung/Sorge"
+      ],
+      "incorrect_if": [
+        "ganz ruhig",
+        "müde"
+      ]
+    },
+    {
+      "id": "c3",
+      "term": "erleichtert",
+      "meaning": "Froh, weil eine Sorge oder ein Problem vorbei ist.",
+      "accepted_examples": [
+        "froh, dass sie die Brille gefunden hat",
+        "beruhigt",
+        "die Sorge ist weg",
+        "glücklich, dass alles gut ist",
+        "sie muss sich keine Sorgen mehr machen"
+      ],
+      "essential": [
+        "Sorge fällt weg/Problem gelöst"
+      ],
+      "incorrect_if": [
+        "noch ängstlicher",
+        "weiter verzweifelt"
+      ]
+    }
+  ],
+  "task4": [
+    {
+      "id": "d1",
+      "text": "Die Mutter zeigt auf Lenas Kopf.",
+      "correct_position": 3
+    },
+    {
+      "id": "d2",
+      "text": "Lena sucht unter dem Bett.",
+      "correct_position": 1
+    },
+    {
+      "id": "d3",
+      "text": "Lena entdeckt die Brille zwischen ihren Haaren.",
+      "correct_position": 4
+    },
+    {
+      "id": "d4",
+      "text": "Lena sucht auch im Badezimmer.",
+      "correct_position": 2
+    }
+  ],
+  "audio": "../hoerverstehen-audio/brille.m4a"
+}

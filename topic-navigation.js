@@ -26,6 +26,11 @@
       {name:'Briefe',icon:'✉️',games:[['Briefe entdecken','briefe-entdecken.html']]},
       {name:'Vom Hören zum Sprechen',icon:'💬',games:[['Gefühle und direkte Rede','gefuehle-direkte-rede.html']]},
       {name:'Hörverständnis',icon:'👂',games:[
+        ['Der freche Affe','hoerverstehen-kurz-affe.html'],
+        ['Der kleine Löwe','hoerverstehen-kurz-loewe.html'],
+        ['Die verschwundene Brille','hoerverstehen-kurz-brille.html'],
+        ['Das grosse Wettrennen','hoerverstehen-kurz-wettrennen.html'],
+        ['Der heimliche Kuchen','hoerverstehen-kurz-kuchen.html'],
         ['Der Dachs','hoerverstehen-dachs.html'],['Das Eichhörnchen','hoerverstehen-eichhoernchen.html'],['Der Igel','hoerverstehen-igel.html'],['Das Reh','hoerverstehen-reh.html'],['Der Rotfuchs','hoerverstehen-rotfuchs.html']
       ]}
     ],

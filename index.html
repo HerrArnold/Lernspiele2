@@ -7,16 +7,22 @@
   <meta name="theme-color" content="#f2dfb6">
   <meta name="description" content="LernSafari – interaktiver Prototyp für die Klasse 3b.">
   <title>LernSafari · Die Safari beginnt!</title>
-  <link rel="stylesheet" href="styles.css?v=20261111-classroom7">
-  <link rel="stylesheet" href="integration.css?v=20261111-classroom10">
-  <script src="app.js?v=20261111-classroom9" defer></script>
-  <script src="integration.js?v=20261111-classroom10" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="integration.css">
+  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="baobab-projects.css">
+  <script src="baobab-projects.js" defer></script>
+  <script src="integration.js" defer></script>
+  <script src="topic-navigation.js" defer></script>
   <script src="original/assets/login-config.js"></script>
-  <link rel="stylesheet" href="cloudflare-integration.css?v=20261111-agenda6">
+  <link rel="stylesheet" href="cloudflare-integration.css">
   <link rel="stylesheet" href="unterrichtsmodus.css">
   <script src="unterrichtsmodus.js" defer></script>
   <script src="unterrichtsmodus-admin.js" defer></script>
-  <script src="cloudflare-integration.js?v=20261111-classroom8" defer></script>
+  <link rel="stylesheet" href="admin-dashboard.css">
+  <link rel="stylesheet" href="safari-area-theme.css">
+  <script src="admin-dashboard.js" defer></script>
+  <script src="cloudflare-integration.js" defer></script>
 </head>
 <body>
   <div id="app" class="app">
@@ -43,11 +49,10 @@
               <label class="sr-only" for="password">Passwort</label>
               <input id="password" name="password" type="password" placeholder="Passwort" autocomplete="current-password" aria-label="Passwort">
               <button type="submit" class="login-submit">Anmelden</button>
-              
             </form>
           </div>
         </div>
-        <div class="login-bottom"><span>🌞 Willkommen auf der LernSafari! · Klassen 3a, 3b, 3c und 3d</span><span class="login-access-tip">Kinder melden sich mit ihrem Konto an. Für die Verwaltung: Benutzername <strong>Flamingo</strong> und Adminpasswort eingeben.</span></div>
+        <div class="login-bottom"><span>🦩 Willkommen auf der LernSafari! Melde dich mit deinem Konto an.</span></div>
       </section>
 
       <section id="campScreen" class="camp-screen" aria-label="Safari-Camp" hidden>
@@ -71,6 +76,13 @@
           <div id="destinationContent"></div>
           <div class="destination-actions"><button id="backToCamp" class="primary">⛺ Zurück ins Camp</button></div>
         </div>
+      </section>
+      <section id="adminScreen" class="admin-screen" hidden aria-label="LernSafari-Verwaltung">
+        <div class="admin-screen-top">
+          <button type="button" id="adminPageBack" class="admin-screen-back">← Zurück ins Camp</button>
+          <div><span class="admin-screen-kicker">🦩 Flamingo · Verwaltung</span><h1>LernSafari verwalten</h1><p>Wähle einen Bereich, den du bearbeiten möchtest.</p></div>
+        </div>
+        <div id="adminPageBody" class="admin-screen-body" aria-live="polite"></div>
       </section>
     </main>
 

@@ -1,7 +1,7 @@
 /* LernSafari 2.0 - original learning content mounted without changes to game rules */
 'use strict';
 const ORIGINAL_GAMES = {"Deutsch": [{"title": "Gefühle und direkte Rede", "file": "gefuehle-direkte-rede.html", "preview": "preview-gefuehle.webp", "description": "Direkte Rede, Gesichter und Stimmen · 3 Teile"}, {"title": "Briefe entdecken", "file": "briefe-entdecken.html", "preview": "preview-briefe.webp", "description": "Briefarten, Briefaufbau und passende Sätze · 3 Teile"}], "NMG": [{"title": "Verschiedene Rabenvögel", "file": "verschiedene-rabenvoegel.html", "preview": "preview-rabenvoegel.webp", "description": "10 Rabenvögel auf Fotos erkennen und benennen"}, {"title": "Lebensraum der Vögel", "file": "lebensraum-voegel.html", "preview": "preview-lebensraum.webp", "description": "Was hilft und was schadet Vögeln? · 2 Teile"}, {"title": "Federtypen", "file": "federtypen.html", "preview": "preview-federn.webp", "description": "Federn erkennen und ihre Aufgaben verstehen"}, {"title": "Teste dein Wissen", "file": "teste-dein-wissen-nmg.html", "preview": "preview-wissen-nmg.webp", "description": "18 Aufgaben · 3 Teile · 18 Punkte"}], "Allgemein": [{"title": "Schach-Lexikon", "file": "schach-lexikon.html", "preview": "preview-schach-lexikon.svg", "description": "Figuren und wichtige Regeln einfach erklärt"}, {"title": "Schach gegen den Computer", "file": "schach-computer.html", "preview": "preview-schach-computer.svg", "description": "Spiele eine echte Partie gegen den Computer"}], "Musik": [{"title": "SayHi: Singen", "file": "sayhi-singen.html", "preview": "preview-sayhi-singen.svg", "description": "Musikvideo anschauen und mit Liedtext mitsingen"}, {"title": "SayHi: Tanz", "file": "sayhi-tanz.html", "preview": "preview-sayhi-tanz.svg", "description": "Die Tanzschritte mit Video üben"}, {"title": "Solmisationsleiter", "file": "solmisationsleiter.html", "preview": "preview-solmisationsleiter.webp", "description": "Silben ordnen und Farben finden"}, {"title": "Solmisationsspiel", "file": "solmisationsspiel.html", "preview": "preview-solmi.webp", "description": "Do liegt auf C"}, {"title": "Solmisationsspiel schwer", "file": "solmisationsspiel-profi.html", "preview": "preview-solmi-profi.webp", "description": "Do liegt auf verschiedenen Tönen"}, {"title": "Rhythmus-Trio", "file": "rhythmus-trio.html", "preview": "preview-rhythm-trio.webp", "description": "Drei passende Karten finden"}, {"title": "Notenname · Notenbild · Rhythmussprache", "file": "rhythmus-trio-profi.html", "preview": "preview-rhythm-profi.webp", "description": "Rhythmen schreiben und zeichnen"}, {"title": "Teste dein Wissen", "file": "teste-dein-wissen-musik.html", "preview": "preview-teste-wissen-musik.svg", "description": "24 Punkte · 12 Aufgaben"}], "Mathe": [{"title": "Einmaleins-Tafel erforschen", "file": "einmaleins-tafel-entdecken.html", "preview": "preview-einmaleins-tafel.svg", "description": "Zusammenhänge finden · Neue Reihen mit Merkaufgaben lösen"}, {"title": "Einmaleins-Mix", "file": "einmaleins-mix.html", "preview": "preview-einmaleins-mix.svg", "description": "2er-, 5er- und 10er-Reihe gemischt üben"}, {"title": "Die 3er-Reihe", "file": "einmaleins-dreier.html", "preview": "preview-einmaleins-dreier.svg", "description": "Mit der 2er-Reihe die 3er-Reihe entdecken"}, {"title": "Die 4er-Reihe", "file": "einmaleins-vierer.html", "preview": "preview-einmaleins-vierer.svg", "description": "Mit der 2er-Reihe die 4er-Reihe entdecken"}, {"title": "Die 6er-Reihe", "file": "einmaleins-sechser.html", "preview": "preview-einmaleins-sechser.svg", "description": "Mit der 5er-Reihe die 6er-Reihe entdecken"}, {"title": "Die 9er-Reihe", "file": "einmaleins-neuner.html", "preview": "preview-einmaleins-neuner.svg", "description": "Mit der 10er-Reihe die 9er-Reihe entdecken"}, {"title": "Einmaleins-Mix · 3, 4, 6 und 9", "file": "einmaleins-mix-neue-reihen.html", "preview": "preview-einmaleins-mix-neue-reihen.svg", "description": "3er-, 4er-, 6er- und 9er-Reihe gemischt üben"}, {"title": "Finde die Zahl", "file": "finde-die-zahl.html", "preview": "preview-finde-die-zahl.webp", "description": "Zahlen im Tausenderbuch suchen"}, {"title": "Stellentafel", "file": "stellentafel.html", "preview": "preview-stellentafel.webp", "description": "Hunderter, Zehner und Einer"}, {"title": "Hunderter, Zehner und Einer zerlegen", "file": "hunderter-zehner-einer-zerlegen.html", "preview": "preview-hunderter-zehner-einer-zerlegen.webp", "description": "Zahlen zerlegen"}, {"title": "Wie viele Hundertertafeln, Zehnerstangen und Einerwürfel?", "file": "wie-viele-brauchst-du.html", "preview": "preview-wie-viele-brauchst-du.webp", "description": "Mit Stellenwertmaterial arbeiten"}, {"title": "Welche Zahl ist das?", "file": "welche-zahl-ist-das.html", "preview": "preview-welche-zahl-ist-das.webp", "description": "Stellenwertmaterial erkennen"}, {"title": "Teste dein Wissen", "file": "teste-dein-wissen.html", "preview": "preview-teste-wissen-mathe.svg", "description": "Lernkontrolle · 15 Aufgaben"}]};
-const SUBJECTS=[['Mathe','Mathematik','🔢'],['Deutsch','Deutsch','📚'],['NMG','NMG','🐦‍⬛'],['Musik','Musik','🎵'],['Englisch','Englisch','🇬🇧']];
+const SUBJECTS=[['Mathe','Mathe','<img class="safari-subject-badge" src="assets/math-badge.svg" alt="" aria-hidden="true">'],['Deutsch','Deutsch','<img class="safari-subject-badge" src="assets/german-flag.svg" alt="" aria-hidden="true">'],['NMG','NMG','<img class="safari-subject-badge" src="assets/nmg-leaf.svg" alt="" aria-hidden="true">'],['Musik','Musik','<img class="safari-subject-badge" src="assets/music-badge.svg" alt="" aria-hidden="true">'],['Englisch','Englisch','<img class="safari-subject-badge" src="assets/uk-flag.svg" alt="" aria-hidden="true">']];
 let safariSubject=null;
 let safariGame=null;
 let safariGameOrigin='lagoon';
@@ -12,20 +12,6 @@ const originalValley=renderValley;
 const htmlSafe=(s)=>escapeHtml(String(s));
 
 function subjectLabel(id){return SUBJECTS.find(s=>s[0]===id)?.[1]||id}
-// Consistent subject pictograms avoid platform-dependent emoji and the GB flag for English.
-const SAFARI_SUBJECT_MARKS={
- Mathe:{symbol:'×',color:'#e38c28',ink:'#fff'},
- Deutsch:{symbol:'Aa',color:'#9f5745',ink:'#fff'},
- NMG:{symbol:'NMG',color:'#5a8555',ink:'#fff'},
- Musik:{symbol:'♫',color:'#8f5c9c',ink:'#fff'},
- Englisch:{symbol:'EN',color:'#367ba8',ink:'#fff'}
-};
-function safariSubjectLogo(subject){
- const config=SAFARI_SUBJECT_MARKS[subject]||SAFARI_SUBJECT_MARKS.Deutsch;
- if(subject==='Englisch')return '<span class="safari-subject-logo safari-subject-flag" aria-hidden="true"><svg viewBox="0 0 60 60" focusable="false"><rect width="60" height="60" fill="#17377f"/><path d="M0 0L60 60M60 0L0 60" stroke="#fff" stroke-width="16"/><path d="M0 0L60 60M60 0L0 60" stroke="#cb273f" stroke-width="6"/><path d="M30 0V60M0 30H60" stroke="#fff" stroke-width="21"/><path d="M30 0V60M0 30H60" stroke="#cb273f" stroke-width="10"/></svg></span>';
- return `<span class="safari-subject-logo" style="--logo-bg:${config.color};--logo-ink:${config.ink}" aria-hidden="true"><span>${config.symbol}</span></span>`;
-}
-
 function integrationAreaMeta(areaId){
   const meta={
     lagoon:{icon:'🌊',label:'Lern-Lagune',kicker:'Lern-Lagune',intro:'Hier findest du deine vertrauten Lernspiele – jetzt enger in die neue LernSafari eingebettet.',tip:'Die Spielregeln bleiben gleich. Neu sind vor allem klarere Karten, einheitlichere Abstände und ein stärkerer Safari-Rahmen.'},
@@ -46,46 +32,42 @@ function integrationTrail(areaLabel,contextLabel,title){
   const parts=['LernSafari',areaLabel];
   if(contextLabel)parts.push(contextLabel);
   if(title)parts.push(title);
-  return `<nav class="integration-trail" aria-label="Pfad">${parts.map((part,i)=>`${i?'<span class="integration-chevron">›</span>':''}${i===parts.length-1? `<span class="integration-pill is-current" aria-current="page">${htmlSafe(part)}</span>`:`<button type="button" class="integration-pill integration-crumb" data-trail-level="${i}">${htmlSafe(part)}</button>`}`).join('')}</nav>`;
+  return `<nav class="integration-trail" aria-label="Pfad">${parts.map((part,i)=>{
+    const current=i===parts.length-1;
+    const item=current
+      ?`<span class="integration-pill is-current" aria-current="page">${htmlSafe(part)}</span>`
+      :`<button type="button" class="integration-pill integration-trail-link" data-trail-index="${i}" aria-label="Zurück zu ${htmlSafe(part)}">${htmlSafe(part)}</button>`;
+    return `${i?'<span class="integration-chevron" aria-hidden="true">›</span>':''}${item}`;
+  }).join('')}</nav>`;
 }
-function wireIntegrationTrail(){
-  document.querySelectorAll('.integration-crumb').forEach(b=>b.onclick=()=>{
-    const level=Number(b.dataset.trailLevel);
-    if(level===0){safariGame=null;safariSubject=null;goCamp();return;}
-    if(level===1){
-      if(state.destination==='lagoon'){safariGame=null;safariSubject=null;renderLagoon();}
-      else if(state.destination==='baobab')renderBaobab();
-      else if(state.destination==='oasis')renderDestination(places.find(p=>p.id==='oasis'));
-      else {goCamp();showModal('map');}
-      return;
-    }
-    if(level===2 && state.destination==='lagoon'){
-      if(safariGame)safariSubject=safariGameOrigin;
-      safariGame=null;renderLagoon();
-    }
-  });
-}
-const SAFARI_LEARNING_UNITS={
- Mathe:[
-  ['Einmaleins',['einmaleins-tafel-entdecken.html','einmaleins-mix.html','einmaleins-dreier.html','einmaleins-vierer.html','einmaleins-sechser.html','einmaleins-neuner.html','einmaleins-mix-neue-reihen.html']],
-  ['Zahlen und Stellenwert',['finde-die-zahl.html','stellentafel.html','hunderter-zehner-einer-zerlegen.html','wie-viele-brauchst-du.html','welche-zahl-ist-das.html']],
-  ['Teste dein Wissen',['teste-dein-wissen.html']]
- ],
- Deutsch:[['Streiten und Gefühle',['gefuehle-direkte-rede.html']],['Briefe schreiben',['briefe-entdecken.html']]],
- NMG:[['Rabenvögel und Vögel',['verschiedene-rabenvoegel.html','lebensraum-voegel.html','federtypen.html','teste-dein-wissen-nmg.html']]],
- Musik:[['Singen und Tanzen',['sayhi-singen.html','sayhi-tanz.html']],['Solmisation',['solmisationsleiter.html','solmisationsspiel.html','solmisationsspiel-profi.html']],['Rhythmus und Noten',['rhythmus-trio.html','rhythmus-trio-profi.html']],['Teste dein Wissen',['teste-dein-wissen-musik.html']]]
-};
-function groupedSafariGames(subject,games){
-  const groups=SAFARI_LEARNING_UNITS[subject]||[];
-  const used=new Set();
-  const result=groups.map(([name,files])=>({name,items:files.map(file=>{
-    const index=games.findIndex(g=>g.file===file);
-    if(index<0)return null;used.add(index);return {game:games[index],index};
-  }).filter(Boolean)})).filter(group=>group.items.length);
-  const additional=games.map((game,index)=>({game,index})).filter(x=>!used.has(x.index));
-  if(additional.length)result.push({name:'Weitere Übungen',items:additional});
-  return result;
-}
+/* Breadcrumb navigation is delegated: every new view replaces destinationContent,
+   so handlers attached to individual pills would be lost after each render. */
+document.getElementById('destinationContent').addEventListener('click',event=>{
+  const pill=event.target.closest('button[data-trail-index]');
+  if(!pill||!event.currentTarget.contains(pill))return;
+  const index=Number(pill.dataset.trailIndex);
+  const labels=[...pill.closest('.integration-trail').querySelectorAll('.integration-pill')].map(el=>el.textContent.trim());
+  if(index===0){
+    safariGame=null;safariSubject=null;
+    goCamp();
+    return;
+  }
+  if(index===1){
+    safariGame=null;safariSubject=null;
+    const area=labels[1];
+    if(area==='Lern-Lagune'){activeLagoonSubject=null;renderLagoon();}
+    else if(area==='Baobab-Baum'){baobabSection=null;renderBaobab();}
+    else if(area==='Tages-Tal'){renderValley();}
+    else if(area==='Oase'){renderDestination(places.find(p=>p.id==='oasis'));}
+    return;
+  }
+  if(index===2 && labels[1]==='Lern-Lagune'){
+    safariGame=null;
+    const subject=SUBJECTS.find(x=>x[1]===labels[2]||x[0]===labels[2]);
+    if(subject){safariSubject=subject[0];renderLagoon();}
+    else {safariSubject=null;renderLagoon();}
+  }
+});
 function originalFrame(relative,title,opts={}){
  const root=document.getElementById('destinationContent');
  const back=integrationBackConfig(),areaId=opts.areaId||back.areaId||'lagoon',area=integrationAreaMeta(areaId),kind=opts.kind||'exercise';
@@ -93,22 +75,19 @@ function originalFrame(relative,title,opts={}){
  root.innerHTML=`<section class="original-integration integration-shell integration-area-${htmlSafe(areaId)}" aria-label="${htmlSafe(title)}">
  ${integrationTrail(area.label,context,title)}
  <div class="integration-play-heading"><div class="integration-play-title"><span class="integration-play-emoji" aria-hidden="true">${area.icon}</span><div><span class="integration-kicker">${htmlSafe(area.label)}${context?' · '+htmlSafe(context):''}</span><h2>${htmlSafe(title)}</h2></div></div><button type="button" class="integration-back" id="returnFromOriginal">${htmlSafe(back.label)}</button></div>
- ${kind==='daily'?`<div class="valley-hornbill-banner" aria-label="Tages-Tal mit Hornvogel und Holzschild"><svg class="valley-hornbill-art" viewBox="0 0 265 225" aria-hidden="true"><defs><clipPath id="safariHornbird"><polygon points="9,110 15,96 24,87 34,78 45,74 49,68 58,75 69,70 80,58 87,58 91,42 101,37 117,41 128,35 140,45 144,55 157,53 169,58 185,60 199,73 209,89 208,110 200,129 186,138 176,140 163,146 151,141 149,162 147,181 138,197 146,200 158,208 160,218 144,225 129,221 113,217 101,222 81,221 70,215 71,194 62,188 51,192 34,179 28,157 19,146 10,131"/></clipPath></defs><image href="assets/karte.png" x="-100" y="-75" width="1672" height="941" clip-path="url(#safariHornbird)"/></svg><div class="valley-hornbill-sign"><span class="valley-sign-small">🌞 Willkommen im</span><strong>Tages-Tal</strong><span>Zahl des Tages und deine Aufgaben</span></div></div>` :''}
  <div class="integration-game-surface"><iframe class="original-frame ${kind==='daily'?'original-daily':''}" id="originalGameFrame" src="${htmlSafe(relative)}" title="${htmlSafe(title)}" loading="eager" referrerpolicy="same-origin" allow="fullscreen"></iframe></div>
  </section>`;
- wireIntegrationTrail();
  document.getElementById('returnFromOriginal').onclick=back.action;
 }
 function renderOriginalSubject(subject){
   const root=document.getElementById('destinationContent');
   const label=subjectLabel(subject);
   const games=ORIGINAL_GAMES[subject]||[];
-  root.innerHTML=`<section class="original-collection integration-shell integration-area-lagoon integration-subject-page">${integrationTrail('Lern-Lagune',label,'Spieleauswahl')}<div class="integration-top"><button type="button" class="integration-back" id="backOriginalSubject">← Zur Lern-Lagune</button><p class="integration-note">Wähle ein Spiel. Die ursprünglichen Aufgaben und Regeln bleiben erhalten.</p></div><div class="integration-hero"><div class="integration-icon" aria-hidden="true">${safariSubjectLogo(subject)}</div><div class="integration-hero-text"><span class="integration-kicker">Lern-Lagune · ${htmlSafe(label)}</span><h2>${htmlSafe(label)} entdecken</h2><p>Wähle ein Spiel und leg los!</p></div><aside class="integration-side-note"><strong>Für Kinder klarer</strong> Weniger Brüche im Design, gleiche Inhalte, gleiche Bedienlogik.</aside></div><div class="integration-context-grid"><article class="integration-context-card"><strong>Vertraute Spiele</strong><p>Alle Spiele unten stammen aus dem bisherigen Bestand und wurden nicht neu erfunden.</p></article><article class="integration-context-card"><strong>Neuer Rahmen</strong><p>Karten, Abstände und Rückwege sind näher an der neuen Safari gestaltet.</p></article><article class="integration-context-card"><strong>Einfach wählen</strong><p>Klicke auf eine Karte und starte direkt im passenden Lernspiel.</p></article></div><div class="integration-units">${groupedSafariGames(subject,games).map(group=>`<section class="integration-unit"><h3 class="integration-unit-title">${htmlSafe(group.name)}</h3><div class="integration-game-grid">${group.items.map(({game,index})=>`<button type="button" class="integration-game-card" data-original-game="${index}">${game.preview?`<img src="original/assets/${htmlSafe(game.preview)}" alt="" loading="lazy">`:'<span class="integration-game-fallback">✏️</span>'}<span class="integration-game-caption"><strong>${htmlSafe(game.title)}</strong><small>${htmlSafe(game.description)}</small></span><span class="integration-arrow">›</span></button>`).join('')}</div></section>`).join('')}</div></section>`;
-  wireIntegrationTrail();
- document.getElementById('backOriginalSubject').onclick=()=>{safariSubject=null;renderLagoon()};
+  root.innerHTML=`<section class="original-collection integration-shell integration-area-lagoon integration-subject-page">${integrationTrail('Lern-Lagune',label,'Spieleauswahl')}<div class="integration-top"><button type="button" class="integration-back" id="backOriginalSubject">← Zur Lern-Lagune</button><p class="integration-note">Wähle ein Spiel. Die ursprünglichen Aufgaben und Regeln bleiben erhalten.</p></div><div class="integration-hero"><div class="integration-icon" aria-hidden="true">${SUBJECTS.find(s=>s[0]===subject)?.[2]||'🎒'}</div><div class="integration-hero-text"><span class="integration-kicker">Lern-Lagune · ${htmlSafe(label)}</span><h2>${htmlSafe(label)} entdecken</h2><p>Wähle ein Spiel und leg los!</p></div><aside class="integration-side-note"><strong>Für Kinder klarer</strong> Weniger Brüche im Design, gleiche Inhalte, gleiche Bedienlogik.</aside></div><div class="integration-context-grid"><article class="integration-context-card"><strong>Vertraute Spiele</strong><p>Alle Spiele unten stammen aus dem bisherigen Bestand und wurden nicht neu erfunden.</p></article><article class="integration-context-card"><strong>Neuer Rahmen</strong><p>Karten, Abstände und Rückwege sind näher an der neuen Safari gestaltet.</p></article><article class="integration-context-card"><strong>Einfach wählen</strong><p>Klicke auf eine Karte und starte direkt im passenden Lernspiel.</p></article></div><div class="integration-game-grid">${games.map((game,i)=>`<button type="button" class="integration-game-card" data-original-game="${i}">${game.preview?`<img src="original/assets/${htmlSafe(game.preview)}" alt="" loading="lazy">`:'<span class="integration-game-fallback">✏️</span>'}<span class="integration-game-caption"><strong>${htmlSafe(game.title)}</strong><small>${htmlSafe(game.description)}</small></span><span class="integration-arrow">›</span></button>`).join('')}</div></section>`;
+  document.getElementById('backOriginalSubject').onclick=()=>{safariSubject=null;renderLagoon()};
   root.querySelectorAll('[data-original-game]').forEach(btn=>btn.onclick=()=>{
     const game=games[Number(btn.dataset.originalGame)];safariGame=game;safariGameOrigin=subject;
-    originalFrame('original/spiele/'+encodeURIComponent(game.file),game.title,{areaId:'lagoon',contextLabel:label,headline:game.title,intro:`${label}: ${game.description}. Das Spiel selbst bleibt erhalten, nur die Einbettung passt jetzt besser zur LernSafari.`,toolbarLead:`${safariSubjectLogo(subject)} ${label}`,toolbarNote:'Die Übung läuft direkt im Safari-Fenster. Aufgaben und Auswertung bleiben unverändert.',tip:'Wenn du fertig bist, gehst du mit dem Zurück-Knopf wieder sauber zurück in die Lern-Lagune.'})
+    originalFrame('original/spiele/'+encodeURIComponent(game.file),game.title,{areaId:'lagoon',contextLabel:label,headline:game.title,intro:`${label}: ${game.description}. Das Spiel selbst bleibt erhalten, nur die Einbettung passt jetzt besser zur LernSafari.`,toolbarLead:`📘 ${label}`,toolbarNote:'Die Übung läuft direkt im Safari-Fenster. Aufgaben und Auswertung bleiben unverändert.',tip:'Wenn du fertig bist, gehst du mit dem Zurück-Knopf wieder sauber zurück in die Lern-Lagune.'})
   });
 }
 renderLagoon=function(){
@@ -121,16 +100,41 @@ renderLagoon=function(){
   }
   activeLagoonSubject=null;
   const root=document.getElementById('destinationContent');
-  root.innerHTML=`<section class="original-lagoon integration-shell integration-area-lagoon">${integrationTrail('Lern-Lagune','','Fächer')}<div class="integration-hero"><div class="integration-icon" aria-hidden="true">🌊</div><div class="integration-hero-text"><span class="integration-kicker">Die Lern-Lagune</span><h2>Wähle ein Fach!</h2><p>Wähle einen Felsen oder einen Fachknopf.</p></div><aside class="integration-side-note"><strong>Safari-Tipp</strong> Du kannst ein Fach entweder über die grossen Felsen oder über die Fachknöpfe unten öffnen.</aside></div><div class="integration-context-grid"><article class="integration-context-card"><strong>Mathematik</strong><p>Einmaleins, Stellenwert und «Zahl erkennen» warten in der Lagune.</p></article><article class="integration-context-card"><strong>Sprachen & Musik</strong><p>Deutsch, Englisch und Musik bleiben mit ihren bekannten Übungen erhalten.</p></article><article class="integration-context-card"><strong>NMG</strong><p>Auch die Rabenvögel und andere NMG-Inhalte sind direkt eingebettet erreichbar.</p></article></div><div class="integration-scene-card"><div class="integration-lagoon-scene"><img src="assets/lern-lagune.png" alt="Lagune mit fünf beschrifteten Felsen: Mathematik, Deutsch, NMG, Musik und Englisch." draggable="false">${[['Mathe','math'],['Deutsch','german'],['NMG','nmg'],['Musik','music'],['Englisch','english']].map(([s,cls])=>`<button type="button" data-original-subject="${s}" class="integration-stone integration-stone-${cls}" aria-label="${s==='Mathe'?'Mathematik':s} öffnen"></button>`).join('')}</div></div><div class="integration-subjects">${SUBJECTS.map(([id,label])=>`<button type="button" data-original-subject="${id}">${safariSubjectLogo(id)} <span>${htmlSafe(label)}</span></button>`).join('')}</div></section>`;
-  wireIntegrationTrail();
- root.querySelectorAll('[data-original-subject]').forEach(btn=>btn.onclick=()=>{safariSubject=btn.dataset.originalSubject;renderLagoon()});
+  root.innerHTML=`<section class="original-lagoon integration-shell integration-area-lagoon">${integrationTrail('Lern-Lagune','','Fächer')}<div class="integration-hero"><div class="integration-icon" aria-hidden="true">🌊</div><div class="integration-hero-text"><span class="integration-kicker">Die Lern-Lagune</span><h2>Wähle ein Fach!</h2><p>Wähle einen Felsen oder einen Fachknopf.</p></div><aside class="integration-side-note"><strong>Safari-Tipp</strong> Du kannst ein Fach entweder über die grossen Felsen oder über die Fachknöpfe unten öffnen.</aside></div><div class="integration-context-grid"><article class="integration-context-card"><strong>Mathematik</strong><p>Einmaleins, Stellenwert und «Zahl erkennen» warten in der Lagune.</p></article><article class="integration-context-card"><strong>Sprachen & Musik</strong><p>Deutsch, Englisch und Musik bleiben mit ihren bekannten Übungen erhalten.</p></article><article class="integration-context-card"><strong>NMG</strong><p>Auch die Rabenvögel und andere NMG-Inhalte sind direkt eingebettet erreichbar.</p></article></div><div class="integration-scene-card"><div class="integration-lagoon-scene"><img src="assets/lern-lagune.png" alt="Lagune mit fünf beschrifteten Felsen: Mathematik, Deutsch, NMG, Musik und Englisch." draggable="false">${[['Mathe','math'],['Deutsch','german'],['NMG','nmg'],['Musik','music'],['Englisch','english']].map(([s,cls])=>`<button type="button" data-original-subject="${s}" class="integration-stone integration-stone-${cls}" aria-label="${s==='Mathe'?'Mathematik':s} öffnen"></button>`).join('')}</div></div><div class="integration-subjects">${SUBJECTS.map(([id,label,icon])=>`<button type="button" data-original-subject="${id}">${icon} ${htmlSafe(label)}</button>`).join('')}</div></section>`;
+  root.querySelectorAll('[data-original-subject]').forEach(btn=>btn.onclick=()=>{safariSubject=btn.dataset.originalSubject;renderLagoon()});
 };
 renderValley=function(){
   originalFrame('original/index.html#aufgaben','Aufgaben des Tages',{areaId:'valley',contextLabel:'Tagesaufgaben',headline:'Deine Aufgaben des Tages',intro:'Die «Zahl des Tages» und die weiteren Tagesaufgaben bleiben in ihrer bekannten Struktur erhalten. Neu ist vor allem der engere LernSafari-Rahmen rundherum.',kind:'daily',toolbarLead:'🌞 Tages-Tal · Heutige Aufgaben',toolbarNote:'Auch hier bleiben Tageswechsel, Aufgabenserien und Auswertung aus der bisherigen LernSafari bestehen.',tip:'Oben im eingebetteten Bereich bearbeitest du die Aufgaben wie bisher. Mit «Zurück» gelangst du wieder sauber ins Tages-Tal.'});
 };
-// Keep the original illustrated Baobab, now displaying the three current class sections.
 renderBaobab=function(){
-  return originalBaobab();
+ const root=document.getElementById('destinationContent');
+ root.innerHTML=`<section class="integration-baobab-new" aria-label="Baobab-Baum und Klassenwelt">
+   <div class="baobab-intro">🌳 Unser Baobab-Baum – entdecke unsere Klassentiere und Erlebnisse!</div>
+   <div class="baobab-map baobab-new-map">
+     <img src="assets/baobab-stickerwelt.webp" onload="if(this.currentSrc.includes('baobab-stickerwelt.webp'))this.parentNode.classList.add('baobab-has-character-art')" onerror="this.onerror=null;this.src='assets/baobab-ohne-schilder.svg'" alt="Ein grosser Baobab-Baum in einer zusammenhängenden Savanne. Im Vordergrund ein Löwe, ein Warzenschwein und genau ein Erdmännchen. Links sitzt ein Hornvogel." draggable="false">
+     <img class="baobab-extra-flamingo" src="original/assets/tiersticker/flamingo.png" alt="" aria-hidden="true" draggable="false">
+     <button class="baobab-hotspot baobab-animals" type="button" data-baobab-new="animals"><span>🐾 Unsere Klassentiere</span></button>
+     <button class="baobab-hotspot baobab-advent" type="button" data-baobab-new="advent"><span>🎄 Adventskalender<small>🔒 Noch nicht verfügbar</small></span></button>
+     <button class="baobab-hotspot baobab-projects" type="button" data-baobab-new="projects"><span>📸 Projekte und Erlebnisse</span></button>
+   </div>
+   <div class="baobab-mobile-links"><button type="button" data-baobab-new="animals">🐾 Unsere Klassentiere</button><button type="button" data-baobab-new="advent">🎄 Adventskalender 🔒</button><button type="button" data-baobab-new="projects">📸 Projekte und Erlebnisse</button></div>
+   <p class="integration-note">Ein Klick auf ein Holzschild führt dich direkt zum passenden Bereich.</p>
+ </section>`;
+ root.querySelectorAll('[data-baobab-new]').forEach(button=>button.addEventListener('click',()=>{
+   const id=button.dataset.baobabNew;
+   if(id==='animals'){
+     originalFrame('original/index.html#tiere','Unsere Klassentiere',{areaId:'baobab',contextLabel:'Tierwelt'});
+   }else if(id==='advent'){
+     const placeholder=document.createElement('section');placeholder.className='baobab-coming-soon';
+     placeholder.innerHTML='<button type="button" class="integration-back" id="backFromAdvent">← Zum Baobab-Baum</button><div class="baobab-coming-icon">🎄</div><h2>Adventskalender</h2><p>🛠️ Noch nicht verfügbar</p><small>Hier entsteht später unser Adventskalender.</small>';
+     root.replaceChildren(placeholder);
+     placeholder.querySelector('#backFromAdvent').onclick=()=>renderBaobab();
+   }else if(id==='projects'){
+     root.innerHTML='<div class="baobab-gallery-page"><button type="button" class="integration-back" id="returnFromProjects">← Zum Baobab-Baum</button><div id="baobabGalleryContent"></div></div>';
+     root.querySelector('#returnFromProjects').onclick=()=>renderBaobab();
+     window.LernSafariProjects?.render(root.querySelector('#baobabGalleryContent'));
+   }
+ }));
 };
 renderDestination=function(place){
  if(place.id==='lagoon'){safariSubject=null;safariGame=null;return renderLagoon()}
@@ -140,8 +144,7 @@ renderDestination=function(place){
   const games=ORIGINAL_GAMES.Allgemein||[];
   const root=document.getElementById('destinationContent');
   root.innerHTML=`<section class="original-collection integration-shell integration-area-oasis integration-oasis-page">${integrationTrail('Oase','','Angebote')}<div class="integration-hero"><div class="integration-icon" aria-hidden="true">🏝️</div><div class="integration-hero-text"><span class="integration-kicker">Oase</span><h2>Spielen & entdecken</h2><p>Hier kannst du Schach spielen und Neues entdecken.</p></div><aside class="integration-side-note"><strong>Freiwillige Angebote</strong> Die Oase bleibt ein ruhiger Ort für Knobeleien, Schach und weitere freie Entdeckungen.</aside></div><div class="integration-context-grid"><article class="integration-context-card"><strong>Schach</strong><p>Lerne Figuren und Regeln oder spiele direkt gegen den Computer.</p></article><article class="integration-context-card"><strong>Freiwillig</strong><p>Diese Angebote ergänzen die LernSafari und sind bewusst spielerischer angelegt.</p></article><article class="integration-context-card"><strong>Gleich bedienbar</strong><p>Auch hier bleiben die Inhalte gleich, aber sie passen optisch besser zur Oase.</p></article></div><div class="integration-game-grid">${games.map((g,i)=>`<button type="button" class="integration-game-card" data-oasis-game="${i}">${g.preview?`<img src="original/assets/${htmlSafe(g.preview)}" alt="" loading="lazy">`:''}<span class="integration-game-caption"><strong>${htmlSafe(g.title)}</strong><small>${htmlSafe(g.description)}</small></span><span class="integration-arrow">›</span></button>`).join('')}</div></section>`;
-  wireIntegrationTrail();
- root.querySelectorAll('[data-oasis-game]').forEach(btn=>btn.onclick=()=>{safariGame=null;let g=games[Number(btn.dataset.oasisGame)];originalFrame('original/spiele/'+encodeURIComponent(g.file),g.title,{areaId:'oasis',contextLabel:'Freie Angebote',headline:g.title,intro:`${g.description}. Dieses Angebot stammt weiterhin aus der bisherigen LernSafari, sitzt jetzt aber enger im Oasen-Design der neuen Webseite.`,toolbarLead:'🏝️ Oase · Freie Angebote',toolbarNote:'Inhalt und Logik des Angebots bleiben unverändert.',tip:'Nach dem Spielen kommst du mit einem Klick wieder zurück in die Oase.'})});
+  root.querySelectorAll('[data-oasis-game]').forEach(btn=>btn.onclick=()=>{safariGame=null;let g=games[Number(btn.dataset.oasisGame)];originalFrame('original/spiele/'+encodeURIComponent(g.file),g.title,{areaId:'oasis',contextLabel:'Freie Angebote',headline:g.title,intro:`${g.description}. Dieses Angebot stammt weiterhin aus der bisherigen LernSafari, sitzt jetzt aber enger im Oasen-Design der neuen Webseite.`,toolbarLead:'🏝️ Oase · Freie Angebote',toolbarNote:'Inhalt und Logik des Angebots bleiben unverändert.',tip:'Nach dem Spielen kommst du mit einem Klick wieder zurück in die Oase.'})});
   return;
  }
  return originalDestination(place);

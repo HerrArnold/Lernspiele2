@@ -9,5 +9,24 @@ canvas.addEventListener('pointerdown',e=>{e.preventDefault();canvas.setPointerCa
 $('#undo').onclick=()=>{if(stack.length>1)ctx.putImageData(stack.pop(),0,0);else if(stack.length===1){ctx.putImageData(stack[0],0,0);stack=[]}};
 $('#clear').onclick=()=>{if(!confirm('Deine Zeichnung wirklich löschen?'))return;snapshot();white()};
 $('#save').onclick=()=>{const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=mode==='frei'?'mein-kunstwerk.png':'meine-zeichenschule.png';a.click()};
-if(mode==='vorlage'){const overlay=$('#guideOverlay');function setMotif(){overlay.innerHTML=shapes[$('#motif').value]||shapes.sonne}setMotif();$('#motif').onchange=setMotif;$('#guide').onclick=()=>{guideVisible=!guideVisible;overlay.style.display=guideVisible?'block':'none';$('#guide').textContent=guideVisible?'Hilfslinien verstecken':'Hilfslinien zeigen'}}
+if(mode==='vorlage'){
+  const templates=window.OASE_ART_TEMPLATES||{},overlay=$('#guideOverlay'),preview=$('#referencePreview');
+  let lastUrl=null;
+  const items=Object.entries(templates);
+  if(items.length){
+    $('#motif').innerHTML=items.map(([id,v])=>'<option value="'+id+'">'+v.name+'</option>').join('');
+    function setMotif(){
+      const v=templates[$('#motif').value];if(!v)return;
+      const url=URL.createObjectURL(new Blob([v.svg],{type:'image/svg+xml;charset=utf-8'}));
+      overlay.src=url;preview.src=url;if(lastUrl)setTimeout(()=>URL.revokeObjectURL(lastUrl),1000);
+      lastUrl=url;
+    }
+    setMotif();$('#motif').onchange=setMotif;
+  }
+  $('#guide').onclick=()=>{
+    guideVisible=!guideVisible;
+    overlay.style.display=guideVisible?'block':'none';
+    $('#guide').textContent=guideVisible?'Hilfslinien verstecken':'Hilfslinien zeigen';
+  };
+}
 })();

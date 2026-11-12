@@ -1,7 +1,62 @@
-'use strict';(()=>{const $=s=>document.querySelector(s),palette=['#d74c47','#f2a93a','#f4e575','#69a963','#74b5cc','#7d86c2','#b48bcc','#a76543','#386745','#fffdf6'];let color=palette[0];const board=$('#board');$('#palette').innerHTML=palette.map((c,i)=>'<button class="o-swatch" data-color="'+c+'" aria-label="Farbe '+(i+1)+'" aria-pressed="'+(i===0)+'" style="background:'+c+'"></button>').join('');$('#palette').querySelectorAll('[data-color]').forEach(b=>b.onclick=()=>{color=b.dataset.color;$('#palette').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'))});
-const a=(tag,attrs)=>'<'+tag+' data-paint fill="#ffffff" '+attrs+'/>';
-const scenes={
- savanne:`<rect width="800" height="510" fill="#faf7eb"/>${a('rect','x="5" y="5" width="790" height="248"')}${a('circle','cx="650" cy="100" r="65"')}${a('path','d="M0 270Q160 235 270 260T540 265T800 255V510H0Z"')}${a('path','d="M20 385Q220 320 400 380T800 395V510H20Z"')}${a('ellipse','cx="395" cy="424" rx="270" ry="70"')}${a('path','d="M120 400L135 180L110 160L145 180L160 120L180 170L225 140L188 193L190 400Z"')}${a('ellipse','cx="155" cy="145" rx="100" ry="42"')}${a('path','d="M630 425V270L595 250L630 250L645 215L660 255L710 235L675 275L690 425Z"')}${a('ellipse','cx="650" cy="235" rx="90" ry="38"')}`,
- vogel:`<rect width="800" height="510" fill="#faf7eb"/>${a('rect','x="5" y="5" width="790" height="500"')}${a('ellipse','cx="425" cy="270" rx="190" ry="135"')}${a('path','d="M330 270Q500 120 575 285Q510 400 330 365Z"')}${a('circle','cx="280" cy="208" r="87"')}${a('circle','cx="248" cy="190" r="18"')}${a('path','d="M196 230L115 248L190 275Z"')}${a('path','d="M565 240L725 155L680 320Z"')}${a('path','d="M395 395L375 470L345 470L385 462M490 398L510 472L540 472L500 466"')}${a('path','d="M280 118L270 66L315 108Z"')}`,
- geometrie:`<rect width="800" height="510" fill="#faf7eb"/>`+Array.from({length:12},(_,i)=>{const ang=i*Math.PI/6,ang2=(i+1)*Math.PI/6,poly=(r,a)=>[400+Math.cos(a)*r,255+Math.sin(a)*r].map(x=>x.toFixed(1)).join(',');return a('polygon','points="'+[poly(70,ang),poly(200,ang),poly(200,ang2),poly(70,ang2)].join(' ')+'"')+a('polygon','points="'+[poly(20,ang),poly(70,ang),poly(70,ang2),poly(20,ang2)].join(' ')+'"')}).join('')+a('circle','cx="400" cy="255" r="25"')};
-function render(){board.innerHTML=scenes[$('#motif').value];board.querySelectorAll('[data-paint]').forEach(e=>e.addEventListener('click',()=>e.setAttribute('fill',color)))}$('#motif').onchange=render;$('#reset').onclick=()=>{if(confirm('Alle Farben zurücksetzen?'))render()};$('#save').onclick=()=>{const clone=board.cloneNode(true);clone.setAttribute('xmlns','http://www.w3.org/2000/svg');const text=new XMLSerializer().serializeToString(clone),blob=new Blob([text],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');canvas.width=1200;canvas.height=765;const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,1200,765);c.drawImage(img,0,0,1200,765);URL.revokeObjectURL(url);const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='mein-ausmalbild.png';a.click()};img.src=url};render()})();
+/* Oase Ausmalstudio · hochwertige SVG-Vorlagen aus CC BY-SA 4.0 Sammlung.
+   Eigenständige lokale Füllfunktion. Auch offline ohne Fetch verwendbar. */
+'use strict';
+(()=>{
+ const $=s=>document.querySelector(s), board=$('#board'),ctx=board.getContext('2d',{willReadFrequently:true});
+ const templates=window.OASE_ART_TEMPLATES||{};
+ const palette=['#dc5546','#e99239','#f7c75b','#fbec93','#6fa85b','#3f8069','#79bdca','#457dbc','#8265a9','#ba81ab','#9c6948','#ffffff','#303b34'];
+ let color=palette[0],selected='',revision=0,undoStack=[];
+ const status=(msg)=>{const el=$('#status');if(el)el.textContent=msg};
+ const names=Object.entries(templates);
+ if(!names.length){status('Die Vorlagen konnten nicht geladen werden.');return}
+ $('#motif').innerHTML=names.map(([key,v])=>'<option value="'+key+'">'+v.name+'</option>').join('');
+ $('#palette').innerHTML=palette.map((c,i)=>'<button type="button" class="o-swatch" data-color="'+c+'" aria-label="Farbe '+(i+1)+'" aria-pressed="'+(i===0?'true':'false')+'" style="background:'+c+'"></button>').join('');
+ $('#palette').querySelectorAll('[data-color]').forEach(b=>b.addEventListener('click',()=>{
+  color=b.dataset.color;$('#palette').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+ }));
+ function snapshot(){undoStack.push(ctx.getImageData(0,0,board.width,board.height));if(undoStack.length>10)undoStack.shift()}
+ function initial(){
+  const key=$('#motif').value||names[0][0],v=templates[key];if(!v)return;
+  selected=key;const call=++revision;status('Vorlage wird geladen …');undoStack=[];
+  const blob=new Blob([v.svg],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),img=new Image();
+  img.onload=()=>{
+   if(call!==revision){URL.revokeObjectURL(url);return}
+   ctx.fillStyle='#fff';ctx.fillRect(0,0,board.width,board.height);
+   const margin=32,ratio=Math.min((board.width-2*margin)/img.width,(board.height-2*margin)/img.height);
+   const w=Math.round(img.width*ratio),h=Math.round(img.height*ratio);
+   ctx.drawImage(img,(board.width-w)/2,(board.height-h)/2,w,h);
+   URL.revokeObjectURL(url);status('Wähle eine Farbe und klicke auf eine weisse Fläche.');
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);status('Diese Vorlage konnte nicht geöffnet werden. Wähle ein anderes Motiv.')};
+  img.src=url;
+ }
+ function fillAt(x,y){
+  const w=board.width,h=board.height;if(x<0||x>=w||y<0||y>=h)return;
+  const image=ctx.getImageData(0,0,w,h),data=image.data,seed=(y*w+x)*4;
+  const sample=[data[seed],data[seed+1],data[seed+2]],target=[1,3,5].map((v,i)=>parseInt(color.slice(v,v+2),16));
+  // Schwarze Umrisse bleiben erhalten. Es können nur helle bzw. bereits gefärbte Flächen angeklickt werden.
+  if(Math.max(...sample)<130){status('Das ist eine Umrisslinie. Klicke in eine helle Fläche.');return}
+  if(sample.every((v,i)=>Math.abs(v-target[i])<8))return;
+  snapshot();const queue=new Int32Array(w*h),seen=new Uint8Array(w*h);let head=0,tail=0;
+  const allow=i=>{
+   if(i<0||i>=w*h||seen[i])return false;
+   const k=i*4;const dr=data[k]-sample[0],dg=data[k+1]-sample[1],db=data[k+2]-sample[2];
+   return dr*dr+dg*dg+db*db<=38*38*3 && data[k+3]>=180;
+  };
+  const enqueue=i=>{if(!allow(i))return;seen[i]=1;queue[tail++]=i};
+  enqueue(y*w+x);
+  while(head<tail){
+   const i=queue[head++],p=i*4;data[p]=target[0];data[p+1]=target[1];data[p+2]=target[2];data[p+3]=255;
+   if(i%w>0)enqueue(i-1);if(i%w<w-1)enqueue(i+1);
+   if(i>=w)enqueue(i-w);if(i<w*(h-1))enqueue(i+w);
+  }
+  if(tail<4){undoStack.pop();status('Wähle eine grössere Fläche innerhalb des Motivs.');return}
+  ctx.putImageData(image,0,0);status('Super! Du kannst weitere Flächen ausmalen.');
+ }
+ board.addEventListener('pointerdown',e=>{e.preventDefault();const rect=board.getBoundingClientRect();fillAt(Math.floor((e.clientX-rect.left)*board.width/rect.width),Math.floor((e.clientY-rect.top)*board.height/rect.height))});
+ $('#motif').addEventListener('change',initial);
+ $('#reset').onclick=()=>{if(confirm('Möchtest du alle Farben dieses Bildes entfernen?'))initial()};
+ $('#undo').onclick=()=>{const last=undoStack.pop();if(last){ctx.putImageData(last,0,0);status('Letzte Farbe rückgängig gemacht.')}else status('Es gibt nichts rückgängig zu machen.')};
+ $('#save').onclick=()=>{const link=document.createElement('a');link.download='LernSafari-Ausmalbild-'+selected+'.png';link.href=board.toDataURL('image/png');link.click()};
+ initial();
+})();

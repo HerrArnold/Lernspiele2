@@ -294,6 +294,7 @@
     try{
       const report=await call('/admin-report',{admin:true});
       if(!wrapper.isConnected)return;
+      if(root.LernSafariProgress){root.LernSafariProgress.render(wrapper,report,kids,topics,SUBJECTS);return;}
       const attempts=Array.isArray(report.attempts)?report.attempts:[];
       const highs=Array.isArray(report.highscores)?report.highscores:[];
       wrapper.innerHTML='<h4>📊 Detaillierte Lernfortschritte</h4><div class="admin-progress-filters">'+

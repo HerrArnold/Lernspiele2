@@ -31,6 +31,10 @@ jobs:
       - name: Check learning statistics and source files
         run: |
           node --test tests/admin-progress.test.cjs
+          node --test tests/cloudflare-communications.test.mjs
+          node --test tests/cloudflare-projects.test.mjs
+          node --test tests/cloudflare-classroom-service.test.mjs
+          node --test tests/classroom-trusted-completion.test.mjs
           node - <<'NODE'
           const fs=require('node:fs');
           for(const name of ['admin-progress.css','admin-progress.js','topic-navigation.js','safari-area-theme.css',

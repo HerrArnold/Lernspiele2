@@ -1,0 +1,36 @@
+name: Browser test main teacher administration
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tests/main-admin-browser.mjs'
+      - '.github/workflows/check-main-admin-browser.yml'
+      - 'admin-progress.js'
+      - 'admin-dashboard.js'
+      - 'admin-dashboard.css'
+      - 'cloudflare-integration.js'
+      - 'index.html'
+  workflow_dispatch:
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install test browser
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Run local website
+        run: |
+          nohup python3 -m http.server 8765 --directory . >/tmp/main-browser-server.log 2>&1 &
+          sleep 2
+      - name: Verify admin page and Cloudflare-backed management UI with fixture data
+        run: node tests/main-admin-browser.mjs
+      - name: Save preview screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lernsafari-main-admin-previews
+          path: /tmp/lernsafari-main-*.png
+          if-no-files-found: ignore

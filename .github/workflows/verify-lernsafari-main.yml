@@ -11,6 +11,10 @@ on:
       - 'integration.js'
       - 'cloudflare-integration.js'
       - 'index.html'
+      - 'original/assets/hoerverstehen*.js'
+      - 'original/hoerverstehen-data/*.json'
+      - 'original/assets/lernhelfer.js'
+      - 'assets/lernhelfer.js'
       - 'tests/admin-progress.test.cjs'
       - '.github/workflows/verify-lernsafari-main.yml'
   workflow_dispatch:
@@ -28,6 +32,9 @@ jobs:
           node --check admin-dashboard.js
           node --check admin-progress.js
           node --check original/assets/zahl-des-tages.js
+          node --check original/assets/hoerverstehen.js
+          node --check original/assets/hoerverstehen-kurz.js
+          node --check original/assets/lernhelfer.js
       - name: Check learning statistics and source files
         run: |
           node --test tests/admin-progress.test.cjs
@@ -53,4 +60,31 @@ jobs:
           if(!admin.includes('LernSafariProgress.render'))throw Error('Detailed learning stats not wired');
           if(!admin.includes('admin-activity-assignments'))throw Error('Assignment completion overview missing');
           console.log('PASS: LernSafari main code and asset fallback references');
+          NODE
+
+      - name: Verify short and woodland hearing comprehension scoring
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs');
+          const ids=['affe','loewe','brille','wettrennen','kuchen'];
+          for(const id of ids){
+            const data=JSON.parse(fs.readFileSync('original/hoerverstehen-data/kurz-'+id+'.json'));
+            if([data.task1.length,data.task2.length,data.task3.length,data.task4.length].join(',')!=='8,5,3,4')throw Error(id+': incomplete tasks');
+            for(const q of [...data.task2,...data.task3]){
+              if(q.options?.length!==4||!Number.isInteger(q.correct_index)||q.correct_index<0||q.correct_index>3)throw Error(id+': bad choices '+q.id);
+              if(new Set(q.options).size!==4)throw Error(id+': repeated choices '+q.id);
+            }
+            if(id==='loewe'&&data.title!=='Der kleine Löwe')throw Error('Lion title mismatch');
+          }
+          for(const id of ['dachs','eichhoernchen','igel','reh','rotfuchs']){
+            const data=JSON.parse(fs.readFileSync('original/hoerverstehen-data/'+id+'.json'));
+            const total=data.tf.length+data.pick.length;
+            if(total<5)throw Error(id+': invalid total');
+            console.log('PASS woodland '+id+': '+total+' compulsory points; spelling exercise optional');
+          }
+          const short=fs.readFileSync('original/assets/hoerverstehen-kurz.js','utf8');
+          const woods=fs.readFileSync('original/assets/hoerverstehen.js','utf8');
+          if(!short.includes('q.correct_index')||short.includes('semantic(value'))throw Error('Short answers are not all single-choice');
+          if(woods.includes("section('1. Ergänze den Lückentext'")||!woods.includes('Zusatzaufgabe – freiwillig'))throw Error('Woodland layout not updated');
+          console.log('PASS five hearing stories with 20 points and four-choice answers');
           NODE

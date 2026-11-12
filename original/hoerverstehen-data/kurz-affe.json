@@ -68,7 +68,14 @@
       "incorrect_if": [
         "Giraffe",
         "Zebra"
-      ]
+      ],
+      "options": [
+        "Ein junger Affe, der Bananen liebt.",
+        "Eine junge Giraffe, die Bananen sucht.",
+        "Ein junger Affe, der am liebsten Blätter frisst.",
+        "Ein Zebra, das im Baum lebt."
+      ],
+      "correct_index": 0
     },
     {
       "id": "b2",
@@ -87,7 +94,14 @@
       "incorrect_if": [
         "auf einem Baum",
         "auf einem Felsen"
-      ]
+      ],
+      "options": [
+        "Auf einem Felsen oberhalb der Wiese.",
+        "Hinter dem Baum bei Gino.",
+        "Auf dem Boden unter einem Baum.",
+        "Zwischen den Ästen eines Baums."
+      ],
+      "correct_index": 2
     },
     {
       "id": "b3",
@@ -104,7 +118,14 @@
       ],
       "incorrect_if": [
         "mit Gino teilen als ursprünglicher Plan"
-      ]
+      ],
+      "options": [
+        "Er möchte die Banane zuerst alleine essen.",
+        "Er möchte sie sofort Gino schenken.",
+        "Er möchte sie für später vergraben.",
+        "Er möchte sie für die anderen Affen aufheben."
+      ],
+      "correct_index": 0
     },
     {
       "id": "b4",
@@ -121,7 +142,14 @@
       "incorrect_if": [
         "sie riecht die Banane",
         "Kito sagt es ihr"
-      ]
+      ],
+      "options": [
+        "Weil Kito ihr von der Banane erzählt.",
+        "Weil Gino die gelbe Schale sieht.",
+        "Weil die Banane laut auf den Boden fällt.",
+        "Weil sie Kito nach Bananen fragt."
+      ],
+      "correct_index": 1
     },
     {
       "id": "b5",
@@ -139,7 +167,14 @@
       "incorrect_if": [
         "er isst alles allein",
         "er wirft sie weg"
-      ]
+      ],
+      "options": [
+        "Er versteckt die Banane an einem neuen Ort.",
+        "Er gibt Gino die ganze Banane und geht weg.",
+        "Er teilt die Banane mit Gino.",
+        "Er isst sie heimlich, während Gino wartet."
+      ],
+      "correct_index": 2
     }
   ],
   "task3": [
@@ -160,7 +195,14 @@
       "incorrect_if": [
         "laut",
         "offen vor allen"
-      ]
+      ],
+      "options": [
+        "Etwas machen, damit es niemand bemerkt.",
+        "Etwas machen, das besonders schnell geht.",
+        "Etwas tun, nachdem alle zugeschaut haben.",
+        "Etwas tun, das man laut ankündigt."
+      ],
+      "correct_index": 0
     },
     {
       "id": "c2",
@@ -179,7 +221,14 @@
       "incorrect_if": [
         "vergessen",
         "verstecken"
-      ]
+      ],
+      "options": [
+        "Sich etwas sehr genau wünschen.",
+        "Etwas verstecken, damit es niemand findet.",
+        "Etwas wahrnehmen oder entdecken.",
+        "Etwas vergessen, obwohl es wichtig ist."
+      ],
+      "correct_index": 2
     },
     {
       "id": "c3",
@@ -196,7 +245,14 @@
       ],
       "incorrect_if": [
         "alles für sich behalten"
-      ]
+      ],
+      "options": [
+        "Etwas für später behalten.",
+        "Jemandem einen Teil von etwas abgeben.",
+        "Etwas vor den anderen verstecken.",
+        "Etwas ganz alleine aufessen."
+      ],
+      "correct_index": 1
     }
   ],
   "task4": [

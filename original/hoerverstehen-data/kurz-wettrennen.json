@@ -68,7 +68,14 @@
       "incorrect_if": [
         "Löwe und Zebra",
         "Schildkröte und Giraffe"
-      ]
+      ],
+      "options": [
+        "Zuri, das Zebra, und Gino, die Giraffe.",
+        "Zuri, die Giraffe, und Gino, das Zebra.",
+        "Zuri, das Zebra, und eine Schildkröte.",
+        "Gino, die Giraffe, und ein Löwenkind."
+      ],
+      "correct_index": 0
     },
     {
       "id": "b2",
@@ -86,7 +93,14 @@
       "incorrect_if": [
         "am Fluss",
         "im hohen Gras"
-      ]
+      ],
+      "options": [
+        "Bei der Stelle, an der die Schildkröte sitzt.",
+        "Auf der Wiese direkt neben dem Fluss.",
+        "Beim grossen Baobab-Baum.",
+        "Erst hinter dem hohen Gras."
+      ],
+      "correct_index": 2
     },
     {
       "id": "b3",
@@ -104,7 +118,14 @@
       "incorrect_if": [
         "weil sie müde ist",
         "weil sie verloren hat"
-      ]
+      ],
+      "options": [
+        "Weil Gino bereits das Ziel erreicht hat.",
+        "Weil eine Schildkröte mitten auf dem Weg sitzt.",
+        "Weil Zuri vor den langen Schritten Angst bekommt.",
+        "Weil sie eine Banane auf dem Boden entdeckt."
+      ],
+      "correct_index": 1
     },
     {
       "id": "b4",
@@ -122,7 +143,14 @@
       "incorrect_if": [
         "sie lassen sie liegen",
         "sie rennen um sie herum"
-      ]
+      ],
+      "options": [
+        "Sie zeigen ihr einen anderen Weg und rennen weiter.",
+        "Sie warten, bis sie alleine weggegangen ist.",
+        "Sie bringen die Schildkröte zurück zum Start.",
+        "Sie tragen die Schildkröte vorsichtig ins hohe Gras."
+      ],
+      "correct_index": 3
     },
     {
       "id": "b5",
@@ -140,7 +168,14 @@
       "incorrect_if": [
         "die Schildkröte",
         "einander helfen"
-      ]
+      ],
+      "options": [
+        "Ob sie nach Hause gehen dürfen.",
+        "Ob die Schildkröte mitrennen möchte.",
+        "Wer von ihnen das Wettrennen gewonnen hätte.",
+        "Ob der Baobab-Baum gross genug ist."
+      ],
+      "correct_index": 2
     }
   ],
   "task3": [
@@ -160,7 +195,14 @@
       "incorrect_if": [
         "ein Spaziergang",
         "zusammen singen"
-      ]
+      ],
+      "options": [
+        "Ein Spaziergang, bei dem alle zusammenbleiben.",
+        "Ein Rennen, bei dem man sehen will, wer schneller ist.",
+        "Ein Spiel, bei dem alle möglichst leise sind.",
+        "Eine Reise, bei der man ein Ziel sucht."
+      ],
+      "correct_index": 1
     },
     {
       "id": "c2",
@@ -179,7 +221,14 @@
       "incorrect_if": [
         "grob",
         "rücksichtslos"
-      ]
+      ],
+      "options": [
+        "Sehr rasch handeln, ohne nachzudenken.",
+        "Mit grosser Kraft etwas wegwerfen.",
+        "So handeln, dass niemand verletzt wird.",
+        "So leise laufen, dass niemand etwas hört."
+      ],
+      "correct_index": 2
     },
     {
       "id": "c3",
@@ -198,7 +247,14 @@
       "incorrect_if": [
         "winzige",
         "ganz klein"
-      ]
+      ],
+      "options": [
+        "Besonders klein und kaum zu sehen.",
+        "Langsam und schwer zu bewegen.",
+        "Sehr schnell, aber nicht besonders gross.",
+        "Aussergewöhnlich gross."
+      ],
+      "correct_index": 3
     }
   ],
   "task4": [

@@ -104,7 +104,7 @@
         const old=Object.values(ORIGINAL_GAMES).flat().find(x=>x.file===g[1]);
         return '<button type="button" class="safari-topic-game '+(available?'':'safari-topic-unavailable')+'" '+(available?'data-topic-game="'+i+'"':'disabled aria-disabled="true"')+'>'+
           (available?'':'<span class="safari-topic-game-icon">🛠️</span>')+
-          '<span class="safari-topic-game-text"><strong>'+esc(g[0])+'</strong><small>'+esc(available?(old?.description||'Wörter spielerisch üben'):'Bald verfügbar')+'</small></span>'+
+          '<span class="safari-topic-game-text"><strong>'+esc(g[0])+'</strong><small>'+esc(available?(old?.description||'Klicke auf den Pfeil, um die Aufgabe zu starten.'):'Bald verfügbar')+'</small></span>'+
           (available?'<span class="safari-topic-arrow">›</span>':'<span class="safari-topic-status">In Vorbereitung</span>')+
           '</button>';
       }).join('')+'</div></section>';

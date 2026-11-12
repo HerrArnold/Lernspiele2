@@ -1,0 +1,78 @@
+name: Verify Oase games and puzzle solutions
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'original/assets/oase-*'
+      - 'original/assets/sudoku-*'
+      - 'original/assets/buchstabensalat-*'
+      - 'original/spiele/oase-*'
+      - 'oase-sections.js'
+      - 'topic-navigation.js'
+      - '.github/workflows/verify-oase.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check all Oase JavaScript files
+        run: |
+          for f in oase-sections.js original/assets/oase-*.js original/assets/buchstabensalat-inline.js original/assets/sudoku-data-inline.js; do node --check "$f"; done
+          for f in original/spiele/oase-*.html; do test -s "$f"; done
+          grep -q 'Kurze Geschichten – leichter' topic-navigation.js
+          grep -q 'Waldtiere – schwieriger' topic-navigation.js
+          grep -q 'oase-sections.js' index.html
+      - name: Validate 45 unique Sudoku puzzles and four word searches
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path('original/assets/sudoku-puzzles.json').read_text())
+          assert set(d['sets'])=={'einfach','mittel','schwer'}
+          peers=[]
+          for r in range(9):
+              for c in range(9):
+                  i=r*9+c
+                  peers.append(({r*9+j for j in range(9)}|{j*9+c for j in range(9)}|{(r//3*3+y)*9+c//3*3+x for y in range(3) for x in range(3)})-{i})
+          def solutions(p):
+              b=p[:];count=0;first=None
+              def f():
+                  nonlocal count,first
+                  opts=None;idx=None
+                  for i,v in enumerate(b):
+                      if v:continue
+                      choices=set(range(1,10))-{b[j] for j in peers[i]}
+                      if not choices:return
+                      if opts is None or len(choices)<len(opts):idx=i;opts=choices
+                  if idx is None:
+                      count+=1
+                      if first is None:first=b[:]
+                      return
+                  for v in opts:
+                      b[idx]=v;f();b[idx]=0
+                      if count>=2:return
+              f();return count,first
+          seen=set()
+          for level,items in d['sets'].items():
+              assert len(items)==15
+              for obj in items:
+                  p=obj['puzzle'];solution=obj['solution']
+                  assert len(p)==len(solution)==81
+                  assert tuple(p) not in seen
+                  seen.add(tuple(p))
+                  count,actual=solutions(p)
+                  assert count==1 and actual==solution,level
+                  assert obj['difficulty']==level
+          w=json.loads(Path('original/assets/buchstabensalat-data.json').read_text())
+          assert len(w)==4
+          assert len(w['Unsere Tiere']['words'])>=20
+          for name,g in w.items():
+              size=g['size'];chars=''.join(g['letters'])
+              assert len(chars)==size*size
+              assert len(g['answers'])==len(g['words'])
+              for a in g['answers']:
+                  assert ''.join(chars[i] for i in a['cells'])==a['word'],name
+          print('PASS 45 Sudoku puzzles, each with exactly one solution; four complete word searches')
+          PY

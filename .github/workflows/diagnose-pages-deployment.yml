@@ -15,7 +15,7 @@ jobs:
           python3 - <<'PY'
           import urllib.request
           base='https://lernsafari-klasse3b-test.pages.dev'
-          for path in ['/index.html','/topic-navigation.js','/lernsafari-test/topic-navigation.js','/integration.js']:
+          for path in ['/index.html','/topic-navigation.js','/original/spiele/hoerverstehen-dachs.html','/integration.js']:
               try:
                   rq=urllib.request.Request(base+path,headers={'User-Agent':'LernSafari-staging-version-diagnostic/1.0','Cache-Control':'no-cache'})
                   with urllib.request.urlopen(rq, timeout=15) as r:

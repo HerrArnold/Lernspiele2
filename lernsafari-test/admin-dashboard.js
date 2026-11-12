@@ -7,15 +7,16 @@
   {id:'assignments',icon:'📌',name:'Lernaufträge',desc:'Tagesaufgaben, Fächer, Themen und Spiele zuweisen'},
   {id:'mode',icon:'🧭',name:'Unterrichtsmodus',desc:'Ankunftszeit, Fachunterricht und Entdeckungszeit'},
   {id:'progress',icon:'📈',name:'Lernfortschritte',desc:'Punkte und Lernversuche nach Kind und Thema'},
-  {id:'activity',icon:'👀',name:'Aktivität',desc:'Anwesenheit und zuletzt gemeldete Tätigkeiten'},
-  {id:'messages',icon:'✉️',name:'Nachrichten',desc:'Mitteilungen für Kinder vorbereiten'},
-  {id:'projects',icon:'📸',name:'Projekte und Erlebnisse',desc:'Fotos, Datum und Rückblicke als Polaroids veröffentlichen'}
+  {id:'activity',icon:'👀',name:'Aktivitätsübersicht',desc:'Wer ist online? Wer erledigt gerade einen Auftrag?'},
+  {id:'agenda',icon:'📅',name:'Agenda',desc:'Wochenübersicht und Hausaufgaben, Lernkontrollen, Schulfrei bearbeiten'},
+  {id:'memories',icon:'📷',name:'Erinnerungen',desc:'Fotos, Datum und Rückblicke als Polaroids beim Baobab veröffentlichen'}
  ];
  const SUBJECTS=['Mathe','Deutsch','NMG','Musik','Englisch'];
  const TARGET_AREAS=[
   ['lagoon','🌊 Lern-Lagune','Fach → Thema → Spiel'],
   ['valley','🌞 Tages-Tal','Zahl des Tages und Tagesaufgaben'],
   ['baobab','🌳 Baobab-Baum','Wissensangebote und Advent'],
+  ['oasis','🏝️ Oase','Rätsel und Angebote'],
   ['agenda','🧭 Kompass','Agenda und Termine'],
   ['help','🦩 Lernhilfen','Unterstützung und Lernportale']
  ];
@@ -76,7 +77,8 @@
    shell.scrollIntoView({block:'start',behavior:'smooth'});
    if(name==='progress')renderProgress();
    if(name==='activity')renderLiveActivity();
-   if(name==='messages')checkMessagesAvailability();
+   if(name==='agenda')renderAgendaEditor();
+   if(name==='activity')checkMessagesAvailability();
   }
   deck.querySelectorAll('[data-admin-section]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.adminSection)));
 
@@ -118,6 +120,7 @@
     const ids=area==='valley'?targets.filter(x=>x.v.startsWith('daily:')||x.v.startsWith('number:')||x.v==='page:aufgaben'):
       area==='baobab'?safeTargetOptions(targets,['page:tiere','page:advent']):
       area==='help'?safeTargetOptions(targets,['page:lernportale']):
+      area==='oasis'?targets.filter(t=>t.v==='page:oasis'||t.v.startsWith('oasis:')):
       safeTargetOptions(targets,['page:agenda']);
     if(!ids.some(x=>x.v===selectedTarget))selectedTarget=ids[0]?.v||'';
     controls.innerHTML=createSelect('2. Lerninhalt','adminPickAreaTarget',ids.map(x=>[x.v,x.label]));
@@ -159,7 +162,7 @@
         selectedSubject=subject;selectedTopic=topic.name;
       }
     }else{area=selectedTarget.startsWith('daily:')||selectedTarget.startsWith('number:')||selectedTarget==='page:aufgaben'?'valley':
-      ['page:tiere','page:advent'].includes(selectedTarget)?'baobab':selectedTarget==='page:lernportale'?'help':'agenda';scope='game'}
+      ['page:tiere','page:advent'].includes(selectedTarget)?'baobab':selectedTarget==='page:lernportale'?'help':selectedTarget.startsWith('oasis:')||selectedTarget==='page:oasis'?'oasis':'agenda';scope='game'}
     redraw();
   }));
   assignForm.addEventListener('submit',async e=>{
@@ -226,9 +229,14 @@
   },30000);
   const messagePanel=document.createElement('div');messagePanel.className='pd-panel';
   messagePanel.innerHTML='<h4>✉️ Nachricht an die Kinder</h4><p>Mitteilungen werden nur über die geprüfte Cloudflare-Lehrpersonen-Sitzung versendet.</p><label>Empfänger<select id="adminMessageRecipient"><option value="all">Ganze Klasse</option>'+kids.map(k=>'<option value="'+html(k.username)+'">'+html(k.username)+'</option>').join('')+'</select></label><label>Betreff<input id="adminMessageSubject" maxlength="100" placeholder="z. B. Morgen mitbringen"></label><label>Nachricht<textarea id="adminMessageText" rows="5" maxlength="1500" placeholder="Deine Nachricht an die Kinder …"></textarea></label><div class="admin-message-actions"><button type="button" class="pd-action" id="adminMessageSend" disabled>Sicher versenden</button><button type="button" class="pd-secondary" id="adminMessageCopy">Text kopieren</button><button type="button" class="pd-secondary" id="adminMessageLegacy">Bestehende Verwaltung öffnen</button></div><p id="adminMessageStatus" role="status">Nachrichtenfunktion wird beim Öffnen geprüft.</p><section id="adminSentMessages" aria-label="Zuletzt versendete Nachrichten"></section>';
-  sections.messages.append(messagePanel);
-  if(sections.projects&&root.LernSafariProjects?.adminMount){
-    const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';sections.projects.append(projectMount);
+  // Keep the previously requested messaging tools accessible without adding a seventh landing card.
+  const messagingDetails=document.createElement('details');
+  messagingDetails.className='admin-detail-attempt';
+  messagingDetails.innerHTML='<summary>✉️ Nachrichten an die Kinder (zusätzliche Verwaltung)</summary>';
+  messagingDetails.append(messagePanel);
+  sections.activity.append(messagingDetails);
+  if(sections.memories&&root.LernSafariProjects?.adminMount){
+    const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';sections.memories.append(projectMount);
     root.LernSafariProjects.adminMount({mount:projectMount,call});
   }
   let messageServiceAvailable=false;
@@ -339,7 +347,169 @@
       filters.kid.onchange=draw;filters.topic.onchange=draw;draw();
     }catch(err){wrapper.innerHTML='<h4>📊 Detaillierte Lernfortschritte</h4><p>Cloudflare-Bericht nicht verfügbar: '+html(err.message||err)+'</p>'}
   }
-  // initial route always home, never expose a child report on the public guest view.
+
+  // Built-in teacher agenda: edits the existing authenticated Worker endpoint
+  // with the SAME payload shape as the existing original/admin agenda editor.
+  let agendaOffset=0,agendaLoaded=[],agendaEditing=null,agendaLoadSeq=0;
+  const mondayDate=()=>{
+    const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    const d=new Date(parts+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-((d.getUTCDay()+6)%7));
+    d.setUTCDate(d.getUTCDate()+agendaOffset*7);
+    return d.toISOString().slice(0,10);
+  };
+  const shiftDay=(value,days)=>{const d=new Date(value+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)};
+  const agendaLabel=e=>{
+    const text=String(e.text||'').trim();
+    const type=String(e.type||'special');
+    const prefix=type==='ha'?'HA: ':type==='lk'?'LK '+String(e.subject||'Fach')+': ':type==='free'?'Frei: ':'';
+    return text.startsWith(prefix)?text:prefix+text;
+  };
+  let agendaPanel=document.createElement('div');
+  agendaPanel.className='pd-panel admin-agenda-panel';
+  agendaPanel.innerHTML='<h4>📅 Termine im Kompass verwalten</h4>'+
+    '<div class="admin-agenda-controls"><button type="button" data-shift="-1">◀ Letzte Woche</button>'+
+    '<strong class="admin-agenda-week-label" id="adminAgendaWeekLabel"></strong>'+
+    '<button type="button" data-shift="1">Nächste Woche ▶</button>'+
+    '<button type="button" id="adminAgendaToday">Aktuelle Woche</button></div>'+
+    '<p id="adminAgendaWeekNotice" role="status"></p>'+
+    '<div id="adminAgendaDays" aria-live="polite"></div>'+
+    '<h5 id="adminAgendaFormTitle">Neuen Termin erstellen</h5>'+
+    '<form id="adminAgendaForm" class="admin-agenda-form">'+
+     '<label>Datum<input name="date" type="date" required></label>'+
+     '<label>Tageszeit<select name="period"><option value="am">Vormittag</option><option value="pm">Nachmittag</option></select></label>'+
+     '<label>Art des Termins<select name="type"><option value="ha">Hausaufgabe (HA:)</option>'+
+       '<option value="lk">Lernkontrolle (LK Fach:)</option><option value="special">Besonderer Termin</option>'+
+       '<option value="free">Schulfrei (Frei:)</option></select></label>'+
+     '<label id="adminAgendaSubjectWrap" hidden>Fach<select name="subject">'+
+       ['Deutsch','Englisch','Mathe','Musik','NMG','Sport'].map(x=>'<option value="'+x+'">'+x+'</option>').join('')+
+       '</select></label>'+
+     '<label>Beginn (Schulfrei)<input name="startDate" type="date"></label>'+
+     '<label>Ende (Schulfrei)<input name="endDate" type="date"></label>'+
+     '<label class="admin-agenda-wide">Text<textarea name="text" maxlength="500" rows="2" placeholder="Was steht im Kalender?" required></textarea></label>'+
+     '<div class="admin-agenda-form-actions"><button type="submit" id="adminAgendaSave">In Cloudflare speichern</button>'+
+      '<button type="button" id="adminAgendaClear">Neue Eingabe</button>'+
+      '<button type="button" id="adminAgendaRemove" hidden>Löschen</button></div>'+
+     '<p class="admin-agenda-status admin-agenda-wide" id="adminAgendaStatus" role="status">Termine werden mit dem Cloudflare-Adminzugang bearbeitet.</p>'+
+    '</form>';
+  sections.agenda.append(agendaPanel);
+  const agendaForm=agendaPanel.querySelector('#adminAgendaForm');
+  const agendaStatus=agendaPanel.querySelector('#adminAgendaStatus');
+  const agendaSubjectWrap=agendaPanel.querySelector('#adminAgendaSubjectWrap');
+  const agendaToday=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  function agendaTypeChange(){
+    const free=agendaForm.elements.type.value==='free';
+    agendaSubjectWrap.hidden=agendaForm.elements.type.value!=='lk';
+    for(const name of ['startDate','endDate']){
+      agendaForm.elements[name].required=free;
+      agendaForm.elements[name].closest('label').hidden=!free;
+    }
+    agendaForm.elements.date.closest('label').hidden=free;
+    agendaForm.elements.date.required=!free;
+  }
+  function resetAgendaForm(date=agendaToday(),period='am'){
+    agendaEditing=null;agendaForm.reset();
+    agendaForm.elements.date.value=date;agendaForm.elements.period.value=period;
+    agendaForm.elements.startDate.value=date;agendaForm.elements.endDate.value=date;
+    agendaPanel.querySelector('#adminAgendaFormTitle').textContent='Neuen Termin erstellen';
+    agendaPanel.querySelector('#adminAgendaRemove').hidden=true;
+    agendaTypeChange();
+    agendaStatus.textContent='Neuen Termin eingeben und speichern.';
+  }
+  agendaForm.elements.type.onchange=agendaTypeChange;
+  agendaPanel.querySelector('#adminAgendaClear').onclick=()=>resetAgendaForm();
+  agendaPanel.querySelectorAll('[data-shift]').forEach(btn=>btn.onclick=()=>{
+    agendaOffset+=Number(btn.dataset.shift);renderAgendaEditor();
+  });
+  agendaPanel.querySelector('#adminAgendaToday').onclick=()=>{agendaOffset=0;renderAgendaEditor()};
+  function editAgendaEvent(event){
+    agendaEditing=event;
+    agendaForm.elements.type.value=event.type||'special';
+    agendaForm.elements.period.value=event.period||'am';
+    agendaForm.elements.date.value=event.day_date||event.start_date||agendaToday();
+    agendaForm.elements.startDate.value=event.start_date||event.day_date||agendaToday();
+    agendaForm.elements.endDate.value=event.end_date||event.day_date||agendaToday();
+    agendaForm.elements.subject.value=event.subject||'Deutsch';
+    agendaForm.elements.text.value=String(event.text||'').trim();
+    agendaPanel.querySelector('#adminAgendaFormTitle').textContent='Termin bearbeiten';
+    agendaPanel.querySelector('#adminAgendaRemove').hidden=!(Number(event.id)>0||event.system_default);
+    agendaTypeChange();
+    agendaStatus.textContent='Du bearbeitest einen vorhandenen Termin.';
+    agendaForm.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }
+  async function renderAgendaEditor(){
+    if(!agendaPanel.isConnected)return;
+    const seq=++agendaLoadSeq,week=mondayDate(),days=Array.from({length:7},(_,i)=>shiftDay(week,i));
+    const names=['Mo','Di','Mi','Do','Fr','Sa','So'];
+    agendaPanel.querySelector('#adminAgendaWeekLabel').textContent=days[0]+' – '+days[6];
+    agendaPanel.querySelector('#adminAgendaWeekNotice').innerHTML=agendaOffset?
+      '<span class="admin-agenda-week-away">📅 Du bist nicht in der aktuellen Woche.</span>':
+      '<span>✓ Aktuelle Woche</span>';
+    const body=agendaPanel.querySelector('#adminAgendaDays');
+    body.innerHTML='<p role="status">Kalender wird geladen …</p>';
+    try{
+      const result=await call('/admin-agenda?week='+encodeURIComponent(week),{admin:true});
+      if(!body.isConnected||seq!==agendaLoadSeq)return;
+      if(!Array.isArray(result.events))throw Error('Cloudflare hat keine Terminliste geliefert.');
+      agendaLoaded=result.events;
+      body.innerHTML='<div class="admin-agenda-days">'+days.map((date,i)=>
+        '<article class="admin-agenda-day"><h5>'+names[i]+' · '+html(date.slice(8,10))+'.'+html(date.slice(5,7))+'.</h5>'+
+        '<div class="admin-agenda-events">'+
+        ['am','pm'].map(period=>{
+          const matches=agendaLoaded.filter(e=>e.day_date===date&&e.period===period);
+          return '<strong>'+(period==='am'?'☀ Vormittag':'☾ Nachmittag')+'</strong>'+
+            (matches.length?matches.map(e=>{
+              const index=agendaLoaded.indexOf(e);
+              return '<button type="button" class="admin-agenda-entry" data-event-index="'+index+
+                '" data-type="'+html(e.type||'special')+'">'+html(agendaLabel(e))+'</button>';
+            }).join(''):'<small>Keine Termine</small>')+
+            '<button type="button" class="admin-agenda-entry" data-new-date="'+date+'" data-new-period="'+period+'">+ Hinzufügen</button>';
+        }).join('')+'</div></article>').join('')+'</div>';
+      body.querySelectorAll('[data-event-index]').forEach(b=>b.onclick=()=>editAgendaEvent(agendaLoaded[Number(b.dataset.eventIndex)]));
+      body.querySelectorAll('[data-new-date]').forEach(b=>{b.onclick=()=>{resetAgendaForm(b.dataset.newDate,b.dataset.newPeriod);agendaForm.scrollIntoView({block:'nearest',behavior:'smooth'})}});
+    }catch(err){
+      if(seq!==agendaLoadSeq||!body.isConnected)return;
+      body.innerHTML='<p role="alert">Agenda momentan nicht erreichbar: '+html(err.message||err)+'</p>';
+    }
+  }
+  agendaForm.onsubmit=async e=>{
+    e.preventDefault();
+    const f=agendaForm.elements,free=f.type.value==='free';
+    if(!f.text.value.trim()){agendaStatus.textContent='Bitte einen Text eingeben.';return}
+    if(free&&f.endDate.value<f.startDate.value){agendaStatus.textContent='Das Enddatum liegt vor dem Beginn.';return}
+    if(agendaEditing&&((agendaEditing.type==='free')!==free)){
+      agendaStatus.textContent='Für den Wechsel zu oder von Schulfrei bitte zuerst den bestehenden Termin löschen.';return;
+    }
+    const payload={id:Number(agendaEditing?.id)>0?Number(agendaEditing.id):undefined,
+      date:f.date.value,period:f.period.value,type:f.type.value,
+      subject:f.type.value==='lk'?f.subject.value:'',
+      text:f.text.value.trim(),startDate:f.startDate.value,endDate:f.endDate.value,
+      originalDefaultDate:agendaEditing?.system_default?agendaEditing.day_date:undefined};
+    const button=agendaPanel.querySelector('#adminAgendaSave');button.disabled=true;
+    agendaStatus.textContent='Termin wird gespeichert …';
+    try{
+      await call('/admin-agenda',{method:'POST',admin:true,body:payload});
+      resetAgendaForm();agendaStatus.textContent='✅ Termin in Cloudflare gespeichert.';
+      await renderAgendaEditor();
+    }catch(err){agendaStatus.textContent='Nicht gespeichert: '+String(err.message||err)}
+    finally{button.disabled=false}
+  };
+  agendaPanel.querySelector('#adminAgendaRemove').onclick=async()=>{
+    if(!agendaEditing)return;
+    const target=agendaEditing.system_default?{defaultDate:agendaEditing.day_date}:
+      Number(agendaEditing.id)>0?{id:Number(agendaEditing.id),type:agendaEditing.type}:null;
+    if(!target){agendaStatus.textContent='Dieser Termin lässt sich nicht entfernen.';return}
+    if(!confirm('Diesen Termin wirklich löschen?'))return;
+    const button=agendaPanel.querySelector('#adminAgendaRemove');button.disabled=true;
+    try{
+      await call('/admin-agenda',{method:'DELETE',admin:true,body:target});
+      resetAgendaForm();agendaStatus.textContent='✅ Termin gelöscht.';
+      await renderAgendaEditor();
+    }catch(err){agendaStatus.textContent='Nicht gelöscht: '+String(err.message||err)}
+    finally{button.disabled=false}
+  };
+  resetAgendaForm();
+
+    // initial route always home, never expose a child report on the public guest view.
   open('home');
   return {open};
  }

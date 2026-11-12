@@ -36,7 +36,7 @@
  }
  function createSelect(label,id,choices){return '<label>'+label+'<select id="'+id+'">'+choices.map(x=>'<option value="'+html(x[0])+'">'+html(x[1])+'</option>').join('')+'</select></label>'}
  function mount(opts){
-  const {host,kids=[],jobs=[],pres=[],done=[],targets=[],call,renderAdminProgress}=opts;
+  const {host,kids=[],jobs=[],pres=[],done=[],verified=[],targets=[],call,renderAdminProgress}=opts;
   if(!host?.isConnected||!host.querySelector('#cloudAssignmentForm'))return;
   const shell=host.querySelector('.cloud-shell');
   const banner=shell?.querySelector('.pd-banner');
@@ -198,6 +198,36 @@
       return '<article><strong>'+html(user)+'</strong><span>'+html(activity)+'</span><small>'+html(at?String(at):'Keine Uhrzeit übermittelt')+'</small></article>';
     }).join('')+'</div>':'<p>Cloudflare meldet momentan keine Anwesenheitsdaten.</p>');
   sections.activity.prepend(livePanel);
+  // Assignment completion is separate from live presence. Do not present a
+  // pupil's self-reported "done" check as teacher-verified completion.
+  const activityProgress=document.createElement('section');
+  activityProgress.className='pd-panel admin-activity-assignments';
+  const nowMs=Date.now();
+  const activeJobs=jobs.filter(j=>{
+    const start=Date.parse(j.start_at||'');
+    const end=Date.parse(j.end_at||'');
+    return (!Number.isFinite(start)||start<=nowMs)&&(!Number.isFinite(end)||end>=nowMs);
+  });
+  const submitted=new Set(done.filter(x=>x&&x.username).map(x=>String(x.username)+'|'+Number(x.assignment_id)));
+  const checked=new Set((Array.isArray(verified)?verified:[]).filter(x=>x&&x.username).map(x=>String(x.username)+'|'+Number(x.assignment_id)));
+  activityProgress.innerHTML='<h4>📌 Lernaufträge der Tierkonten</h4>'+
+   '<p class="admin-small-note">Aktive Zuweisungen aus Cloudflare. «Gemeldet» bedeutet vom Kind angekreuzt, «überprüft» bedeutet von der Lehrperson bestätigt.</p>'+
+   '<div class="admin-presence-grid">'+kids.map(k=>{
+    const user=String(k.username||'');
+    const mine=activeJobs.filter(j=>j.audience==='all'||j.username===user);
+    const total=mine.length;
+    const marked=mine.filter(j=>submitted.has(user+'|'+Number(j.id))).length;
+    const confirmed=mine.filter(j=>checked.has(user+'|'+Number(j.id))).length;
+    const outstanding=mine.filter(j=>!checked.has(user+'|'+Number(j.id)));
+    const label=total===0?'Keine aktiven Aufträge':confirmed===total?'Alle bestätigt':marked===total?'Alle gemeldet':'Noch in Arbeit';
+    return '<article class="admin-activity-person"><strong>'+html(user)+'</strong>'+
+     '<span>'+html(label)+'</span>'+
+     '<small>'+marked+' von '+total+' als erledigt gemeldet · '+confirmed+' überprüft</small>'+
+     (outstanding.length?'<details><summary>'+outstanding.length+' noch nicht überprüfte Aufträge</summary><ul>'+outstanding.map(j=>'<li>'+html(j.title||j.target||'Auftrag')+'</li>').join('')+'</ul></details>':'')+
+     '</article>';
+   }).join('')+'</div>';
+  sections.activity.append(activityProgress);
+
   const liveRefresh=document.createElement('div');
   liveRefresh.className='admin-live-refresh';liveRefresh.innerHTML='<button type="button" class="pd-secondary" id="adminLiveReload">🔄 Live-Aktivität aktualisieren</button><p class="admin-small-note" role="status" id="adminLiveStatus">Eine Aktivitätsanzeige wird nur nach serverseitiger Bestätigung aktiviert.</p>';
   livePanel.prepend(liveRefresh);

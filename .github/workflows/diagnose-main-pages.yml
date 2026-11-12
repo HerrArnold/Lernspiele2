@@ -1,0 +1,45 @@
+name: Diagnose public LernSafari2 test website
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-main-pages.yml'
+  workflow_dispatch:
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check public Cloudflare Pages routes without any credentials
+        env:
+          SITE: https://lernsafari-klasse3b-test.pages.dev
+        run: |
+          python3 - <<'PY'
+          import os,time,urllib.request
+          base=os.environ['SITE']
+          expected=[
+            ('/index.html', ['admin-progress.js','admin-dashboard.js']),
+            ('/admin-progress.js', ['LernSafariProgress','normalizedScore']),
+            ('/admin-dashboard.js', ['admin-activity-assignments','admin-agenda-entry']),
+            ('/cloudflare-integration.js', ['agendaDisplayText','renderCloudAgenda']),
+            ('/app.js', ['karte-stickerwelt.webp','karte.png']),
+            ('/integration.js', ['baobab-stickerwelt.webp','baobab.jpg']),
+          ]
+          all_pass=True
+          for path,markers in expected:
+            passed=False
+            for attempt in range(6):
+              try:
+                url=base+path+'?verify=main-'+str(int(time.time()))
+                req=urllib.request.Request(url,headers={'Cache-Control':'no-cache','User-Agent':'LernSafari-Main-Verification'})
+                with urllib.request.urlopen(req,timeout=12) as r:
+                  body=r.read(300000).decode('utf-8','replace')
+                  passed=r.status==200 and all(s in body for s in markers)
+                if passed:break
+              except Exception as e:err=str(e)
+              time.sleep(12)
+            print(('PASS' if passed else 'NOT YET DEPLOYED')+' '+path+' '+','.join(markers))
+            all_pass &=passed
+          if not all_pass:print('Cloudflare Pages does not yet show all main changes; inspect its Git build settings/deployment.')
+          else:print('PUBLIC MAIN CODE VERIFIED on Cloudflare Pages')
+          PY

@@ -1,0 +1,50 @@
+name: Diagnose Cloudflare classroom and Polaroid API (read-only)
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/diagnose-cloudflare-api.yml'
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Read only API responses, without passwords or private data
+        env:
+          BASE: https://lernsafari-api.ergohd02.workers.dev
+        run: |
+          node --input-type=module <<'NODE'
+          const base=process.env.BASE;
+          const opts={headers:{accept:'application/json',origin:'https://lernsafari-klasse3b-test.pages.dev'},signal:AbortSignal.timeout(10000)};
+          async function probe(path){
+            try{
+              const r=await fetch(base+path,opts),txt=(await r.text()).slice(0,800);
+              let body={};try{body=JSON.parse(txt)}catch{}
+              return {status:r.status,body,txt};
+            }catch(e){return {status:0,body:{},txt:String(e.message||e)}}
+          }
+          const other=await probe('/this-route-does-not-exist-on-lernsafari');
+          const tests=[
+            ['/projects','Erinnerungsalbum',x=>x.status===200&&x.body.available===true&&Array.isArray(x.body.projects)],
+            ['/admin-projects','Geschützte Fotoverwaltung',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
+            ['/admin-classroom-mode','Unterrichtsmodus',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
+            ['/admin-messages','Nachrichten',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
+            ['/admin-live-activity','Live-Aktivität',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
+            ['/classroom-access?game=einmaleins-dreier','Spiel-Zugang',x=>x.status===200&&x.body.allowed===false]
+          ];
+          const results=[];
+          for(const [route,name,check]of tests){
+            const r=await probe(route);
+            const distinct=r.status!==other.status||r.txt!==other.txt;
+            const ready=distinct&&check(r);
+            results.push({name,route,status:r.status,ready});
+            console.log((ready?'READY':'NOT READY')+' | '+name+' | HTTP '+r.status);
+          }
+          const md=['# LernSafari2 Cloudflare – Lesender API-Status','',
+            'Keine Benutzer-, Passwort- oder Schülerdaten wurden verwendet. Ein allgemeines 401/403 wie bei unbekannten Routen zählt **nicht** als eingerichtete Schnittstelle.','',
+            '| Funktion | Status | API-Antwort |','|---|---|---|',
+            ...results.map(x=>'| '+x.name+' | '+(x.ready?'Bereit':'Noch nicht nachgewiesen')+' | HTTP '+x.status+' |'),
+            '','Diese Prüfung ersetzt keine Anmeldung und keinen vollständigen Integrationstest.'];
+          const fs=await import('node:fs');fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,md.join('\n')+'\n');
+          NODE

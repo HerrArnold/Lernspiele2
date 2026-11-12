@@ -360,8 +360,9 @@
   };
   const shiftDay=(value,days)=>{const d=new Date(value+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)};
   const agendaLabel=e=>{
-    const text=String(e.text||'').trim();
+    const original=String(e.text||'').trim();
     const type=String(e.type||'special');
+    const text=type==='special'?original:original.replace(/^(?:HA:\s*|Frei:\s*|LK\s+(?:Deutsch|Englisch|Mathe|Musik|NMG|Sport|Fach)\s*:\s*)/i,'').trim();
     const prefix=type==='ha'?'HA: ':type==='lk'?'LK '+String(e.subject||'Fach')+': ':type==='free'?'Frei: ':'';
     return text.startsWith(prefix)?text:prefix+text;
   };
@@ -430,7 +431,7 @@
     agendaForm.elements.startDate.value=event.start_date||event.day_date||agendaToday();
     agendaForm.elements.endDate.value=event.end_date||event.day_date||agendaToday();
     agendaForm.elements.subject.value=event.subject||'Deutsch';
-    agendaForm.elements.text.value=String(event.text||'').trim();
+    agendaForm.elements.text.value=String(event.text||'').trim().replace(/^(?:HA:\s*|Frei:\s*|LK\s+(?:Deutsch|Englisch|Mathe|Musik|NMG|Sport|Fach)\s*:\s*)/i,'').trim();
     agendaPanel.querySelector('#adminAgendaFormTitle').textContent='Termin bearbeiten';
     agendaPanel.querySelector('#adminAgendaRemove').hidden=!(Number(event.id)>0||event.system_default);
     agendaTypeChange();

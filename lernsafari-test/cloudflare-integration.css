@@ -103,3 +103,41 @@
  .modal-kind-agenda .cloud-agenda-week-button{padding:9px 6px;font-size:12px}
  .modal-kind-agenda .cloud-agenda-other-week{font-size:12px}
 }
+
+/* 2026-11-12: Kompass / Agenda takes most of laptop width so all days are visible. */
+#modal.modal-kind-agenda{
+ width:min(1740px,calc(100vw - 24px))!important;
+ max-width:none!important;max-height:calc(100dvh - 16px)!important;
+}
+#modal.modal-kind-agenda .modal-body{
+ padding:clamp(7px,1.1vw,18px)!important;overflow-y:auto!important;
+ overflow-x:hidden!important;max-width:100%;
+}
+#modal.modal-kind-agenda .pd-shell{max-width:none!important;width:100%!important;min-width:0}
+#modal.modal-kind-agenda .cloud-week{
+ display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+ width:100%!important;min-width:0!important;gap:clamp(3px,.6vw,10px)!important;
+ overflow:visible!important;
+}
+#modal.modal-kind-agenda .cloud-day{
+ min-width:0!important;width:100%!important;padding:clamp(5px,.8vw,14px)!important;
+ overflow-wrap:anywhere;
+}
+#modal.modal-kind-agenda .cloud-day h4{
+ font-size:clamp(10px,1.1vw,17px)!important;line-height:1.35;
+}
+#modal.modal-kind-agenda .cloud-event{padding:clamp(4px,.6vw,10px)!important}
+#modal.modal-kind-agenda .cloud-event :is(strong,p){
+ font-size:clamp(10px,.91vw,14px)!important;overflow-wrap:anywhere;
+}
+#modal.modal-kind-agenda .cloud-agenda-nav{
+ grid-template-columns:minmax(135px,1fr) minmax(160px,2fr) minmax(135px,1fr);
+}
+@media(max-width:760px){
+ #modal.modal-kind-agenda{width:calc(100vw - 8px)!important}
+ #modal.modal-kind-agenda .cloud-week{gap:2px!important}
+ #modal.modal-kind-agenda .cloud-day{border-width:1px;padding:3px!important;border-radius:7px}
+ #modal.modal-kind-agenda .cloud-day h4{font-size:9px!important}
+ #modal.modal-kind-agenda .cloud-event{padding:3px!important;border-radius:5px}
+ #modal.modal-kind-agenda .cloud-event :is(strong,p){font-size:9px!important}
+}

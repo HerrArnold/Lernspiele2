@@ -55,14 +55,14 @@ try {
  await page.locator('.safari-map>img').first().waitFor();
  await page.waitForTimeout(650);
  const mapImage=await page.locator('.safari-map>img').first().evaluate(el=>({src:el.currentSrc,naturalWidth:el.naturalWidth}));
- assert.ok(mapImage.src.includes('karte.png'),'Map should use real assets/karte.png while WebP upload is pending');
+ assert.ok(/(?:karte-stickerwelt\.webp|karte\.png)$/.test(new URL(mapImage.src).pathname),'Map must load the new illustration or the existing real image, not SVG placeholder');
  assert.ok(mapImage.naturalWidth>0,'Map image did not load');
  await page.screenshot({path:'/tmp/lernsafari-main-map.png'});
  await page.evaluate(()=>travelTo('baobab'));
  await page.locator('.baobab-new-map>img').first().waitFor();
  await page.waitForTimeout(650);
  const treeImage=await page.locator('.baobab-new-map>img').first().evaluate(el=>({src:el.currentSrc,naturalWidth:el.naturalWidth}));
- assert.ok(treeImage.src.includes('baobab.jpg'),'Baobab should use real assets/baobab.jpg while WebP upload is pending');
+ assert.ok(/(?:baobab-stickerwelt\.webp|baobab\.jpg)$/.test(new URL(treeImage.src).pathname),'Baobab must load the new illustration or the existing real image, not SVG placeholder');
  assert.ok(treeImage.naturalWidth>0,'Baobab image did not load');
  await page.screenshot({path:'/tmp/lernsafari-main-baobab.png'});
  if(errors.length)throw Error('Page exceptions: '+errors.join(' | '));

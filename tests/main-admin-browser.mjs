@@ -47,7 +47,8 @@ try {
  await page.locator('[data-admin-section="agenda"]').click();
  await page.locator('#adminAgendaForm').waitFor();
  assert.equal(await page.locator('#adminAgendaForm select[name=subject] option').count(),6);
- assert.ok(await page.locator('#adminAgendaDays .admin-agenda-day').count()===7);
+ await page.locator('#adminAgendaDays .admin-agenda-day').first().waitFor({timeout:10000});
+ assert.equal(await page.locator('#adminAgendaDays .admin-agenda-day').count(),7);
  await page.screenshot({path:'/tmp/lernsafari-main-agenda-admin.png'});
 
  await page.evaluate(()=>{closeModal(true);showModal('map')});

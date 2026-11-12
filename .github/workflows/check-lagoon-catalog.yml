@@ -1,0 +1,20 @@
+name: Check exact Lern-Lagune content
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - 'lernsafari-test/topic-navigation.js'
+      - 'lernsafari-test/integration.js'
+      - 'lernsafari-test/integration.css'
+      - 'lernsafari-test/tests/lagoon-catalog.test.cjs'
+      - '.github/workflows/check-lagoon-catalog.yml'
+  workflow_dispatch:
+jobs:
+  catalog:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check JS syntax
+        run: node --check lernsafari-test/topic-navigation.js
+      - name: Check requested subjects, titles, assets and styles
+        run: node lernsafari-test/tests/lagoon-catalog.test.cjs

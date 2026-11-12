@@ -1,0 +1,72 @@
+name: Publish Lernspiele2 development site to Cloudflare test branch
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths:
+      - '.github/workflows/publish-test-pages.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: lernspiele2-test-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out the completed LernSafari development site
+        uses: actions/checkout@v4
+        with:
+          ref: lernsafari-camp-direkt
+          path: source
+          persist-credentials: false
+      - name: Check out the Cloudflare Pages test publishing branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: publish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
+      - name: Verify safe source and target
+        run: |
+          test "${{ github.repository }}" = "HerrArnold/Lernspiele2"
+          test -f source/lernsafari-test/index.html
+          test -f source/lernsafari-test/topic-navigation.js
+          test -f source/lernsafari-test/original/spiele/hoerverstehen-dachs.html
+          test -f publish/index.html
+          grep -q "Cloudflare Pages" publish/index.html
+      - name: Synchronise staged website to the existing Lernspiele2 test root
+        run: |
+          rsync -a --exclude='.git/' --exclude='.github/' \
+            source/lernsafari-test/ publish/
+          cd publish
+          git add -A
+          git status --short | head -90
+      - name: Verify all requested topics and game pages
+        run: |
+          cd publish
+          node --check integration.js
+          node --check topic-navigation.js
+          node --check app.js
+          node --check cloudflare-integration.js
+          for file in dachs eichhoernchen igel reh rotfuchs; do
+            test -f "original/spiele/hoerverstehen-$file.html"
+          done
+          for file in math-badge german-flag nmg-leaf music-badge uk-flag; do
+            test -f "assets/$file.svg"
+          done
+          grep -q 'topic-navigation.js' index.html
+          grep -q 'Hörverständnis' topic-navigation.js
+      - name: Publish to the existing Cloudflare-connected Lernspiele2 main branch
+        working-directory: publish
+        run: |
+          if git diff --cached --quiet; then
+            echo "No changes needed: test root is already current."
+            exit 0
+          fi
+          git config user.name "LernSafari test publisher"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Publish checked LernSafari development site to Cloudflare test root"
+          git push origin HEAD:main
+          echo "Published test website to Lernspiele2/main (not HerrArnold/lernspiele)."

@@ -44,7 +44,7 @@ jobs:
           for(const section of ['animals','projects','advent'])if(!integration.includes('data-baobab-new="'+section+'"'))throw Error('Missing Baobab button '+section);
           for(const obsolete of ['data-baobab-new="stories"','data-baobab-new="motto"','data-baobab-new="compliments"'])if(integration.includes(obsolete))throw Error('Obsolete Baobab section '+obsolete);
           if(!integration.includes("original/index.html#tiere"))throw Error('Class animals link missing');
-          if(!admin.includes("id:'projects'"))throw Error('Project admin workspace missing');
+          if(!admin.includes("id:'memories'")||!admin.includes('adminProjectsMount'))throw Error('Erinnerungen admin workspace / Polaroids missing');
           if(!project.includes('/admin-projects'))throw Error('Secure photo publishing missing');
           console.log('Sign-free map, Baobab buttons, direct animal link and project admin verified');
           NODE

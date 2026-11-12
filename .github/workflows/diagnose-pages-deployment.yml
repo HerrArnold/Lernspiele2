@@ -1,0 +1,27 @@
+name: Diagnose Pages published version
+on:
+  push:
+    branches: [lernsafari-camp-direkt]
+    paths: ['.github/workflows/diagnose-pages-deployment.yml']
+  workflow_dispatch:
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - name: Read public test site, do not change anything
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import urllib.request
+          base='https://lernsafari-klasse3b-test.pages.dev'
+          for path in ['/index.html','/topic-navigation.js','/lernsafari-test/topic-navigation.js','/integration.js']:
+              try:
+                  rq=urllib.request.Request(base+path,headers={'User-Agent':'LernSafari-staging-version-diagnostic/1.0','Cache-Control':'no-cache'})
+                  with urllib.request.urlopen(rq, timeout=15) as r:
+                      body=r.read(200000).decode('utf-8','replace')
+                      print('PATH:',path,'HTTP:',r.status,'CONTENT-TYPE:',r.headers.get('content-type'),'LEN:',len(body),'VERSION-HITS:',{key:key in body for key in ['LernSafariTopicCatalog','Hörverständnis','safari-area-theme.css','topic-navigation.js','cloudflare-integration.js']})
+                      print('FIRST_BYTES:',repr(body[:200]))
+              except Exception as e:
+                  print('PATH:',path,'ERROR:',str(e)[:350])
+          PY

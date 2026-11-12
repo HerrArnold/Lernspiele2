@@ -205,3 +205,74 @@
  .baobab-new-map .baobab-advent{left:80%;top:34%;width:30%}
  .baobab-new-map .baobab-projects{left:77%;top:51%;width:32%}
 }
+
+/* 2026-11-12: Whole-page area-specific backgrounds, not only the inner card. */
+html:has(#campScreen:not([hidden])),
+body:has(#campScreen:not([hidden])),
+.app:has(#campScreen:not([hidden])),
+#campScreen:not([hidden]),#campScreen:not([hidden]) .camp-wrap,
+#campScreen:not([hidden]) .scene-wrap{
+ background:#f8dce5!important;
+ background-image:linear-gradient(160deg,#fff0f5 0%,#f8dbe5 52%,#edc8d7 100%)!important;
+}
+html:has(#destinationScreen.is-valley:not([hidden])),
+body:has(#destinationScreen.is-valley:not([hidden])),
+.app:has(#destinationScreen.is-valley:not([hidden])),
+#destinationScreen.is-valley:not([hidden]){
+ background:#f9e1c3!important;
+ background-image:linear-gradient(155deg,#fff4e5 0%,#f6dab4 52%,#f2cda4 100%)!important;
+}
+html:has(#destinationScreen.is-lagoon:not([hidden])),
+body:has(#destinationScreen.is-lagoon:not([hidden])),
+.app:has(#destinationScreen.is-lagoon:not([hidden])),
+#destinationScreen.is-lagoon:not([hidden]){
+ background:#d8ead1!important;
+ background-image:linear-gradient(155deg,#eff8e8 0%,#d6e8cf 53%,#bdd8ba 100%)!important;
+}
+html:has(#destinationScreen.is-oasis:not([hidden])),
+body:has(#destinationScreen.is-oasis:not([hidden])),
+.app:has(#destinationScreen.is-oasis:not([hidden])),
+#destinationScreen.is-oasis:not([hidden]){
+ background:#d2eaf3!important;
+ background-image:linear-gradient(155deg,#f0faff 0%,#d4e9f3 53%,#b7d6e8 100%)!important;
+}
+html:has(#destinationScreen.is-baobab:not([hidden])),
+body:has(#destinationScreen.is-baobab:not([hidden])),
+.app:has(#destinationScreen.is-baobab:not([hidden])),
+#destinationScreen.is-baobab:not([hidden]){
+ background:#f0ddaf!important;
+ background-image:linear-gradient(155deg,#fff4d9 0%,#efd9a6 54%,#e6c993 100%)!important;
+}
+/* Hornbill character on the Tages-Tal welcome title. */
+.is-valley .dest-hero{
+ display:flex!important;gap:clamp(12px,2vw,23px)!important;
+ align-items:center!important;
+}
+.is-valley .dest-emoji{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:0 0 clamp(80px,11vw,142px)!important;
+ width:clamp(80px,11vw,142px)!important;
+ height:clamp(80px,11vw,142px)!important;overflow:visible!important;
+ font-size:initial!important;
+}
+.is-valley .valley-hornvogel-title{
+ display:block!important;width:100%!important;height:100%!important;
+ max-height:142px!important;object-fit:contain!important;
+ filter:drop-shadow(0 4px 4px rgba(92,55,27,.16));
+}
+.is-valley .dest-hero h1{color:#87410d!important}
+.is-valley .dest-hero .eyebrow{color:#8c531e!important}
+.is-valley .dest-hero p{color:#524332!important}
+/* Light accessible content surfaces remain legible on each coloured background. */
+.destination-screen .destination-panel,
+.destination-screen .destination-panel :is(.integration-hero,.integration-context-card,.integration-game-surface){
+ color:#3e3226;
+}
+.is-valley .destination-panel{background:#fffaf2!important;border-color:#d3a06b!important}
+.is-lagoon .destination-panel{background:#fbfff8!important;border-color:#96be90!important}
+.is-oasis .destination-panel{background:#f8fdff!important;border-color:#85b8d1!important}
+.is-baobab .destination-panel{background:#fffcf2!important;border-color:#c6a06a!important}
+@media(max-width:650px){
+ .is-valley .dest-emoji{flex-basis:82px!important;width:82px!important;height:82px!important}
+ .is-valley .valley-hornvogel-title{max-height:82px!important}
+}

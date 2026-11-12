@@ -1,0 +1,45 @@
+name: Build portable LernSafari offline ZIP
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-offline.py'
+      - '.github/workflows/offline-package.yml'
+      - 'original/assets/oase-*'
+      - 'original/spiele/oase-*'
+      - 'original/assets/sudoku-*'
+      - 'original/assets/buchstabensalat-*'
+      - 'topic-navigation.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare standalone class-neutral learning site
+        run: python3 scripts/build-offline.py
+      - name: Validate offline entry and new games
+        run: |
+          test -f _lernsafari_offline/index.html
+          test -f _lernsafari_offline/original/assets/offline-hoerverstehen-data.js
+          test -f _lernsafari_offline/original/spiele/oase-sudoku.html
+          test -f _lernsafari_offline/original/hoerverstehen-audio/affe.m4a
+          grep -q 'OASE_SUDOKU_DATA' _lernsafari_offline/original/assets/oase-sudoku.js
+          ! grep -Eqi 'Klasse[[:space:]]*3[abcd]' _lernsafari_offline/index.html
+          node --check _lernsafari_offline/original/assets/hoerverstehen-kurz.js
+          node --check _lernsafari_offline/original/assets/hoerverstehen.js
+      - name: Create full ZIP archive
+        run: |
+          cd _lernsafari_offline
+          zip -q -r "$RUNNER_TEMP/LernSafari-Offline-Komplett.zip" .
+      - name: Upload downloadable archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: LernSafari-Offline-Komplett
+          path: ${{ runner.temp }}/LernSafari-Offline-Komplett.zip
+          retention-days: 90

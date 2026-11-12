@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/diagnose-main-pages.yml'
+      - 'topic-navigation.js'
+      - 'original/spiele/hoerverstehen-kurz-*.html'
   workflow_dispatch:
 jobs:
   diagnose:
@@ -19,6 +21,9 @@ jobs:
           base=os.environ['SITE']
           expected=[
             ('/index.html', ['admin-progress.js','admin-dashboard.js']),
+            ('/topic-navigation.js', ['Der freche Affe','Der kleine Löwe','hoerverstehen-kurz-affe.html']),
+            ('/original/spiele/hoerverstehen-kurz-affe.html', ['hoerverstehen-kurz.js']),
+            ('/original/hoerverstehen-audio/affe.m4a', []),
             ('/admin-progress.js', ['LernSafariProgress','normalizedScore']),
             ('/admin-dashboard.js', ['admin-activity-assignments','admin-agenda-entry']),
             ('/cloudflare-integration.js', ['agendaDisplayText','renderCloudAgenda']),

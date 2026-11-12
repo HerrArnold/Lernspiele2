@@ -49,6 +49,21 @@ try {
  assert.equal(await page.locator('#adminAgendaForm select[name=subject] option').count(),6);
  assert.ok(await page.locator('#adminAgendaDays .admin-agenda-day').count()===7);
  await page.screenshot({path:'/tmp/lernsafari-main-agenda-admin.png'});
+
+ await page.evaluate(()=>{closeModal(true);showModal('map')});
+ await page.locator('.safari-map>img').first().waitFor();
+ await page.waitForTimeout(650);
+ const mapImage=await page.locator('.safari-map>img').first().evaluate(el=>({src:el.currentSrc,naturalWidth:el.naturalWidth}));
+ assert.ok(mapImage.src.includes('karte.png'),'Map should use real assets/karte.png while WebP upload is pending');
+ assert.ok(mapImage.naturalWidth>0,'Map image did not load');
+ await page.screenshot({path:'/tmp/lernsafari-main-map.png'});
+ await page.evaluate(()=>travelTo('baobab'));
+ await page.locator('.baobab-new-map>img').first().waitFor();
+ await page.waitForTimeout(650);
+ const treeImage=await page.locator('.baobab-new-map>img').first().evaluate(el=>({src:el.currentSrc,naturalWidth:el.naturalWidth}));
+ assert.ok(treeImage.src.includes('baobab.jpg'),'Baobab should use real assets/baobab.jpg while WebP upload is pending');
+ assert.ok(treeImage.naturalWidth>0,'Baobab image did not load');
+ await page.screenshot({path:'/tmp/lernsafari-main-baobab.png'});
  if(errors.length)throw Error('Page exceptions: '+errors.join(' | '));
  console.log('PASS: main teacher page, six sections, progress with real percentages/errors, activity and Agenda editor.');
 }finally{await browser.close()}

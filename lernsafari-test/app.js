@@ -3,25 +3,48 @@
 const $ = (selector, root=document) => root.querySelector(selector);
 const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
 const state = {screen:'login', role:'guest', username:'Gast', modal:null, destination:null, dateOffset:0, tasks:{}, introBusy:false, toastTimer:null};
-const DOM = {login:$('#loginScreen'),camp:$('#campScreen'),destination:$('#destinationScreen'),topbar:$('#topbar'),layer:$('#modalLayer'),modal:$('#modal'),modalBody:$('#modalBody'),modalTitle:$('#modalTitle'),modalIcon:$('#modalIcon'),modalEyebrow:$('#modalEyebrow')};
+const DOM = {login:$('#loginScreen'),camp:$('#campScreen'),destination:$('#destinationScreen'),admin:$('#adminScreen'),topbar:$('#topbar'),layer:$('#modalLayer'),modal:$('#modal'),modalBody:$('#modalBody'),modalTitle:$('#modalTitle'),modalIcon:$('#modalIcon'),modalEyebrow:$('#modalEyebrow')};
 const escapeHtml = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dt = (date,options) => new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',...options}).format(date);
 const now = () => new Date();
 const startOfDay = (date=new Date()) => {const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(date).split('-');return new Date(`${parts.join('-')}T12:00:00+01:00`)};
 const dayWithOffset = n => {const d=startOfDay();d.setUTCDate(d.getUTCDate()+n);return d};
 function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(state.toastTimer);state.toastTimer=setTimeout(()=>el.classList.remove('show'),3600)}
-function showScreen(name){state.screen=name;DOM.login.hidden=name!=='login';DOM.camp.hidden=name!=='camp';DOM.destination.hidden=name!=='destination';DOM.topbar.hidden=name==='login';if($('#adminNav'))$('#adminNav').hidden=!['demo-admin','cloudflare-admin'].includes(state.role);if(name==='camp'){$('#userLabel').textContent=state.username;$('#greeting').textContent=state.role==='guest'?'🌴 Willkommen in der LernSafari!':'🌴 Schön, dass du da bist, '+state.username+'!';$('#mailIndicator').hidden=state.role==='guest'}window.scrollTo({top:0,behavior:'instant'});}
+function showScreen(name){state.screen=name;DOM.login.hidden=name!=='login';DOM.camp.hidden=name!=='camp';DOM.destination.hidden=name!=='destination';DOM.admin.hidden=name!=='admin';DOM.topbar.hidden=name==='login';if($('#adminNav'))$('#adminNav').hidden=!['demo-admin','cloudflare-admin'].includes(state.role);if(name==='camp'){$('#userLabel').textContent=state.username;$('#greeting').textContent=state.role==='guest'?'🌴 Willkommen in der LernSafari!':'🌴 Schön, dass du da bist, '+state.username+'!';$('#mailIndicator').hidden=state.role==='guest'}window.scrollTo({top:0,behavior:'instant'});}
 function enter(role,username){if(state.introBusy)return;state.introBusy=true;state.role=role;state.username=username;$('#loginScene').classList.add('intro-exit');setTimeout(()=>{showScreen('camp');$('#campScene').classList.add('camp-enter');$('#loginScene').classList.remove('intro-exit');state.introBusy=false;history.replaceState({screen:'camp'},'','#camp');setTimeout(()=>$('#campScene').classList.remove('camp-enter'),700)},window.matchMedia('(prefers-reduced-motion:reduce)').matches?0:520)}
 // Cloudflare authentication owns the login; do not start a local demo session.
 $('#loginForm').addEventListener('submit',e=>{e.preventDefault();toast('Die Anmeldung über Cloudflare ist gerade nicht erreichbar.');});
 function exit(){cancelObjectAnimation();closeModal(true);showScreen('login');$('#username').value='';$('#password').value='';state.role='guest';state.username='Gast';history.replaceState({screen:'login'},'','#start')}
 $('#logoutBtn').addEventListener('click',exit);
+$('#adminPageBack').addEventListener('click',goCamp);
 $('#homeBtn').addEventListener('click',goCamp);
 $('#backToCamp').addEventListener('click',goCamp);
 function goCamp(){cancelObjectAnimation();closeModal(true);showScreen('camp');state.destination=null;history.pushState({screen:'camp'},'','#camp')}
-function showModal(kind){if(state.modal)return;const config={logbook:['📖','Mein Logbuch','Dein persönlicher Lernplatz'],map:['🗺️','Karte','Wohin führt deine Reise?'],agenda:['🧭','Kompass & Agenda','Deine Woche im Überblick'],mail:['✉️','Briefkasten','Eine Nachricht für dich'],clock:['🕰️','Meine Tagesübersicht','Heute in der LernSafari'],help:['🦩','Hallo, Safari-Forscher!','Der Flamingo hilft dir'],admin:['🛠️','Verwaltung','Lokale Demo für Lehrpersonen']};if(!config[kind])return;state.modal=kind;DOM.modalIcon.textContent=config[kind][0];DOM.modalTitle.textContent=config[kind][1];DOM.modalEyebrow.textContent=config[kind][2];DOM.modal.className='modal parchment modal-kind-'+kind;DOM.layer.hidden=false;renderModal();document.body.style.overflow='hidden';setTimeout(()=>DOM.modal.focus(),20);history.pushState({screen:state.screen,modal:kind},'','#'+kind)}
+function showModal(kind){
+ if(state.modal)return;
+ if(kind==='admin'){
+  // Administration is an authenticated, full-viewport subpage, never a modal.
+  if(state.role!=='cloudflare-admin')return;
+  state.modal='admin';
+  DOM._originalModalBody=DOM.modalBody;
+  DOM.modalBody=$('#adminPageBody');
+  showScreen('admin');
+  window.scrollTo(0,0);
+  renderModal();
+  history.pushState({screen:'admin',modal:'admin'},'','#admin');
+  return;
+ }
+ const config={logbook:['📖','Mein Logbuch','Dein persönlicher Lernplatz'],map:['🗺️','Karte','Wohin führt deine Reise?'],agenda:['🧭','Kompass & Agenda','Deine Woche im Überblick'],mail:['✉️','Briefkasten','Eine Nachricht für dich'],clock:['🕰️','Meine Tagesübersicht','Heute in der LernSafari'],help:['🦩','Hallo, Safari-Forscher!','Der Flamingo hilft dir'],admin:['🛠️','Verwaltung','Lokale Demo für Lehrpersonen']};if(!config[kind])return;state.modal=kind;DOM.modalIcon.textContent=config[kind][0];DOM.modalTitle.textContent=config[kind][1];DOM.modalEyebrow.textContent=config[kind][2];DOM.modal.className='modal parchment modal-kind-'+kind;DOM.layer.hidden=false;renderModal();document.body.style.overflow='hidden';setTimeout(()=>DOM.modal.focus(),20);history.pushState({screen:state.screen,modal:kind},'','#'+kind)}
 function closeModal(immediate=false,fromPop=false){
   if(!state.modal)return;
+  if(state.modal==='admin'){
+   state.modal=null;
+   DOM.modalBody=DOM._originalModalBody||$('#modalBody');
+   DOM._originalModalBody=null;
+   showScreen('camp');
+   if(!fromPop)history.replaceState({screen:'camp'},'','#camp');
+   return;
+  }
   state.modal=null;
   document.body.style.overflow='';
   DOM.layer.hidden=true;

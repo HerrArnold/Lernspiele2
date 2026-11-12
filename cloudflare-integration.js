@@ -294,6 +294,16 @@
  }
  function mondayOfZurich(){const day=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Zurich',weekday:'short'}).format(new Date());const idx={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6}[day]||0;const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const utc=new Date(today+'T12:00:00Z');utc.setUTCDate(utc.getUTCDate()-((idx+6)%7));return utc.toISOString().slice(0,10)}
 
+ const agendaDisplayText=e=>{
+  const original=String(e.text||'').trim();
+  const type=String(e.type||'special');
+  if(type==='special')return original;
+  const clean=original.replace(/^(?:HA:\s*|Frei:\s*|LK\s+(?:Deutsch|Englisch|Mathe|Musik|NMG|Sport|Fach)\s*:\s*)/i,'').trim();
+  if(type==='ha')return 'HA: '+clean;
+  if(type==='lk')return 'LK '+String(e.subject||'Fach')+': '+clean;
+  if(type==='free')return 'Frei: '+clean;
+  return original;
+ };
  let cloudAgendaWeekOffset=0;
  let cloudAgendaRequestNumber=0;
  const agendaWeekStart=offset=>{
@@ -337,8 +347,8 @@
        '<article class="cloud-day '+(date===todayInZurich?'is-today':'')+'"><h4>'+names[i]+' · '+html(dateFormat(date))+
        (date===todayInZurich?' <span class="cloud-day-today">Heute</span>':'')+'</h4>'+
        events.filter(e=>e.day_date===date).map(e=>'<div class="cloud-event cloud-event-'+(e.type==='ha'?'ha':e.type==='lk'?'lk':e.type==='free'?'free':'special')+'"><strong>'+
-          html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')+
-          '</strong><p>'+html(e.text||'')+'</p></div>').join('')+
+          html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Besonderer Termin')+
+          '</strong><p>'+html(agendaDisplayText(e))+'</p></div>').join('')+
        (events.some(e=>e.day_date===date)?'':'<p class="cloud-agenda-no-events">Keine Einträge</p>')+'</article>').join('')+'</div>'+
        (loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: Verwaltung → Agenda</p>':'');
    }catch(e){

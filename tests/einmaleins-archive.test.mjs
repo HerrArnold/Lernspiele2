@@ -55,6 +55,35 @@ test('7er and 8er show accurate alternative 5er/10er strategies',()=>{
    assert.match(get('tip-content').innerHTML,/10 ×/);
  }
 });
+test('8er-Reihe provides third route: doubling 4er-Reihe in introduction and hints',()=>{
+ const {get,listeners}=launch('eight');
+ assert.match(get('intro').innerHTML,/4er-Reihe verdoppeln/);
+ listeners.click({target:{closest(){return {dataset:{bridge:'2'}}}}});
+ assert.match(get('intro').innerHTML,/4 × 4 = 16/);
+ assert.match(get('intro').innerHTML,/4 × 4 = 16/);
+ assert.match(get('intro').innerHTML,/8 × 4 = 32/);
+ assert.match(get('intro').innerHTML,/Doppelte der 4er-Reihe/);
+ get('start').on_click();
+ get('tip-toggle').onclick();
+ assert.match(get('tip-content').innerHTML,/Doppelte der 4er-Reihe/);
+ listeners.click({target:{closest(){return {dataset:{bridge:'1'}}}}});
+ assert.match(get('tip-content').innerHTML,/10 ×/);
+});
+test('archived 2er, 5er, 10er and mix are available in Mathematics archive, not current Einmaleins section',()=>{
+ assert.match(nav,/name:'Einmaleins – 2er, 5er und 10er',icon:'📚',archived:true/);
+ for(const [label,name,mode] of [['2er Reihe','zweier','two'],['5er Reihe','fuenfer','five'],['10er Reihe','zehner','ten']]){
+   assert.ok(nav.includes("['"+label+"','einmaleins-"+name+".html']"));
+   const html=read('original/spiele/einmaleins-'+name+'.html');
+   assert.match(html,new RegExp('data-mode="'+mode+'"'));
+   const {get}=launch(mode);get('start').on_click();
+   assert.match(get('question-count').textContent,/von 10/);
+ }
+ const catalogStart=nav.indexOf("{name:'Einmaleins',");
+ const archiveStart=nav.indexOf("{name:'Einmaleins – 2er, 5er und 10er'");
+ assert.ok(catalogStart>=0 && archiveStart>catalogStart);
+ assert.doesNotMatch(nav.slice(catalogStart,archiveStart),/einmaleins-mix\.html/);
+ assert.match(nav.slice(archiveStart),/einmaleins-mix\.html/);
+});
 test('27-question overall test contains exactly 3 questions from every 2–10 row and never stops after mistakes',()=>{
  const {get}=launch('testall');get('start').on_click();
  const rows={};let count=0;

@@ -5,16 +5,21 @@
   const topicData={
     Mathe:[
       {name:'Einmaleins',icon:'✖️',games:[
-        ['Mix (2er, 5er, 10er)','einmaleins-mix.html'],
         ['3er Reihe','einmaleins-dreier.html'],
         ['4er Reihe','einmaleins-vierer.html'],
         ['6er Reihe','einmaleins-sechser.html'],
         ['7er Reihe – zwei Rechenwege','einmaleins-siebener.html'],
-        ['8er Reihe – zwei Rechenwege','einmaleins-achter.html'],
+        ['8er Reihe – drei Rechenwege','einmaleins-achter.html'],
         ['Mix (7er und 8er)','einmaleins-mix-sieben-acht.html'],
         ['9er Reihe','einmaleins-neuner.html'],
         ['Mix (3er, 4er, 6er, 9er)','einmaleins-mix-neue-reihen.html'],
         ['Teste dein Wissen (2er bis 10er)','einmaleins-test-alle.html']
+      ]},
+      {name:'Einmaleins – 2er, 5er und 10er',icon:'📚',archived:true,games:[
+        ['2er Reihe','einmaleins-zweier.html'],
+        ['5er Reihe','einmaleins-fuenfer.html'],
+        ['10er Reihe','einmaleins-zehner.html'],
+        ['Mix (2er, 5er, 10er)','einmaleins-mix.html']
       ]},
       {name:'Tausenderraum',icon:'🔢',games:[
         ['Im Tausenderbuch finden','finde-die-zahl.html'],

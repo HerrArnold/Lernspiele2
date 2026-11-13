@@ -4,10 +4,13 @@ const $=id=>document.getElementById(id);
 const mode=document.body.dataset.mode;
 const config={
  mix:{title:'Einmaleins-Mix',sub:'2er-, 5er- und 10er-Reihe',total:20,kind:'mix',rows:[2,5,10],introLead:'Hier übst du die 2er-, 5er- und 10er-Reihe. Die Rechnungen sind gut gemischt. Schau genau hin und rechne in deinem Tempo.',detail:'2er-, 5er- und 10er-Reihe',mixExamples:['2 × 6 = 12','5 × 4 = 20','10 × 3 = 30']},
+ two:{title:'Die 2er-Reihe',sub:'Die 2er-Reihe üben',total:10,kind:'mix',rows:[2],introLead:'Übe alle zehn Rechnungen aus der 2er-Reihe. Du kannst in Zweierschritten zählen.',detail:'2er-Reihe',mixExamples:['2 × 3 = 6','2 × 7 = 14','2 × 10 = 20']},
+ five:{title:'Die 5er-Reihe',sub:'Die 5er-Reihe üben',total:10,kind:'mix',rows:[5],introLead:'Übe alle zehn Rechnungen aus der 5er-Reihe. Denke an die Fünferschritte.',detail:'5er-Reihe',mixExamples:['5 × 2 = 10','5 × 7 = 35','5 × 10 = 50']},
+ ten:{title:'Die 10er-Reihe',sub:'Die 10er-Reihe üben',total:10,kind:'mix',rows:[10],introLead:'Übe alle zehn Rechnungen aus der 10er-Reihe. Denke an die Zehnerschritte.',detail:'10er-Reihe',mixExamples:['10 × 2 = 20','10 × 7 = 70','10 × 10 = 100']},
  mix78:{title:'Einmaleins-Mix',sub:'7er- und 8er-Reihe',total:20,kind:'mix',rows:[7,8],introLead:'Hier übst du die 7er- und 8er-Reihe durcheinander. Denke an die 5er- oder 10er-Reihe, wenn du Hilfe brauchst.',detail:'7er- und 8er-Reihe',mixExamples:['7 × 6 = 42','8 × 4 = 32','7 × 9 = 63']},
  testall:{title:'Teste dein Wissen – alle Reihen',sub:'2er- bis 10er-Reihe',total:27,kind:'test',rows:[2,3,4,5,6,7,8,9,10],introLead:'27 Aufgaben: Jede Reihe von 2 bis 10 kommt genau dreimal vor. Du löst alle Aufgaben bis zum Schluss. Am Ende siehst du deine Punkte und die Prozentzahl.',detail:'Einmaleins-Gesamttest 2 bis 10',mixExamples:['2 × 7 = 14','7 × 8 = 56','9 × 6 = 54']},
  seven:{title:'Die 7er-Reihe',sub:'Von der 5er- oder 10er-Reihe zur 7er-Reihe',total:12,kind:'bridge',row:7,exampleN:6,detail:'7er-Reihe',introHeading:'Entdecke zwei Wege zur 7er-Reihe!',introLead:'Du kannst bei der 5er-Reihe starten und 2 Gruppen dazugeben. Oder du startest bei der 10er-Reihe und nimmst 3 Gruppen weg.',bridges:[{label:'Von der 5er-Reihe: +2',knownRow:5,delta:2},{label:'Von der 10er-Reihe: −3',knownRow:10,delta:-3}]},
- eight:{title:'Die 8er-Reihe',sub:'Von der 5er- oder 10er-Reihe zur 8er-Reihe',total:12,kind:'bridge',row:8,exampleN:4,detail:'8er-Reihe',introHeading:'Entdecke zwei Wege zur 8er-Reihe!',introLead:'Du kannst bei der 5er-Reihe starten und 3 Gruppen dazugeben. Oder du startest bei der 10er-Reihe und nimmst 2 Gruppen weg.',bridges:[{label:'Von der 5er-Reihe: +3',knownRow:5,delta:3},{label:'Von der 10er-Reihe: −2',knownRow:10,delta:-2}]},
+ eight:{title:'Die 8er-Reihe',sub:'Von der 5er-, 10er- oder 4er-Reihe zur 8er-Reihe',total:12,kind:'bridge',row:8,exampleN:4,detail:'8er-Reihe',introHeading:'Entdecke drei Wege zur 8er-Reihe!',introLead:'Drei schlaue Wege: Zur 5er-Reihe kommen 3 Gruppen dazu. Von der 10er-Reihe nimmst du 2 Gruppen weg. Oder du verdoppelst einfach die 4er-Reihe!',bridges:[{label:'Von der 5er-Reihe: +3',knownRow:5,delta:3},{label:'Von der 10er-Reihe: −2',knownRow:10,delta:-2},{label:'4er-Reihe verdoppeln',knownRow:4,delta:4,double:true}]},
  mix3469:{title:'Einmaleins-Mix',sub:'3er-, 4er-, 6er- und 9er-Reihe',total:20,kind:'mix',rows:[3,4,6,9],introLead:'Hier übst du die 3er-, 4er-, 6er- und 9er-Reihe. Nutze deine Tricks aus den Lernspielen und rechne in deinem Tempo.',detail:'3er-, 4er-, 6er- und 9er-Reihe',mixExamples:['3 × 4 = 12','4 × 6 = 24','9 × 3 = 27']},
  three:{title:'Die 3er-Reihe',sub:'Von der 2er-Reihe zur 3er-Reihe',total:12,kind:'plus-one',row:3,knownRow:2,knownLabel:'2er-Reihe',exampleN:9,detail:'3er-Reihe',introHeading:'So einfach geht die 3er-Reihe!',introLead:'Du kennst schon die 2er-Reihe. Für die 3er-Reihe nimmst du eine gleiche Gruppe mehr.',note:'Merke: Zu 2 Gruppen mit je {n} kommt noch 1 Gruppe mit {n} dazu.'},
  four:{title:'Die 4er-Reihe',sub:'Von der 2er-Reihe zur 4er-Reihe',total:12,kind:'double-known',row:4,knownRow:2,knownLabel:'2er-Reihe',exampleN:4,detail:'4er-Reihe',introHeading:'So einfach geht die 4er-Reihe!',introLead:'Du kennst schon die 2er-Reihe. Für die 4er-Reihe nimmst du die 2er-Reihe einfach zweimal.',note:'Merke: 4 mal {n} ist gleich 2 mal {n} plus noch einmal 2 mal {n}.'},
@@ -31,7 +34,7 @@ function bridgeMarkup(cfg,n,includeHeading=false){
  '<div class="bridge-choices" role="group" aria-label="Rechenweg wählen">'+cfg.bridges.map((v,i)=>'<button type="button" data-bridge="'+i+'" class="btn alt bridge-choice '+(activeBridge===i?'active':'')+'" aria-pressed="'+(activeBridge===i)+'">'+v.label+'</button>').join('')+'</div>'+
  '<div class="big-formula"><span class="math-chip">'+b.knownRow+' × '+n+' = '+known+'</span><span class="math-sign">'+sign+'</span><span class="math-chip new">'+diff+' × '+n+' = '+step+'</span><span class="math-sign">=</span><span class="math-chip new">'+cfg.row+' × '+n+' = '+cfg.row*n+'</span></div>'+
  rowsVisual(b.delta>0?b.knownRow:cfg.row,n,b.delta>0?{extraRows:diff}:{removedRows:diff})+
- '<p class="explain-note">Merke: '+b.knownRow+' × '+n+' '+sign+' '+diff+' × '+n+' = '+cfg.row+' × '+n+'.</p>';
+ '<p class="explain-note">'+(b.double?'Merke: Die 8er-Reihe ist das Doppelte der 4er-Reihe. '+b.knownRow+' × '+n+' + '+b.knownRow+' × '+n+' = '+cfg.row+' × '+n+'.':'Merke: '+b.knownRow+' × '+n+' '+sign+' '+diff+' × '+n+' = '+cfg.row+' × '+n+'.')+'</p>';
 }
 function introBlock(cfg,n){
  if(cfg.kind==='test')return '<p class="eyebrow">Einmaleins-Gesamttest</p><h2>Teste dein Wissen!</h2><p class="intro-lead">'+cfg.introLead+'</p><div class="big-formula">'+cfg.mixExamples.map(x=>'<span class="math-chip">'+x+'</span>').join('')+'</div><p class="explain-note">Alle 27 Aufgaben werden gezählt. Du hast so viele Versuche wie Aufgaben und keine Herzenbegrenzung. Es gibt im Test keine Tipps.</p><div class="buttons"><button class="btn" id="start">Test starten</button></div>';
@@ -76,7 +79,7 @@ $('check').onclick=check;$('next').onclick=next;$('tip-toggle').onclick=toggleTi
 document.addEventListener('click',event=>{
  const control=event.target.closest('[data-bridge]');
  if(!control||config.kind!=='bridge')return;
- const next=Number(control.dataset.bridge);if(next<0||next>1)return;
+ const next=Number(control.dataset.bridge);if(!Number.isInteger(next)||next<0||next>=config.bridges.length)return;
  activeBridge=next;
  if(!intro.classList.contains('hidden'))renderIntro();
  else if(hintOpen){$('tip-content').innerHTML=hint(questions[index].n)}

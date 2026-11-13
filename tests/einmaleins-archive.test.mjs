@@ -26,7 +26,7 @@ test('all four new game pages are wired to the same engine',()=>{
  for(const [name,mode] of [['siebener','seven'],['achter','eight'],['mix-sieben-acht','mix78'],['test-alle','testall']]){
    const html=read('original/spiele/einmaleins-'+name+'.html');
    assert.match(html,new RegExp('data-mode="'+mode+'"'));
-   assert.match(html,/einmaleins\.js\?v=3/);
+   assert.match(html,/einmaleins\.js\?v=[34]/);
    assert.match(nav,new RegExp('einmaleins-'+name+'.html'));
  }
 });

@@ -30,6 +30,8 @@ jobs:
             ['/admin-projects','Geschützte Fotoverwaltung',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
             ['/admin-classroom-mode','Unterrichtsmodus',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
             ['/admin-messages','Nachrichten',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
+            ['/messages','Kinderbriefkasten (ohne Login)',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
+            ['/messages/read','Gelesen-Markierungen (Methode)',x=>x.status===405],
             ['/admin-live-activity','Live-Aktivität',x=>(x.status===401||x.status===403)&&typeof x.body.error==='string'],
             ['/classroom-access?game=einmaleins-dreier','Spiel-Zugang',x=>x.status===200&&x.body.allowed===false]
           ];

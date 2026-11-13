@@ -1,0 +1,23 @@
+name: Verify archived topics and 7er/8er Einmaleins
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'topic-navigation.js'
+      - 'archiv-themen.css'
+      - 'original/assets/einmaleins.js'
+      - 'original/assets/einmaleins.css'
+      - 'original/spiele/einmaleins-*'
+      - 'tests/einmaleins-archive.test.mjs'
+      - '.github/workflows/verify-einmaleins-archive.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check syntax and run game tests
+        run: |
+          node --check topic-navigation.js
+          node --check original/assets/einmaleins.js
+          node --test tests/einmaleins-archive.test.mjs

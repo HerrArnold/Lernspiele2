@@ -7,15 +7,17 @@
  const endpoint=()=>String(root.LERNSAFARI_BACKEND_URL||'https://lernsafari-api.ergohd02.workers.dev').replace(/\/+$/,'');
  const photoSafe=s=>typeof s==='string'&&s.length<220001&&/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(s);
  function polaroids(rows){
-  return '<div class="baobab-polaroids">'+rows.filter(p=>photoSafe(p.image)).map((p,i)=>
-   '<figure class="baobab-polaroid" style="--polaroid-tilt:'+((i%5)-2)*1.5+'deg">'+
-   '<img src="'+esc(p.image)+'" alt="'+esc(p.title)+'" loading="lazy">'+
-   '<figcaption><time>'+esc(date(p.date))+'</time><strong>'+esc(p.title)+'</strong>'+
-   (p.caption?'<span>'+esc(p.caption)+'</span>':'')+'</figcaption></figure>').join('')+'</div>';
+  const items=rows.filter(p=>photoSafe(p.image)).slice().sort((x,y)=>
+    String(x.event_date||x.date||'').localeCompare(String(y.event_date||y.date||''))||Number(x.id)-Number(y.id));
+  return '<div class="baobab-timeline-head"><span>Früher</span><div class="baobab-timeline-controls"><button type="button" data-project-scroll="-1" aria-label="Ältere Projekte">‹</button><button type="button" data-project-scroll="1" aria-label="Neuere Projekte">›</button></div><span>Heute</span></div>'+
+   '<div class="baobab-timeline" role="region" aria-label="Unsere Lieblingsprojekte, zeitlich von alt nach neu" tabindex="0">'+
+   items.map((p,i)=>'<article class="baobab-timeline-item"><time datetime="'+esc(p.date||p.event_date)+'">'+esc(date(p.date||p.event_date))+'</time>'+
+    '<figure class="baobab-polaroid" style="--polaroid-tilt:'+((i%5)-2)*.8+'deg"><img src="'+esc(p.image)+'" alt="'+esc(p.title)+'" loading="lazy"><figcaption><strong>'+esc(p.title)+'</strong>'+(p.caption?'<span>'+esc(p.caption)+'</span>':'')+'</figcaption></figure></article>').join('')+'</div>'+
+   '<p class="baobab-scroll-hint">← Scrolle von links nach rechts durch unsere gemeinsamen Erlebnisse →</p>';
  }
  async function render(host){
   if(!host)return;
-  host.innerHTML='<div class="baobab-projects-intro"><h2>📸 Projekte und Erlebnisse</h2><p>Unsere gemeinsamen Entdeckungen – wie Polaroids in einem Reisealbum.</p></div>'+
+  host.innerHTML='<div class="baobab-projects-intro"><h2>📸 Unsere Lieblingsprojekte</h2><p>Unsere schönsten Erlebnisse auf einem Zeitstrahl – von früher bis heute.</p></div>'+
     '<div id="baobabProjectGallery" class="baobab-projects-loading" role="status">Unser Fotoalbum wird geöffnet …</div>';
   const gallery=host.querySelector('#baobabProjectGallery');
   try{
@@ -25,6 +27,10 @@
    if(!gallery.isConnected)return;
    gallery.innerHTML=json.projects.length?polaroids(json.projects):
     '<div class="baobab-projects-empty">🖼️ Unser Album wartet auf das erste Projekt oder Erlebnis.</div>';
+   gallery.querySelectorAll('[data-project-scroll]').forEach(btn=>btn.addEventListener('click',()=>{
+     const timeline=gallery.querySelector('.baobab-timeline');
+     timeline?.scrollBy({left:Number(btn.dataset.projectScroll)*Math.max(240,timeline.clientWidth*.8),behavior:'smooth'});
+   }));
   }catch(_){
    if(gallery.isConnected)gallery.innerHTML='<div class="baobab-projects-empty">🖼️ Hier erscheinen bald unsere Polaroid-Rückblicke. Noch keine veröffentlichten Einträge verfügbar.</div>';
   }

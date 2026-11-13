@@ -16,6 +16,14 @@
  const notify=(msg)=>{toast(msg);const status=document.querySelector('#cloudStatus');if(status)status.textContent=msg};
  const loggedChild=()=>state.role==='cloudflare-child'&&!!childToken;
  const loggedTeacher=()=>state.role==='cloudflare-admin'&&!!adminToken;
+ async function refreshUnreadBadge(){
+   if(!loggedChild()||!window.LernSafariExtras?.setIndicator)return;
+   try{
+     const data=await call('/messages');
+     if(loggedChild()&&data.available===true)window.LernSafariExtras.setIndicator(data.messages||[]);
+   }catch(_){const badge=document.getElementById('mailIndicator');if(badge)badge.hidden=true}
+ }
+
 
  async function call(path,{method='GET',body,admin=false,token}={}){
   if(!API()||!/^https:\/\//.test(API()))throw Error('Cloudflare-Adresse fehlt oder ist nicht HTTPS.');
@@ -43,7 +51,7 @@
    try{localStorage.setItem(CHILD_KEY,childToken)}catch(_){/* browser storage unavailable */}
    document.querySelector('#password').value='';
    enter('cloudflare-child',String(identity.username||response.username||username));
-   refreshClassFocus();
+   refreshClassFocus();setTimeout(refreshUnreadBadge,950);
   }catch(e){notify('Anmeldung fehlgeschlagen: '+errorText(e));}
   finally{pending=false}
  }
@@ -74,7 +82,7 @@
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){
-   try{const identity=await call('/me');if(!['child','class'].includes(identity.role))throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();return}
+   try{const identity=await call('/me');if(!['child','class'].includes(identity.role))throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();setTimeout(refreshUnreadBadge,950);return}
    catch(_){childToken='';try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY)}catch(_){}}
   }
  }
@@ -90,20 +98,10 @@
 
  // The mailbox is enabled only after the existing Cloudflare Worker confirms
  // an authenticated, child-filtered GET /messages endpoint.
- async function renderCloudMail(fallback){
+ async function renderCloudMail(){
    const host=DOM.modalBody;
-   host.innerHTML='<div class="pd-panel"><h3>✉️ Mein Briefkasten</h3><p>Nachrichten werden geladen …</p></div>';
-   try{
-     const response=await call('/messages');
-     if(state.modal!=='mail'||!loggedChild())return;
-     if(response.available!==true||!Array.isArray(response.messages))throw Error('Nachrichten noch nicht eingerichtet');
-     const rows=response.messages;
-     host.innerHTML='<div class="pd-shell cloud-shell"><div class="pd-banner"><div><span class="pd-eyebrow">✉️ Persönlicher Briefkasten</span><h3>Meine Post</h3><p>Nachrichten der Lehrperson</p></div><div class="pd-total"><strong>'+rows.length+'</strong><span>Nachrichten</span></div></div>'+
-       '<div class="pd-items">'+(rows.length?rows.map(row=>'<article class="pd-panel cloud-mail-message"><strong>'+html(row.subject||'Nachricht')+'</strong><small>'+html(row.created_at||'')+'</small><p>'+html(row.body||'').replace(/\n/g,'<br>')+'</p></article>').join(''):
-       '<div class="pd-panel"><p>Du hast noch keine Nachrichten erhalten.</p></div>')+'</div></div>';
-   }catch(_){
-     if(state.modal==='mail'&&loggedChild())fallback();
-   }
+   if(!window.LernSafariExtras){host.innerHTML='<div class="pd-panel">Nachrichtenansicht konnte nicht geladen werden.</div>';return}
+   await window.LernSafariExtras.mailbox({host,call});
  }
  // Cloudflare contains authentic results; an attempt/highscore is not proof of a finished assignment.
  const scoreIndex=rows=>{const scores=new Map();for(const row of Array.isArray(rows)?rows:[]){if(!row||typeof row.game!=='string'||!row.game)continue;const value=Number(row.score);if(!Number.isFinite(value)||value<0)continue;scores.set(row.game,Math.max(scores.get(row.game)??0,value));}return scores;};
@@ -161,23 +159,28 @@
   notify('Für diesen Auftrag bitte die entsprechende Seite über die Karte öffnen.');
  }
  async function renderChildLogbook(){
-  const host=DOM.modalBody;
-  host.innerHTML='<div class="pd-shell"><div class="pd-panel"><h3>📖 Mein Logbuch</h3><p>Deine Aufträge werden sicher von Cloudflare geladen …</p></div></div>';
-  try{
-   const [p,highscores]=await Promise.all([call('/learning-plan'),call('/highscores').catch(()=>({highscores:[]}))]);
-   if(!loggedChild()||state.modal!=='logbook')return;
-   plan=p;updateClassFocus(p);
-   const assignments=Array.isArray(p.assignments)?p.assignments:[];
-   const done=new Set(Array.isArray(p.done)?p.done.map(Number):[]);
-   const finished=assignments.filter(a=>done.has(Number(a.id))).length;
-   const scores=Array.isArray(highscores.highscores)?highscores.highscores:[];
-   const scoresByGame=scoreIndex(scores);
-   const practiced=assignments.filter(a=>a.target?.startsWith('game:')&&scoresByGame.has(a.target.slice(5))).length;
-   host.innerHTML=`<div class="pd-shell cloud-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🔐 Geschütztes Tierkonto</span><h3>Mein Logbuch 📖</h3><p>Willkommen, ${html(state.username)}! Das sind deine Aufträge aus Cloudflare.</p></div><div class="pd-total"><strong>${finished} / ${assignments.length}</strong><span>erledigt</span></div></div><div class="pd-progress"><span style="width:${assignments.length?finished/assignments.length*100:0}%"></span></div>${p.blocks?.length?`<div class="pd-warning">🧭 Fokus-Modus: ${p.blocks.map(html).join(', ')}</div>`:''}<div class="pd-items">${assignments.length?assignments.map(a=>`<article class="pd-task ${done.has(Number(a.id))?'is-done':''}"><div class="pd-task-head"><span>📌</span><div><strong>${html(a.title)}</strong><small>${a.kind==='zusatz'?'Zusatzaufgabe':'Pflichtaufgabe'} · ${html(targetName(String(a.target||'')))}${a.end_at?' · bis '+html(dateFormat(a.end_at)):''}</small>${String(a.target||'').startsWith('game:')?`<small class="cloud-task-score">${html(scoreText(taskScore(String(a.target),scoresByGame)))}</small>`:''}</div><span class="pd-task-status">${done.has(Number(a.id))?'✓ Erledigt':'Offen'}</span></div><div class="pd-task-actions"><button class="pd-action" data-cloud-open="${html(a.id)}">Aufgabe öffnen</button><label class="pd-inline-check"><input type="checkbox" data-cloud-done="${html(a.id)}" ${done.has(Number(a.id))?'checked':''}> Erledigt</label></div></article>`).join(''):'<div class="pd-panel">Für dich sind momentan keine Aufgaben freigeschaltet.</div>'}</div><div class="pd-panel"><div class="cloud-panel-head"><h4>⭐ Meine Spiel-Erfolge</h4><button type="button" class="pd-secondary" id="cloudRefreshScores">Aktualisieren</button></div><p>${scores.length} Spiele mit gespeichertem Highscore · ${practiced} von ${assignments.filter(a=>a.target?.startsWith('game:')).length} zugewiesenen Spielen mit einem Bestwert. Das bedeutet nicht automatisch «Aufgabe erledigt».</p><div class="pd-score-list">${scores.slice(0,12).map(x=>`<span>${html(safeGame(String(x.game))?.title||x.game)}: <strong>${html(x.score)}</strong></span>`).join('')}</div></div><p class="pd-warning">Deine Aufträge und Häkchen werden über Cloudflare gespeichert. Das Ankreuzen bedeutet «Ich bin fertig» – nicht automatisch «Alles richtig».</p></div>`;
-   host.querySelector('#cloudRefreshScores')?.addEventListener('click',renderChildLogbook);
-   host.querySelectorAll('[data-cloud-open]').forEach(b=>b.onclick=()=>{const a=assignments.find(x=>Number(x.id)===Number(b.dataset.cloudOpen));if(a)openTarget(String(a.target||''))});
-   host.querySelectorAll('[data-cloud-done]').forEach(b=>b.onchange=async()=>{const id=Number(b.dataset.cloudDone),checked=b.checked;b.disabled=true;try{await call('/assignment-done',{method:'POST',body:{id,completed:checked}});if(state.modal==='logbook')renderChildLogbook();}catch(e){b.checked=!checked;b.disabled=false;notify(errorText(e))}});
-  }catch(e){if(state.modal==='logbook')host.innerHTML=`<div class="pd-panel"><h3>Logbuch konnte nicht geladen werden</h3><p>${html(errorText(e))}</p><button type="button" class="pd-action" id="retryCloudLogbook">Nochmals versuchen</button></div>`;document.querySelector('#retryCloudLogbook')?.addEventListener('click',renderChildLogbook)}
+   const host=DOM.modalBody;
+   host.innerHTML='<div class="pd-panel">📖 Dein Logbuch wird aus Cloudflare geladen …</div>';
+   try{
+     const [p,highscores,post]=await Promise.all([
+       call('/learning-plan'),
+       call('/highscores').catch(()=>({highscores:[]})),
+       call('/messages').catch(()=>({available:false,messages:[]}))
+     ]);
+     if(!loggedChild()||state.modal!=='logbook')return;
+     plan=p;updateClassFocus(p);
+     if(!window.LernSafariExtras)throw Error('Logbuchansicht nicht geladen');
+     window.LernSafariExtras.logbook({
+       host,plan:p,highscores,messages:post.available===true?post.messages:[],
+       onOpen:target=>openTarget(String(target||'')),
+       onDone:(id,completed)=>call('/assignment-done',{method:'POST',body:{id,completed}}),
+       onRefresh:renderChildLogbook
+     });
+   }catch(e){
+     if(state.modal!=='logbook')return;
+     host.innerHTML='<div class="pd-panel"><h3>Logbuch konnte nicht geladen werden</h3><p>'+html(errorText(e))+'</p><button type="button" class="pd-action" id="retryCloudLogbook">Nochmals versuchen</button></div>';
+     host.querySelector('#retryCloudLogbook')?.addEventListener('click',renderChildLogbook);
+   }
  }
  const BASIC_TARGETS=[...Array.from({length:4},(_,i)=>({v:'daily:'+i,label:`Heute · Tagesaufgabe ${i+1}`})),...Object.entries(STEP_LABELS).map(([id,label])=>({v:'number:'+id,label:'Zahl des Tages · '+label})),{v:'page:tiere',label:'Tierwelt'},{v:'page:aufgaben',label:'Aufgaben des Tages'},{v:'page:agenda',label:'Agenda'},{v:'page:advent',label:'Adventskalender'}];
  function targets(){return [...BASIC_TARGETS,...Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({v:'game:'+g.file.replace(/\.html$/,''),label:subject+' · '+g.title})))].sort((a,b)=>a.label.localeCompare(b.label,'de-CH'))}
@@ -206,6 +209,23 @@
      saveMode:body=>call('/admin-classroom-mode',{admin:true,method:'POST',body}),
      refreshAssignments:async()=>{const data=await call('/admin-learning',{admin:true});return data.assignments||[]}
     });
+   }
+   // Teacher-only features use the existing authenticated admin session.
+   if(window.LernSafariExtras){
+     const messageMount=document.createElement('div');
+     messageMount.id='cloudTeacherPostMount';
+     const progress=host.querySelector('#cloudProgressPanel');
+     if(progress)progress.insertAdjacentElement('beforebegin',messageMount);
+     else host.appendChild(messageMount);
+     window.LernSafariExtras.adminPanel({host:messageMount,call,kids});
+   }
+   if(window.LernSafariProjects){
+     const projectMount=document.createElement('div');
+     projectMount.id='cloudTeacherProjectsMount';
+     const before=host.querySelector('#cloudProgressPanel');
+     if(before)before.insertAdjacentElement('beforebegin',projectMount);
+     else host.appendChild(projectMount);
+     window.LernSafariProjects.adminMount({mount:projectMount,call});
    }
    // Explicit teacher verification is available only when the upgraded Worker
    // includes a server-confirmed verified list. Legacy Worker: never fake approval.

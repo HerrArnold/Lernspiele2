@@ -1,0 +1,30 @@
+name: Verify Hörverständnis reading mode in browser
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'original/assets/hoerverstehen-kurz.js'
+      - 'original/assets/hoerverstehen-kurz.css'
+      - 'original/hoerverstehen-data/kurz-*.json'
+      - 'original/spiele/hoerverstehen-kurz-*.html'
+      - 'tests/hoerverstehen-lesemodus-browser.mjs'
+      - '.github/workflows/verify-hoerverstehen-lesemodus.yml'
+  workflow_dispatch:
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Start local website
+        run: |
+          nohup python3 -m http.server 8765 --directory . >/tmp/hearing-browser-server.log 2>&1 &
+          sleep 2
+      - name: Test all five hearing stories
+        run: |
+          node --check original/assets/hoerverstehen-kurz.js
+          node tests/hoerverstehen-lesemodus-browser.mjs

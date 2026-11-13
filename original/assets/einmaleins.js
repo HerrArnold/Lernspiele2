@@ -62,7 +62,12 @@ function makeQuestions(){
 function updateStats(){if(!stats)return;$('progress').textContent=`Richtig: ${correct}`;if(config.kind==='test'){$('hearts').textContent='27 Aufgaben';$('hearts').setAttribute('aria-label','Gesamttest mit 27 Aufgaben');}else{$('hearts').textContent='♥'.repeat(hearts)+'♡'.repeat(3-hearts);$('hearts').setAttribute('aria-label',hearts+' Herzen');}}
 function renderIntro(){intro.classList.remove('hidden');play.classList.add('hidden');finish.classList.add('hidden');intro.innerHTML=introBlock(config,config.exampleN||6);$('start').addEventListener('click',start);}
 function start(){questions=makeQuestions();index=0;correct=0;hearts=3;seen=[];intro.classList.add('hidden');finish.classList.add('hidden');play.classList.remove('hidden');updateStats();renderQuestion();}
-function renderQuestion(){answered=false;hintOpen=false;const q=questions[index];$('question-count').textContent=`Aufgabe ${index+1} von ${questions.length}`;$('bar').style.width=`${index/questions.length*100}%`; $('question').innerHTML=`<div class="calc-line"><span>${q.row}</span><span>×</span><span>${q.n}</span><span>=</span><input id="answer" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="?" aria-label="Ergebnis eingeben"></div>`;
+function tauschHinweis(q){
+ const merkReihen=[2,5,10];
+ if(merkReihen.includes(q.row)||!merkReihen.includes(q.n))return '';
+ return '<div class="tausch-hinweis" role="note"><span aria-hidden="true">💡</span><span><strong>Tauschaufgabe:</strong> '+q.row+' × '+q.n+' = '+q.n+' × '+q.row+'. Die <strong>'+q.n+'er-Reihe</strong> ist eine Merkaufgabe. So geht es oft leichter!</span></div>';
+}
+function renderQuestion(){answered=false;hintOpen=false;const q=questions[index];$('question-count').textContent=`Aufgabe ${index+1} von ${questions.length}`;$('bar').style.width=`${index/questions.length*100}%`; $('question').innerHTML=`<div class="calc-line"><span>${q.row}</span><span>×</span><span>${q.n}</span><span>=</span><input id="answer" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="?" aria-label="Ergebnis eingeben"></div>`+tauschHinweis(q);
  $('feedback').textContent='';$('feedback').className='answer-feedback';$('next').classList.add('hidden');$('check').classList.remove('hidden');$('check').disabled=false;
  const tip=$('tip-toggle'),holder=$('tip-content');holder.innerHTML='';holder.classList.add('hidden');tip.textContent='💡 Tipp zeigen';tip.classList.toggle('hidden',config.kind==='mix'||config.kind==='test');tip.disabled=false;
  $('answer').addEventListener('keydown',ev=>{if(ev.key==='Enter'&&!answered){ev.preventDefault();check();}else if(ev.key==='Enter'&&answered){ev.preventDefault();next();}});$('answer').focus({preventScroll:true});}

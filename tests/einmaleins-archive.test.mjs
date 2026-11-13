@@ -26,7 +26,7 @@ test('all four new game pages are wired to the same engine',()=>{
  for(const [name,mode] of [['siebener','seven'],['achter','eight'],['mix-sieben-acht','mix78'],['test-alle','testall']]){
    const html=read('original/spiele/einmaleins-'+name+'.html');
    assert.match(html,new RegExp('data-mode="'+mode+'"'));
-   assert.match(html,/einmaleins\.js\?v=[34]/);
+   assert.match(html,/einmaleins\.js\?v=[345]/);
    assert.match(nav,new RegExp('einmaleins-'+name+'.html'));
  }
 });
@@ -83,6 +83,23 @@ test('archived 2er, 5er, 10er and mix are available in Mathematics archive, not 
  assert.ok(catalogStart>=0 && archiveStart>catalogStart);
  assert.doesNotMatch(nav.slice(catalogStart,archiveStart),/einmaleins-mix\.html/);
  assert.match(nav.slice(archiveStart),/einmaleins-mix\.html/);
+});
+test('Tauschaufgaben show a memory-row shortcut for every applicable learning row',()=>{
+ for(const mode of ['three','four','six','seven','eight','nine']){
+   const {get}=launch(mode);
+   get('start').on_click();
+   const text=get('question').innerHTML;
+   const match=text.match(/<span>(\d+)<\/span><span>×<\/span><span>(\d+)<\/span>/);
+   assert.ok(match);
+   assert.equal(Number(match[2]),2);
+   assert.match(text,/Tauschaufgabe:/);
+   assert.match(text,new RegExp(match[2]+' × '+match[1]));
+   assert.match(text,/2er-Reihe/);
+ }
+ for(const mode of ['two','five','ten']){
+   const {get}=launch(mode);get('start').on_click();
+   assert.doesNotMatch(get('question').innerHTML,/Tauschaufgabe:/);
+ }
 });
 test('27-question overall test contains exactly 3 questions from every 2–10 row and never stops after mistakes',()=>{
  const {get}=launch('testall');get('start').on_click();

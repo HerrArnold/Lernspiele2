@@ -44,7 +44,7 @@ try{
  assert.match(await page.locator('.ls-award-list').innerText(),/Besonders fleissig/);
  await page.locator('[data-achievement-tab="highscores"]').click();
  assert.match(await page.locator('.ls-score-list').innerText(),/Mathe/);
- await page.locator('.ls-score-subject').first().locator('summary').click();
+ await page.locator('.ls-score-subject > summary').first().click();
  assert.match(await page.locator('.ls-score-subject').first().innerText(),/Einmaleins/);
  await page.evaluate(()=>window.LernSafariExtras.adminPanel({host:document.querySelector('#area'),call:window.mockCall,kids:[{username:'Affe'}]}));
  await page.locator('#lsTeacherPostForm').waitFor({state:'visible'});

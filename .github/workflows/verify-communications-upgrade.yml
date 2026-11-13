@@ -9,6 +9,7 @@ on:
       - 'cloudflare-worker/communications-*'
       - 'baobab-projects.js'
       - 'tests/cloudflare-mailbox-upgrade.test.mjs'
+      - 'tests/mailbox-ui-browser.mjs'
       - '.github/workflows/verify-communications-upgrade.yml'
   workflow_dispatch:
 jobs:
@@ -24,3 +25,15 @@ jobs:
           node --check cloudflare-worker/communications-service.mjs
           node --check cloudflare-worker/communications-d1-store.mjs
           node --test tests/cloudflare-communications.test.mjs tests/cloudflare-mailbox-upgrade.test.mjs tests/cloudflare-projects.test.mjs
+
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Test mailbox, achievements and teacher forms in a real browser
+        run: node tests/mailbox-ui-browser.mjs

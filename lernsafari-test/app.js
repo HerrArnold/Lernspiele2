@@ -71,10 +71,10 @@ function travelTo(id){const place=places.find(p=>p.id===id);if(!place)return;clo
 // Fächer der Lern-Lagune. Dies sind vorerst Zugänge, keine behaupteten fertigen Lernspiele.
 const lagoonSubjects = [
   {id:'math',name:'Mathematik',icon:'🔢',heading:'Zahlen entdecken',description:'Hier kannst du die 3er- und 6er-Reihe üben und Zahlen aus Hundertern, Zehnern und Einern bauen.',ideas:['Zahl des Tages','Reihen üben','Zahlen legen']},
-  {id:'german',name:'Deutsch',icon:'📖',heading:'Mit Sprache spielen',description:'Hier kommen Übungen zu Nomen, Verben, Adjektiven, Lesen und Schreiben hin.',ideas:['Wortarten','Lesen','Rechtschreiben']},
+  {id:'german',name:'Deutsch',icon:'✏️',heading:'Mit Sprache spielen',description:'Hier kommen Übungen zu Nomen, Verben, Adjektiven, Lesen und Schreiben hin.',ideas:['Wortarten','Lesen','Rechtschreiben']},
   {id:'nmg',name:'NMG',icon:'🌿',heading:'Unsere Welt erforschen',description:'Hier finden die Kinder Spiele und Wissensaufgaben zum NMG-Unterricht.',ideas:['Rabenvögel','Vögel und Federn','Forscherfragen']},
   {id:'music',name:'Musik',icon:'🎵',heading:'Töne und Rhythmen',description:'Die bereits entwickelten Solmisations- und Rhythmusspiele sollen hier später eingebunden werden. Ihre Regeln bleiben erhalten.',ideas:['Solmisation','Rhythmussprache','Noten erkennen']},
-  {id:'english',name:'Englisch',icon:'🇬🇧',heading:'Body & Actions',description:'Übe englische Körperteile und Bewegungen ohne Schreiben.',ideas:['Wörter zuordnen','Karteikarten','Mündlich üben']}
+  {id:'english',name:'Englisch',icon:'🗣️',heading:'Body & Actions',description:'Übe englische Körperteile und Bewegungen ohne Schreiben.',ideas:['Wörter zuordnen','Karteikarten','Mündlich üben']}
 ];
 let activeLagoonSubject=null;
 let activeMusicGame=null;

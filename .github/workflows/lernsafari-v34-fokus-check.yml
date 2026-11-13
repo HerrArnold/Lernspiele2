@@ -1,0 +1,51 @@
+name: LernSafari · Unterrichtsmodus prüfen
+on:
+  push:
+    branches:
+      - lernsafari-v3-4-fokus-frontend
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Grundstruktur und 29 Spiele
+        run: node lernsafari-test/pruefen.mjs
+      - name: Fokusregeln durchtesten
+        run: node lernsafari-test/tests/unterrichtsmodus.test.cjs
+      - name: Direkte Spieladressen und Gastzugang prüfen
+        run: node lernsafari-test/tests/game-zugang.test.cjs
+      - name: Gemeinsamen Spielzugang überprüfen
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in lernsafari-test/original/spiele/*.html; do
+            grep -q 'new-safari-bridge.js' "$file" || { echo "Fehlender direkter Zugangsschutz: $file"; exit 1; }
+          done
+      - name: Unterrichtsmodi in der Lehrpersonenverwaltung prüfen
+        run: node lernsafari-test/tests/unterrichtsmodus-admin.test.cjs
+      - name: Cloudflare Unterrichtsmodus prüfen
+        run: node lernsafari-test/tests/cloudflare-classroom-service.test.mjs
+      - name: JavaScript-Syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check lernsafari-test/unterrichtsmodus.js
+          node --check lernsafari-test/unterrichtsmodus-admin.js
+          node --check lernsafari-test/cloudflare-worker/classroom-service.mjs
+          node --check lernsafari-test/cloudflare-worker/classroom-d1-store.mjs
+          node --check lernsafari-test/cloudflare-integration.js
+          node --check lernsafari-test/original/assets/lernsteuerung.js
+          node --check lernsafari-test/original/assets/game-zugang.js
+          node --check lernsafari-test/original/assets/new-safari-bridge.js
+      - name: Einbindung in neue Oberfläche
+        shell: bash
+        run: |
+          grep -q 'src="unterrichtsmodus.js"' lernsafari-test/index.html
+          grep -q 'src="unterrichtsmodus-admin.js"' lernsafari-test/index.html
+          grep -q 'LernSafariClassModeAdmin.render' lernsafari-test/cloudflare-integration.js
+          grep -q 'makeState(p,ORIGINAL_GAMES)' lernsafari-test/cloudflare-integration.js
+          grep -q 'originalFrame=function' lernsafari-test/cloudflare-integration.js

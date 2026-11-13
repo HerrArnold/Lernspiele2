@@ -8,6 +8,7 @@
  const esc=v=>escapeHtml(String(v??''));
  const html=(v)=>esc(v);
  let childToken='', adminToken='', person=null, plan=null, adminData=null, pending=false;
+ let focusGate=null, focusBusy=false;
  const safeGame=(name)=>Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({...g,subject}))).find(g=>g.file.replace(/\.html$/,'')===name);
  const dateFormat=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',day:'numeric',month:'short',year:'numeric'}).format(d):''};
  const localDateTime=d=>{const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);return p.replace(' ','T')};
@@ -42,6 +43,7 @@
    try{localStorage.setItem(CHILD_KEY,childToken)}catch(_){/* transient session only */}
    document.querySelector('#password').value='';
    enter('cloudflare-child',String(identity.username||response.username||username));
+   refreshClassFocus();
   }catch(e){notify('Anmeldung fehlgeschlagen: '+errorText(e));}
   finally{pending=false}
  }
@@ -62,7 +64,7 @@
  }
  async function signOut(){
   if(childToken){try{await call('/logout',{method:'POST',body:{}})}catch(_){/* invalidate locally anyway */}}
-  childToken='';person=null;adminToken='';plan=null;adminData=null;
+  childToken='';person=null;adminToken='';plan=null;adminData=null;focusGate=null;
   try{localStorage.removeItem(CHILD_KEY);sessionStorage.removeItem(ADMIN_KEY)}catch(_){}
  }
  async function restore(){
@@ -72,7 +74,7 @@
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){
-   try{const identity=await call('/me');if(identity.role!=='child')throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));return}
+   try{const identity=await call('/me');if(identity.role!=='child')throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();return}
    catch(_){childToken='';try{localStorage.removeItem(CHILD_KEY)}catch(_){}}
   }
  }
@@ -146,7 +148,7 @@
   try{
    const [p,highscores]=await Promise.all([call('/learning-plan'),call('/highscores').catch(()=>({highscores:[]}))]);
    if(!loggedChild()||state.modal!=='logbook')return;
-   plan=p;
+   plan=p;updateClassFocus(p);
    const assignments=Array.isArray(p.assignments)?p.assignments:[];
    const done=new Set(Array.isArray(p.done)?p.done.map(Number):[]);
    const finished=assignments.filter(a=>done.has(Number(a.id))).length;
@@ -175,6 +177,91 @@
    const done=Array.isArray(report.done)?report.done:[];
    const now=new Date(),later=new Date(now.getTime()+7*86400000);
    host.innerHTML=`<div class="pd-shell cloud-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🔐 Cloudflare · Lehrperson</span><h3>Verwaltung 🛠️</h3><p>Die Aufträge werden in deiner bestehenden Cloudflare-Verwaltung gespeichert.</p></div><div class="pd-total"><strong>${kids.length}</strong><span>Tierkonten</span></div></div><section class="pd-panel"><h4>Neuen Lernauftrag zuweisen</h4><form id="cloudAssignmentForm" class="pd-form"><label>Aufgabe oder Lernspiel<select name="target" required>${selectOptions(targets())}</select></label><label>Titel<input name="title" maxlength="110" placeholder="z. B. Die 6er-Reihe üben" required></label><div class="cloud-form-grid"><label>Art<select name="kind"><option value="pflicht">Pflichtaufgabe</option><option value="zusatz">Zusatzaufgabe</option></select></label><label>Für wen?<select name="audience"><option value="all">Ganze Klasse</option><option value="child">Ein Kind</option></select></label></div><label id="cloudChildWrap" hidden>Tierkonto<select name="username">${selectOptions(kids,'username','username')}</select></label><div class="cloud-form-grid"><label>Beginn<input type="datetime-local" name="start" value="${html(localDateTime(now))}" required></label><label>Ende<input type="datetime-local" name="end" value="${html(localDateTime(later))}" required></label></div><button type="submit" class="pd-action">Auftrag in Cloudflare speichern</button><p role="status" id="cloudAdminMessage"></p></form></section><section class="pd-panel"><div class="cloud-panel-head"><h4>Geplante Aufträge (${jobs.length})</h4><button class="pd-secondary" id="cloudRefreshAdmin">Aktualisieren</button></div><div class="pd-items">${jobs.length?jobs.map(a=>{const c=done.filter(d=>Number(d.assignment_id)===Number(a.id)).length;return `<article class="pd-task"><div class="pd-task-head"><span>📌</span><div><strong>${html(a.title)}</strong><small>${html(targetName(String(a.target||'')))} · ${a.audience==='all'?'Ganze Klasse':html(a.username)}</small><small>${html(dateFormat(a.start_at))} – ${html(dateFormat(a.end_at))} · ${c} Erledigt-Häkchen</small></div></div><div class="pd-task-actions"><button class="pd-secondary" data-cloud-edit="${html(a.id)}">Bearbeiten</button><button class="pd-secondary" data-cloud-remove="${html(a.id)}">Löschen</button></div></article>`}).join(''):'Noch keine Aufträge geplant.'}</div></section><section class="pd-panel" id="cloudProgressPanel"><h4>🎯 Lernfortschritt aus Spielen</h4><button type="button" class="pd-secondary" id="cloudLoadResults">Spielergebnisse laden</button><p>Gespeicherte Lernversuche und Highscores für jedes Tierkonto. Wird nur für angemeldete Lehrpersonen abgerufen.</p></section><section class="pd-panel"><h4>Aktivität</h4><p>${pres.length} aktive Konten gemäss Cloudflare. Hier werden bewusst keine umfangreichen individuellen Daten veröffentlicht.</p><button type="button" class="pd-secondary" id="cloudOpenLegacy">Erweiterte Cloudflare-Verwaltung öffnen</button><p class="pd-warning">Die ausführliche bisherige Verwaltung enthält Lernsteuerung, Fokus-Modus, Agenda, Klassenbericht und weitere Funktionen. Sie wird unverändert weiterverwendet.</p></section></div>`;
+   if(window.LernSafariClassModeAdmin){
+    const classroomMount=document.createElement('div');
+    classroomMount.id='cloudClassroomModeContainer';
+    const firstPanel=host.querySelector('#cloudAssignmentForm')?.closest('section');
+    if(firstPanel)firstPanel.insertAdjacentElement('afterend',classroomMount);
+    window.LernSafariClassModeAdmin.render({
+     mount:classroomMount,assignments:jobs,originalGames:ORIGINAL_GAMES,
+     fetchMode:()=>call('/admin-classroom-mode',{admin:true}),
+     saveMode:body=>call('/admin-classroom-mode',{admin:true,method:'POST',body}),
+     refreshAssignments:async()=>{const data=await call('/admin-learning',{admin:true});return data.assignments||[]}
+    });
+   }
+   // Explicit teacher verification is available only when the upgraded Worker
+   // includes a server-confirmed verified list. Legacy Worker: never fake approval.
+   if(Array.isArray(report.verified)){
+    const verified=new Set(report.verified.map(v=>String(v.username)+'|'+Number(v.assignment_id)));
+    const submitted=new Set(done.map(v=>String(v.username)+'|'+Number(v.assignment_id)));
+    const activeJobs=jobs.filter(a=>a.kind==='pflicht'&&Date.parse(a.start_at)<=Date.now()&&Date.parse(a.end_at)>Date.now());
+    const candidates=[];
+    for(const task of activeJobs){
+     for(const person of kids){
+      if(task.audience==='child'&&task.username!==person.username)continue;
+      const code=String(person.username)+'|'+Number(task.id);
+      if(submitted.has(code)||verified.has(code)){
+       candidates.push({username:person.username,task,code,isVerified:verified.has(code),isSubmitted:submitted.has(code)});
+      }
+     }
+    }
+    const verificationPanel=document.createElement('section');
+    verificationPanel.className='pd-panel';
+    verificationPanel.id='cloudTeacherVerification';
+    verificationPanel.innerHTML=`<h4>✅ Pflichtaufträge überprüfen</h4><p>«Erledigt» ist die Rückmeldung des Kindes. Erst deine Bestätigung zählt als überprüfte Erledigung für den Unterrichtsmodus.</p>
+      <div class="pd-items">${candidates.slice(0,100).map((c,i)=>`<article class="pd-task">
+        <div class="pd-task-head"><span>${c.isVerified?'✅':'📝'}</span><div>
+        <strong>${html(c.username)} · ${html(c.task.title)}</strong>
+        <small>${c.isSubmitted?'Vom Kind als erledigt markiert':'Von der Lehrperson bereits bestätigt'}</small>
+        </div><span class="pd-task-status">${c.isVerified?'Überprüft':'Zu überprüfen'}</span></div>
+        <div class="pd-task-actions"><button type="button" class="pd-secondary" data-cloud-verify="${i}" aria-label="${c.isVerified?'Bestätigung zurücknehmen':'Auftrag bestätigen'}: ${html(c.username)}">${c.isVerified?'Bestätigung zurücknehmen':'✅ Als überprüft bestätigen'}</button></div>
+        </article>`).join('')||'<p>Derzeit keine vom Kind als erledigt markierten Pflichtaufträge zur Überprüfung.</p>'}</div>
+        ${candidates.length>100?'<p>Die ersten 100 Einträge werden angezeigt. Weitere folgen in der Klassenübersicht.</p>':''}
+        <p id="cloudVerifyStatus" role="status"></p>`;
+    const progressPanel=host.querySelector('#cloudProgressPanel');
+    if(progressPanel)progressPanel.insertAdjacentElement('beforebegin',verificationPanel);
+    verificationPanel.querySelectorAll('[data-cloud-verify]').forEach(button=>button.onclick=async()=>{
+     const c=candidates[Number(button.dataset.cloudVerify)];
+     if(!c||!loggedTeacher())return;
+     const output=verificationPanel.querySelector('#cloudVerifyStatus');button.disabled=true;
+     try{
+      await call('/admin-verify-assignment',{admin:true,method:'POST',body:{username:c.username,assignment_id:Number(c.task.id),verified:!c.isVerified}});
+      output.textContent='✅ Bestätigung in Cloudflare gespeichert.';
+      await renderCloudAdmin();
+     }catch(err){output.textContent='Konnte nicht gespeichert werden: '+errorText(err);button.disabled=false;}
+    });
+   }
+
+   // Admin-only password lockout recovery: available only with upgraded Worker.
+   // The worker checks the admin session again for every reset.
+   if(Array.isArray(report.loginLocks)){
+    const entries=report.loginLocks.filter(x=>x&&Number(x.attempts)>=6&&x.lockedUntil&&Date.parse(x.lockedUntil)>Date.now());
+    const lockPanel=document.createElement('section');
+    lockPanel.className='pd-panel';
+    lockPanel.id='cloudLoginLocks';
+    lockPanel.innerHTML=`<h4>🔓 Anmeldesperren aufheben</h4>
+      <p>Nach sechs falschen Passworteingaben wird ein Tierkonto vorübergehend für 15 Minuten gesperrt. Du kannst es nach persönlicher Prüfung frühzeitig entsperren. Das Passwort bleibt gleich.</p>
+      <div class="pd-items">${entries.length?entries.map((x,i)=>`<article class="pd-task">
+        <div class="pd-task-head"><span>🔒</span><div><strong>${html(x.username)}</strong>
+        <small>${Number(x.attempts)} fehlgeschlagene Versuche · gesperrt bis ${html(new Date(x.lockedUntil).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Zurich'}))}</small></div></div>
+        <div class="pd-task-actions"><button type="button" class="pd-secondary" data-cloud-unlock="${i}">🔓 Entsperren</button></div>
+        </article>`).join(''):'<p>Aktuell ist kein Tierkonto wegen zu vieler Passwortversuche gesperrt.</p>'}</div>
+      <p id="cloudLoginUnlockStatus" role="status"></p>`;
+    const before=host.querySelector('#cloudProgressPanel');
+    if(before)before.insertAdjacentElement('beforebegin',lockPanel);
+    lockPanel.querySelectorAll('[data-cloud-unlock]').forEach(b=>b.onclick=async()=>{
+      const chosen=entries[Number(b.dataset.cloudUnlock)];
+      if(!chosen||!loggedTeacher()||!confirm('Anmeldesperre für '+chosen.username+' aufheben? Bitte vorher prüfen, ob das Kind selbst die Anmeldung versucht hat.'))return;
+      const status=lockPanel.querySelector('#cloudLoginUnlockStatus');
+      b.disabled=true;
+      try{
+       await call('/admin-login-unlock',{admin:true,method:'POST',body:{username:chosen.username}});
+       status.textContent='✅ Sperre für '+chosen.username+' aufgehoben. Das Passwort bleibt unverändert.';
+       await renderCloudAdmin();
+      }catch(err){status.textContent='Entsperren fehlgeschlagen: '+errorText(err);b.disabled=false;}
+    });
+   }
+
    host.querySelector('#cloudLoadResults')?.addEventListener('click',renderAdminProgress);
    const form=host.querySelector('#cloudAssignmentForm');form.elements.audience.onchange=()=>{host.querySelector('#cloudChildWrap').hidden=form.elements.audience.value!=='child'};
    form.onsubmit=async e=>{e.preventDefault();const start=new Date(form.elements.start.value),end=new Date(form.elements.end.value);const msg=host.querySelector('#cloudAdminMessage');if(!(end>start)){msg.textContent='Ende muss nach dem Beginn liegen.';return}const payload={id:form.dataset.id?Number(form.dataset.id):undefined,audience:form.elements.audience.value,username:form.elements.audience.value==='child'?form.elements.username.value:'',start_at:start.toISOString(),end_at:end.toISOString(),target:form.elements.target.value,title:form.elements.title.value.trim(),kind:form.elements.kind.value};const submit=form.querySelector('[type=submit]');submit.disabled=true;try{await call('/admin-assignments',{admin:true,method:'POST',body:payload});await renderCloudAdmin();notify('Auftrag in Cloudflare gespeichert.')}catch(err){msg.textContent=errorText(err);submit.disabled=false}};
@@ -197,6 +284,110 @@
    host.innerHTML=`<div class="pd-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🧭 Cloudflare-Agenda</span><h3>Diese Woche</h3><p>Hausaufgaben, Lernkontrollen und Termine aus deiner bisherigen LernSafari.</p></div></div><div class="cloud-week">${days.map((date,i)=>`<article class="cloud-day"><h4>${names[i]} · ${html(dateFormat(date))}</h4>${events.filter(e=>e.day_date===date).map(e=>`<div class="cloud-event"><strong>${html(e.type==='lk'?'Lernkontrolle':e.type==='ha'?'Hausaufgabe':e.type==='free'?'Schulfrei':'Termin')}</strong><p>${html(e.text||'')}</p></div>`).join('')||'<p>Keine Einträge</p>'}</article>`).join('')}</div>${loggedTeacher()?'<p class="pd-warning">Termine bearbeiten: in der erweiterten Verwaltung unter «Agenda».</p>':''}</div>`;
   }catch(e){host.innerHTML=`<div class="pd-panel"><h3>Agenda nicht erreichbar</h3><p>${html(errorText(e))}</p></div>`}
  }
+
+ // Existing Worker returns active blocks and assignments; this is a pedagogical UI gate,
+ // NOT a verified mastery signal or security protection for public HTML files.
+ function updateClassFocus(p){
+  if(!loggedChild()||!window.LernSafariFocusGate){focusGate=null;return;}
+  focusGate=window.LernSafariFocusGate.makeState(p,ORIGINAL_GAMES);
+  paintClassFocus();
+  enforceCurrentFocus();
+ }
+ async function refreshClassFocus(){
+  if(!loggedChild()||focusBusy)return;
+  focusBusy=true;
+  try{const p=await call('/learning-plan');if(loggedChild()){plan=p;updateClassFocus(p)}}
+  catch(_){if(loggedChild())notify('Fokusregeln konnten nicht aktualisiert werden.')}
+  finally{focusBusy=false}
+ }
+ function showFocusNotice(){
+  notify('🔒 Zuerst deine offenen Pflichtaufträge im Logbuch bearbeiten.');
+ }
+ function blockedInClass(target,kind){
+  if(!loggedChild()||!focusGate?.restricted)return false;
+  if(kind==='area')return !focusGate.allowDestination(target);
+  if(kind==='subject')return !focusGate.allowSubject(target);
+  if(kind==='game')return !focusGate.allowGame(target);
+  if(kind==='page')return !focusGate.allowTarget(target);
+  return false;
+ }
+ function paintClassFocus(){
+  if(!loggedChild())return;
+  for(const el of document.querySelectorAll('[data-map-destination],[data-lagoon-subject]')){
+   const isArea=el.hasAttribute('data-map-destination');
+   const locked=isArea?blockedInClass(el.dataset.mapDestination,'area'):blockedInClass(el.dataset.lagoonSubject,'subject');
+   el.classList.toggle('cloud-focus-locked',locked);
+   el.setAttribute('aria-disabled',locked?'true':'false');
+   if(locked)el.title='Zuerst deine offenen Pflichtaufträge bearbeiten';
+   else if(el.title==='Zuerst deine offenen Pflichtaufträge bearbeiten')el.removeAttribute('title');
+  }
+  const hint=document.querySelector('#campHint');
+  if(hint){hint.textContent=focusGate?.restricted?'🔒 Fokuszeit: Öffne dein Logbuch und bearbeite deine To-dos.':'Klicke auf einen Gegenstand und entdecke die Safari!';}
+  for(const button of document.querySelectorAll('.integration-game-card[data-original-game]')){
+   const index=Number(button.dataset.originalGame);
+   const game=(ORIGINAL_GAMES[safariSubject]||[])[index];
+   const locked=!!game&&blockedInClass(game.file.replace(/\.html$/i,''),'game');
+   button.classList.toggle('cloud-focus-locked',locked);
+   button.setAttribute('aria-disabled',locked?'true':'false');
+  }
+ }
+ function enforceCurrentFocus(){
+  if(!loggedChild()||!focusGate?.restricted)return;
+  // Newly assigned work must take effect even when another game is already open.
+  // Removing the iframe stops that embedded game rather than merely covering it.
+  const frame=document.querySelector('#originalGameFrame');
+  if(frame){
+   const path=frame.getAttribute('src')||'';
+   const match=path.match(/(?:^|\/)spiele\/([a-z0-9-]+)\.html(?:[?#]|$)/i);
+   const blocked=match?blockedInClass(match[1],'game'):(
+    /(?:^|\/)original\/index\.html(?:[?#]|$)/i.test(path)
+      &&(blockedInClass('baobab','area')||blockedInClass('valley','area'))
+   );
+   if(blocked){
+    frame.removeAttribute('src');frame.remove();
+    const surface=document.querySelector('.integration-game-surface');
+    if(surface){
+     surface.innerHTML='<div class="cloud-focus-interrupted" role="status"><h3>🔒 Neue Pflichtaufgaben</h3><p>Die Lehrperson hat neue To-dos freigeschaltet. Bitte bearbeite zuerst deine offenen Aufträge.</p><button type="button" class="pd-action" id="cloudFocusToLogbook">Mein Logbuch öffnen</button></div>';
+     surface.querySelector('#cloudFocusToLogbook')?.addEventListener('click',()=>showModal('logbook'));
+    }
+   }
+  }
+  if(state.screen==='destination'&&state.destination&&blockedInClass(state.destination,'area')){
+   goCamp();
+   notify('🔒 Für diesen Bereich gibt es gerade neue Pflichtaufträge. Schau in dein Logbuch.');
+  }
+ }
+
+ // Capture clicks before the original app's event handlers. Keep the logbook and
+ // the compass/letterbox available, as they are navigational and informational.
+ document.addEventListener('click',e=>{
+  if(!loggedChild()||!focusGate?.restricted)return;
+  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-open],[data-baobab-section]');
+  if(!button)return;
+  let locked=false;
+  if(button.hasAttribute('data-map-destination'))locked=blockedInClass(button.dataset.mapDestination,'area');
+  else if(button.hasAttribute('data-lagoon-subject'))locked=blockedInClass(button.dataset.lagoonSubject,'subject');
+  else if(button.hasAttribute('data-baobab-section'))locked=blockedInClass('page:tiere','page');
+  else if(button.dataset.open&&!['logbook','map','agenda','mail','clock','help','admin'].includes(button.dataset.open))locked=true;
+  if(locked){e.preventDefault();e.stopImmediatePropagation();showFocusNotice();}
+ },true);
+ // Internal navigation may happen without a click on a map hotspot (e.g. direct
+ // To-do links). Protect destinations AND embedded games as a second UI layer.
+ const originalTravelTo=travelTo;
+ travelTo=function(id){if(blockedInClass(id,'area')){showFocusNotice();return;}return originalTravelTo(id)};
+ const unguardedFrame=originalFrame;
+ originalFrame=function(relative,title,opts){
+  const match=String(relative).match(/(?:^|\/)spiele\/([a-z0-9-]+)\.html(?:[?#]|$)/i);
+  if(match&&blockedInClass(match[1],'game')){showFocusNotice();return;}
+  return unguardedFrame(relative,title,opts);
+ };
+ const contentRoot=document.querySelector('#destinationContent'),modalRoot=DOM.modalBody;
+ const observer=new MutationObserver(()=>paintClassFocus());
+ if(contentRoot)observer.observe(contentRoot,{subtree:false,childList:true});
+ if(modalRoot)observer.observe(modalRoot,{subtree:false,childList:true});
+ window.addEventListener('focus',()=>refreshClassFocus());
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshClassFocus()});
+ setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},20000);
 
  // Existing app.js login placeholder handles submit in bubble phase; intercept for authenticated login.
  document.querySelector('#loginForm').addEventListener('submit',e=>{e.preventDefault();e.stopImmediatePropagation();childLogin(document.querySelector('#username').value,document.querySelector('#password').value)},{capture:true});

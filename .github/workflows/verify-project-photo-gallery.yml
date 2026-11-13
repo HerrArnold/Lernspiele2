@@ -1,0 +1,33 @@
+name: Verify Baobab multi-photo gallery
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'baobab-projects.js'
+      - 'baobab-projects.css'
+      - 'cloudflare-worker/projects-*'
+      - 'tests/cloudflare-projects.test.mjs'
+      - 'tests/baobab-photo-gallery-browser.mjs'
+      - '.github/workflows/verify-project-photo-gallery.yml'
+  workflow_dispatch:
+jobs:
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          node --check baobab-projects.js
+          node --check cloudflare-worker/projects-service.mjs
+          node --check cloudflare-worker/projects-d1-store.mjs
+          node --test tests/cloudflare-projects.test.mjs
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Chromium
+        run: |
+          npm install --no-save playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Test gallery interactions
+        run: node tests/baobab-photo-gallery-browser.mjs

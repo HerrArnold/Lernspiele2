@@ -45,3 +45,10 @@ button:hover:not(:disabled){border-color:#267e75;filter:brightness(.97)}button:f
 .opponent-hand{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 .mini-back{width:48px;height:67px;flex:none}
 .card-back{background-image:url('pokemon-pocket/card-back.webp'),radial-gradient(circle,#f7c939 7%,#3d75c8 8%,#16488d 65%,#0d315d);background-repeat:no-repeat;background-position:center;background-size:cover}
+
+/* Safari-Pocket title imagery from the teacher's supplied illustrations. */
+.pokemon-safari-hero{background:linear-gradient(110deg,#184867df,#28694fb8),url('pokemon-pocket/pocket-hero.webp') center 35%/cover;display:grid;grid-template-columns:minmax(0,1fr) minmax(125px,260px);gap:17px;align-items:center;min-height:220px;overflow:hidden}
+.pokemon-hero-content{position:relative;z-index:1}
+.pokemon-safari-logo{display:block;width:min(300px,85%);max-height:130px;object-fit:contain;object-position:left center;margin-bottom:8px;filter:drop-shadow(0 5px 5px #0007)}
+.pokemon-hero-ball{width:100%;max-height:225px;object-fit:cover;border-radius:15px;box-shadow:0 8px 26px #172b4169}
+@media(max-width:660px){.pokemon-safari-hero{grid-template-columns:1fr}.pokemon-hero-ball{max-height:125px}}

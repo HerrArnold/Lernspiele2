@@ -20,7 +20,7 @@ h2{font-size:clamp(23px,3vw,30px);margin:0 0 8px;color:#225478}h3{margin:3px 0 8
 ul,ol{padding-left:22px}li{margin:7px 0}a{color:#1d639c}.footer{margin:22px 0;font-size:13px;color:#52636d}
 [hidden]{display:none!important}@media(max-width:600px){.panel{padding:14px}.hero{padding:18px}.tab{flex:1}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style></head><body><main class="shell">
+</style></head><body><main class="shell" id="pokemonPreview" hidden>
 <header class="hero"><small>🏝️ LERNSAFARI · OASE · FLAMINGO-VORSCHAU</small><h1>⚡ Pokémon Pocket</h1><p>Entdecke die Karten, lerne die Regeln Schritt für Schritt und übe für das gemeinsame Spielen mit echten Pokémon-Karten.</p></header>
 <nav class="tabs" aria-label="Bereiche"><button class="tab" data-view="lexikon" aria-selected="true">📖 Lexikon</button><button class="tab" data-view="uebungen" aria-selected="false">🎲 Übungsschritte</button><button class="tab" data-view="analog" aria-selected="false">🃏 Mit echten Karten spielen</button></nav>
 <section class="note"><strong>Zwei Regelwelten:</strong> Die digitalen Pocket-Regeln sind die Grundlage. Für das Spielen mit echten Karten verwenden wir zusätzlich vereinfachte <strong>Klassenregeln nach dem Reddit-Vorschlag</strong>. Diese sind nicht die offiziellen Pocket-Regeln. Original-Karten können abweichende Aufdrucke oder Effekte haben.</section>
@@ -41,6 +41,7 @@ ul,ol{padding-left:22px}li{margin:7px 0}a{color:#1d639c}.footer{margin:22px 0;fo
 </div></section>
 <footer class="footer">LernSafari · Übungsangebot für die Primarschule · Keine offizielle Pokémon-Seite. Erklärtexte in eigenen Worten. Regeln: <a href="https://www.pokewiki.de/Pok%C3%A9mon-Sammelkartenspiel-Pocket" target="_blank" rel="noopener">PokéWiki Pocket</a>, <a href="https://support.pokemon.com/hc/en-us/articles/38906248102292-Pok%C3%A9mon-TCG-Pocket-Battle-Rules-FAQ" target="_blank" rel="noopener">Pokémon Support</a>, <a href="https://www.reddit.com/r/PTCGP/comments/1hjp5i1/pokemon_pocket_rules_with_irl_pokemon_cards/" target="_blank" rel="noopener">Reddit-Vorlage für analoge Karten</a>.</footer>
 </main>
+<script src="../assets/login-config.js"></script>
 <script>
 'use strict';
 const basic=[
@@ -106,4 +107,20 @@ document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{const view=b.
 renderPractice();
 const start=new URLSearchParams(location.search).get('view');
 if(['lexikon','uebungen','analog'].includes(start))document.querySelector('[data-view="'+start+'"]').click();
+</script><script>
+(async()=>{
+  const host=document.getElementById('pokemonPreview');
+  const token=(()=>{try{return sessionStorage.getItem('lernsafari-admin-token-v2')||''}catch(_){return ''}})();
+  if(token){
+    try{
+      const url=String(window.LERNSAFARI_BACKEND_URL||'').replace(/\/+$/,'')+'/admin-session';
+      const response=await fetch(url,{headers:{'X-Safari-Admin':token},cache:'no-store'});
+      if(response.ok){host.hidden=false;return}
+    }catch(_){}
+  }
+  const denied=document.createElement('main');
+  denied.className='shell';
+  denied.innerHTML='<section class="panel"><h1>🔒 Noch nicht verfügbar</h1><p>Pokémon Pocket ist momentan nur für den angemeldeten Flamingo zur Vorschau geöffnet.</p></section>';
+  document.body.appendChild(denied);
+})();
 </script><script src="../assets/new-safari-bridge.js"></script></body></html>

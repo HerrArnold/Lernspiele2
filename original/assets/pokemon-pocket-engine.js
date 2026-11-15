@@ -13,7 +13,7 @@
  const C=id=>byId[id];
  const isBasic=id=>C(id)?.kind==='pokemon'&&C(id).stage===0;
  const isEvo=id=>C(id)?.kind==='pokemon'&&C(id).stage>0;
- const mon=(id,t)=>({id,damage:0,energy:[],entered:t,evolved:-1,activeSince:-1,weakShield:false,weakShieldAgainst:null});
+ const mon=(id,t)=>({id,stack:[],damage:0,energy:[],entered:t,evolved:-1,activeSince:-1,weakShield:false,weakShieldAgainst:null});
  const position=(p,slot)=>slot==='active'?p.active:p.bench[Number(slot)];
  const candidates=p=>[p.active,...p.bench].filter(Boolean);
  const energyNeeded=(pokemon,attack)=> {
@@ -99,7 +99,7 @@
   if(!newCard||newCard.kind!=='pokemon'||newCard.stage<1||!target)throw Error('Ungültige Entwicklung.');
   if(p.turnCount<=1||target.entered>=p.turnCount||target.evolved===p.turnCount)throw Error('Dieses Pokémon darf sich noch nicht entwickeln.');
   if(newCard.from!==C(target.id).name||newCard.stage!==C(target.id).stage+1)throw Error('Diese Entwicklung passt nicht.');
-  p.hand.splice(handIndex,1);p.discard.push(target.id);
+  p.hand.splice(handIndex,1);target.stack.push(target.id);
   target.id=id;target.evolved=p.turnCount;
   addLog(g,C(id).name+' wurde entwickelt.');
   applyEvolveAbility(g,s,slot);
@@ -111,6 +111,11 @@
    if(accept)moveActive(g.players[pending.side],pending.slot,g.players[pending.side].turnCount);
    addLog(g,'Zebritz ex: '+(accept?'mit dem aktiven Pokémon gewechselt.':'nicht gewechselt.'));
    g.pending=null;return;
+  }
+  if(pending.kind==='postAttackLook'){
+   const p=g.players[pending.side];
+   if(accept===true&&p.pile.length>1){p.pile.push(p.pile.shift());addLog(g,'Damhirplex legt die oberste Deckkarte nach unten.');}
+   g.pending=null;if(!g.gameOver)endTurn(g,pending.side);return;
   }
   if(pending.kind==='postAttackSwitch'){
    const p=g.players[pending.side];
@@ -174,7 +179,7 @@
   const victim=g.players[targetSide],winner=g.players[1-targetSide];
   const pokemon=position(victim,slot);if(!pokemon||pokemon.damage<C(pokemon.id).hp)return;
   winner.points+=C(pokemon.id).ex?2:1;
-  victim.discard.push(pokemon.id,...pokemon.energy.map(x=>'energy:'+x));
+  victim.discard.push(pokemon.id,...pokemon.stack,...pokemon.energy.map(x=>'energy:'+x));
   addLog(g,C(pokemon.id).name+' wurde besiegt! '+(C(pokemon.id).ex?'2 Punkte.':'1 Punkt.'));
   if(slot==='active'){
    victim.active=null;
@@ -188,7 +193,7 @@
   const m=position(g.players[targetSide],slot);if(!m)return 0;
   let damage=Math.max(0,amount);
   if(damage>0&&slot==='active'&&attackingType&&C(m.id).weak===attackingType&&!m.weakShield)damage+=20;
-  if(C(m.id).ability==='reduce10')damage=Math.max(0,damage-10);
+  if(attackingType&&C(m.id).ability==='reduce10')damage=Math.max(0,damage-10);
   m.damage+=damage;
   knockOut(g,targetSide,slot);
   return damage;
@@ -257,9 +262,9 @@
     const target=p.bench.reduce((best,m,i)=>m.energy.length<p.bench[best].energy.length?i:best,0);
     p.bench[target].energy.push('metal');addLog(g,'Metallruf: Energie an '+C(p.bench[target].id).name+'.');
    }
-   if(move.effect==='lookTopMayBottom'&&p.pile.length>1){
-    // AI chooses to put a low-value top card below its deck; player gets an explicit option in UI.
+   if(move.effect==='lookTopMayBottom'&&p.pile.length){
     const top=C(p.pile[0]);const wantsBottom=s===1&&top?.kind==='item'&&p.hand.length>6;
+    if(s===0){g.pending={kind:'postAttackLook',side:s,cardId:p.pile[0]};return;}
     if(wantsBottom)p.pile.push(p.pile.shift());
    }
    if(move.effect==='switchAfterAttack'&&p.bench.length){
@@ -269,6 +274,7 @@
    endTurn(g,s);
   }
  }
+ function finishLook(g,s,sendToBottom){if(g.pending?.kind!=='postAttackLook'||g.pending.side!==s)throw Error('Keine Karteneinsicht offen.');resolvePending(g,sendToBottom);}
  function finishSwitch(g,s,slot){if(g.pending?.kind!=='postAttackSwitch'||g.pending.side!==s)throw Error('Kein freier Wechsel offen.');resolvePending(g,slot);}
  function switchOnEvolution(g,s,yes){if(g.pending?.kind!=='evolveSwitch'||g.pending.side!==s)throw Error('Keine Entwicklungsauswahl.');resolvePending(g,yes);}
  function availableAttacks(g,s){const m=g.players[s].active;return m?C(m.id).attacks.map((a,i)=>({index:i,attack:a,ready:energyNeeded(m,a)})):[];}
@@ -308,6 +314,7 @@
    if(g.pending?.kind==='postAttackSwitch'){
     finishSwitch(g,1,best(p.bench.map((_,i)=>i),i=>scoreTarget(g,1,i)));continue;
    }
+   if(g.pending?.kind==='postAttackLook'){finishLook(g,1,false);continue;}
    const legal=legalOptions(g,1);
    if(legal.basics.length&& (p.bench.length<2||level===3||g.rng()<.6)){
     const i=level===1?legal.basics[Math.floor(g.rng()*legal.basics.length)]:best(legal.basics,i=>C(p.hand[i]).hp);
@@ -367,7 +374,7 @@
   if(steps>=42&&!g.gameOver&&g.turn===1&&!g.pending)endTurn(g,1);
  }
  const API={createGame,shuffle,clone,position,energyNeeded,retreatCost,trainerOptions,
-  playBasic,evolve,attach,retreat,playTrainer,attack,endTurn,finishSwitch,switchOnEvolution,
+  playBasic,evolve,attach,retreat,playTrainer,attack,endTurn,finishSwitch,finishLook,switchOnEvolution,
   availableAttacks,legalOptions,aiPlay,attackDamage,deal,knockOut,scoreTarget};
  root.PokemonPocketEngine=API;
  if(typeof module!=='undefined'&&module.exports)module.exports=API;

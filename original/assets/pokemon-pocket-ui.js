@@ -10,7 +10,7 @@
  function img(id){return '../assets/pokemon-pocket/'+id+'.webp';}
  function imgMarkup(id){
   const c=card(id),symbol=c?.kind==='pokemon'?icon(c.type):c?.kind==='supporter'?'📙':'🎒';
-  return '<div class="art"><span class="fallback">'+symbol+'<small>'+escape(c?.name||id)+'</small></span><img src="'+img(id)+'" alt="" loading="lazy" onerror="this.remove()"></div>';
+  return '<div class="art"><span class="fallback">'+symbol+'<small>'+escape(c?.name||id)+'</small></span><img src="'+img(id)+'" alt="" loading="lazy" onload="this.previousElementSibling.hidden=true" onerror="this.remove()"></div>';
  }
  function cardMarkup(id,{mon=null,hidden=false,actionText=null,action=null}={}){
   if(hidden)return '<div class="mini-card card-back" aria-label="Verdeckte Karte"></div>';

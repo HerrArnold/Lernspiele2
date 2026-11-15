@@ -138,6 +138,27 @@ function exerciseMarkup(ex,s,idx){
  }
  return '';
 }
+let dailySpeech=null;
+function stopDailySpeech(){if('speechSynthesis' in window){try{window.speechSynthesis.cancel()}catch(_){}}dailySpeech=null;const status=$('daily-audio-status');if(status)status.textContent='';}
+function setupDailyAudio(d){
+ const mount=$('today-audio');if(!mount)return;
+ stopDailySpeech();
+ if(!d?.audioText){mount.hidden=true;mount.replaceChildren();return;}
+ mount.hidden=false;
+ mount.innerHTML='<div class="daily-audio-header"><span aria-hidden="true">🔊</span><div><strong>Hörtext: Die Schnecke</strong><small>Höre aufmerksam zu. Du darfst den Text mehrmals anhören.</small></div></div><div class="daily-audio-actions"><button type="button" class="check-button" id="daily-audio-play">▶ Hörtext abspielen</button><button type="button" class="clear-button" id="daily-audio-stop">■ Stopp</button></div><p id="daily-audio-status" role="status" aria-live="polite"></p>';
+ $('daily-audio-play').onclick=()=>{
+  if(!('speechSynthesis' in window)){ $('daily-audio-status').textContent='Die Vorlesefunktion wird von diesem Browser nicht unterstützt. Bitte die Lehrperson um Hilfe bitten.';return;}
+  stopDailySpeech();const utter=new SpeechSynthesisUtterance(d.audioText);
+  utter.lang='de-CH';utter.rate=.87;utter.pitch=1;
+  const voices=window.speechSynthesis.getVoices();
+  utter.voice=voices.find(v=>v.lang==='de-CH')||voices.find(v=>v.lang.toLowerCase().startsWith('de'))||null;
+  utter.onstart=()=>{$('daily-audio-status').textContent='Der Hörtext wird vorgelesen …'};
+  utter.onend=()=>{$('daily-audio-status').textContent='Fertig. Du kannst ihn nochmals anhören.'};
+  utter.onerror=()=>{$('daily-audio-status').textContent='Die Vorlesefunktion ist gerade nicht verfügbar. Versuche es erneut oder frage deine Lehrperson.'};
+  dailySpeech=utter;window.speechSynthesis.speak(utter);
+ };
+ $('daily-audio-stop').onclick=stopDailySpeech;
+}
 function renderTask(dayIdx,i){const ex=days[dayIdx].exercises[i],s=session(dayIdx)[i],mount=$(`task-${i}`);mount.innerHTML=exerciseMarkup(ex,s,i);mount.classList.toggle('task-done',s.success);$(`status-${i}`).textContent=s.success?'✓ Geschafft!':'';$(`status-${i}`).className='task-status '+(s.success?'success':'');}
 function renderToday(force=false){let iso=daySwiss();let newIdx=dayIndex(iso);if(siteState.previewIndex!==null)newIdx=siteState.previewIndex;
  if(!force&&siteState.dayIndex===newIdx&&siteState.renderedDate===iso)return;
@@ -145,6 +166,7 @@ function renderToday(force=false){let iso=daySwiss();let newIdx=dayIndex(iso);if
  window.SafariNumberDay?.render(newIdx===null?iso:(siteState.previewIndex!==null?days[newIdx].date:iso));
  const isPreview=siteState.previewIndex!==null;
  if(newIdx===null){
+  setupDailyAudio(null);
   $('today-label').textContent=prettyDate(iso);$('today-theme').textContent='Neue Aufgaben folgen';
   $('today-intro').textContent='Die 20 Reserve-Serien sind aufgebraucht. Neue Aufgaben werden vorbereitet.';
   $('day-pill').textContent='Reserve aufgebraucht';$('preview-notice').hidden=true;
@@ -155,6 +177,7 @@ function renderToday(force=false){let iso=daySwiss();let newIdx=dayIndex(iso);if
  $('today-label').textContent=isPreview?`Vorschau · ${prettyDate(d.date)}`:prettyDate(newIdx===0?'2026-11-06':(days[newIdx].date));
  $('today-theme').textContent=d.theme;
  $('today-intro').textContent=d.intro;
+ setupDailyAudio(d);
  $('day-pill').textContent=(d.reserve?'Reserve · ': 'Geplant · ')+d.tag;
  $('preview-notice').hidden=!isPreview;
  $('daily-tasks').innerHTML=d.exercises.map((ex,i)=>`<details class="daily-task daily-disclosure" id="exercise-${i}" ${i===0?'open':''}><summary class="task-head daily-step-summary"><span class="task-count">Aufgabe ${i+1}</span><h3>${htmlEscape(ex.title)}</h3><span class="task-status" id="status-${i}" aria-live="polite"></span><span class="daily-chevron" aria-hidden="true">⌄</span></summary><div class="daily-step-content"><p class="task-description">${htmlEscape(ex.desc)}</p><div class="task-body" id="task-${i}"></div><div class="task-actions"><button type="button" class="check-button" data-check="${i}">Überprüfen</button><button type="button" class="clear-button" data-reset="${i}">Neu versuchen</button><span class="check-feedback" id="feedback-${i}" aria-live="polite"></span></div></div></details>`).join('');

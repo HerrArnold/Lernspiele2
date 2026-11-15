@@ -13,7 +13,8 @@
     {title:'Pokémon Pocket',icon:'⚡',hint:'Pokémon-Karten verstehen, Regeln lernen und mit echten Karten spielen. Vorschau nur für Flamingo.',previewOnly:true,games:[
       {title:'Pokémon-Lexikon',file:'pokemon-pocket.html',view:'lexikon',description:'Grundlagen und fortgeschrittene Spielregeln',emoji:'📖'},
       {title:'Schritt für Schritt üben',file:'pokemon-pocket.html',view:'uebungen',description:'12 Lernaufgaben für echte Karten',emoji:'🎲'},
-      {title:'Mit echten Karten spielen',file:'pokemon-pocket.html',view:'analog',description:'Anleitung und Regeln für die analoge Klassenvariante',emoji:'🃏'}]},
+      {title:'Mit echten Karten spielen',file:'pokemon-pocket.html',view:'analog',description:'Anleitung und Regeln für die analoge Klassenvariante',emoji:'🃏'},
+      {title:'Gegen den Computer spielen',file:'pokemon-pocket-simulator.html',description:'Sechs Decks, drei Schwierigkeitsstufen und die eigenen Karten',emoji:'🤖'}]},
     {title:'Kreativatelier',icon:'🎨',hint:'Malen, ausmalen und zeichnen – alles direkt am Computer.',games:[
       {title:'Mein Malatelier',file:'oase-zeichnen.html',description:'Freies Zeichnen mit Farben und Stiften',emoji:'🖌️'},
       {title:'Zeichenschule',file:'oase-abzeichnen.html',description:'Vier Vorlagen zum Nachzeichnen',emoji:'✏️'},

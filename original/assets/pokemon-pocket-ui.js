@@ -34,6 +34,7 @@
  function optionLabel(option,side){
   const p=game.players[side];
   if(option.skip)return 'Keine Karte nehmen';
+  if(choice?.effect==='forceSwitch')return 'Angstmacherei spielen – der Gegner entscheidet, welches Bank-Pokémon kommt';
   if('id' in option)return 'Nimm '+card(option.id).name+' auf die Hand';
   if('swap' in option)return option.swap?'Die zwei obersten Karten vertauschen':'Reihenfolge behalten';
   if('bottom' in option)return option.bottom?'Unter das Deck legen':'Oben lassen';

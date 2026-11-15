@@ -405,9 +405,10 @@
  }
  function paintClassFocus(){
   if(!loggedChild())return;
-  for(const el of document.querySelectorAll('[data-map-destination],[data-lagoon-subject]')){
-   const isArea=el.hasAttribute('data-map-destination');
-   const locked=isArea?blockedInClass(el.dataset.mapDestination,'area'):blockedInClass(el.dataset.lagoonSubject,'subject');
+  for(const el of document.querySelectorAll('[data-map-destination],[data-lagoon-subject],[data-original-subject]')){
+   const locked=el.hasAttribute('data-map-destination')
+    ?blockedInClass(el.dataset.mapDestination,'area')
+    :blockedInClass(el.dataset.lagoonSubject||el.dataset.originalSubject,'subject');
    el.classList.toggle('cloud-focus-locked',locked);
    el.setAttribute('aria-disabled',locked?'true':'false');
    if(locked)el.title='Zuerst deine offenen Pflichtaufträge bearbeiten';
@@ -415,6 +416,12 @@
   }
   const hint=document.querySelector('#campHint');
   if(hint){hint.textContent=focusGate?.restricted?'🔒 Fokuszeit: Öffne dein Logbuch und bearbeite deine To-dos.':'Klicke auf einen Gegenstand und entdecke die Safari!';}
+  for(const button of document.querySelectorAll('[data-topic-index],[data-topic-game]')){
+   // Topic and game cards belong to the currently displayed subject.
+   const locked=blockedInClass(safariSubject,'subject');
+   button.classList.toggle('cloud-focus-locked',locked);
+   button.setAttribute('aria-disabled',locked?'true':'false');
+  }
   for(const button of document.querySelectorAll('.integration-game-card[data-original-game]')){
    const index=Number(button.dataset.originalGame);
    const game=(ORIGINAL_GAMES[safariSubject]||[])[index];
@@ -444,6 +451,12 @@
     }
    }
   }
+  if(state.screen==='destination'&&state.destination==='lagoon'
+     &&safariSubject&&blockedInClass(safariSubject,'subject')){
+   safariSubject=null;safariGame=null;
+   renderLagoon();
+   notify('🔒 Dieses Fach ist im aktuellen Unterrichtsmodus nicht freigegeben.');
+  }
   if(state.screen==='destination'&&state.destination&&blockedInClass(state.destination,'area')){
    goCamp();
    notify('🔒 Für diesen Bereich gibt es gerade neue Pflichtaufträge. Schau in dein Logbuch.');
@@ -454,11 +467,17 @@
  // the compass/letterbox available, as they are navigational and informational.
  document.addEventListener('click',e=>{
   if(!loggedChild()||!focusGate?.restricted)return;
-  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-open],[data-baobab-section],[data-baobab-new]');
+  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-original-subject],[data-topic-index],[data-topic-game],[data-original-game],[data-open],[data-baobab-section],[data-baobab-new]');
   if(!button)return;
   let locked=false;
   if(button.hasAttribute('data-map-destination'))locked=blockedInClass(button.dataset.mapDestination,'area');
   else if(button.hasAttribute('data-lagoon-subject'))locked=blockedInClass(button.dataset.lagoonSubject,'subject');
+  else if(button.hasAttribute('data-original-subject'))locked=blockedInClass(button.dataset.originalSubject,'subject');
+  else if(button.hasAttribute('data-topic-index')||button.hasAttribute('data-topic-game'))locked=blockedInClass(safariSubject,'subject');
+  else if(button.hasAttribute('data-original-game')){
+   const game=(ORIGINAL_GAMES[safariSubject]||[])[Number(button.dataset.originalGame)];
+   locked=blockedInClass(safariSubject,'subject')||!!game&&blockedInClass(game.file.replace(/\.html$/i,''),'game');
+  }
   else if(button.hasAttribute('data-baobab-new')){
    const section=button.dataset.baobabNew;
    locked=section==='animals'?blockedInClass('page:tiere','page'):

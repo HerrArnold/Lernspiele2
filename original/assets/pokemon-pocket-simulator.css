@@ -36,3 +36,12 @@ button:hover:not(:disabled){border-color:#267e75;filter:brightness(.97)}button:f
 .pokemon-zoom-content{position:relative;background:#fffdf7;border-radius:17px;padding:15px;max-height:94vh;width:min(540px,100%);overflow:auto;text-align:center;box-shadow:0 14px 45px #0006}
 .pokemon-zoom-content .art{max-width:400px;margin:auto}.pokemon-zoom-content .art img{width:100%;max-height:72vh;object-fit:contain}
 .pokemon-zoom-content h2{font-size:20px;margin:7px 0}
+
+.energy-badge{display:inline-flex;width:23px;height:23px;border-radius:50%;align-items:center;justify-content:center;vertical-align:middle;font-size:18px;line-height:1;margin:0 2px}
+.pokemon-energy-sprites-ready .energy-badge:not(.energy-colorless):not(.energy-none){font-size:0;background-image:url('pokemon-pocket/energy-icons.webp');background-repeat:no-repeat;background-size:400% 200%;border:1px solid #ffffff90}
+.energy-grass{background-position:0 0}.energy-fire{background-position:33.333% 0}.energy-water{background-position:66.667% 0}.energy-electric{background-position:100% 0}
+.energy-psychic{background-position:0 100%}.energy-fighting{background-position:33.333% 100%}.energy-dark{background-position:66.667% 100%}.energy-metal{background-position:100% 100%}
+.card-energy{line-height:1.9}
+.opponent-hand{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.mini-back{width:48px;height:67px;flex:none}
+.card-back{background-image:url('pokemon-pocket/card-back.webp'),radial-gradient(circle,#f7c939 7%,#3d75c8 8%,#16488d 65%,#0d315d);background-repeat:no-repeat;background-position:center;background-size:cover}

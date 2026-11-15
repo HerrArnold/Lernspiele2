@@ -5,6 +5,11 @@
  if(!D||!E)return;
  const $=id=>document.getElementById(id),escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
  const card=id=>D.byId[id],icon=t=>D.symbols[t]||'🃏';
+ const energyIcon=t=>'<span class="energy-badge energy-'+escape(t||'none')+'" title="'+escape(t||'Energie')+'">'+icon(t)+'</span>';
+ // Use the eight supplied circular icons when uploaded, keep emoji fallbacks otherwise.
+ const energyImage=new Image();
+ energyImage.onload=()=>document.body.classList.add('pokemon-energy-sprites-ready');
+ energyImage.src='../assets/pokemon-pocket/energy-icons.webp';
  const deckName=id=>D.decks.find(d=>d.id===id)?.name||id;
  let game=null,choice=null,activeDeck=null,lastOpponent=null;
  function img(id){return '../assets/pokemon-pocket/'+id+'.webp';}
@@ -16,13 +21,13 @@
   if(hidden)return '<div class="mini-card card-back" aria-label="Verdeckte Karte"></div>';
   const c=card(id);if(!c)return '';
   const isMon=c.kind==='pokemon';
-  const energy=mon?.energy?.map(icon).join(' ')||'';
+  const energy=mon?.energy?.map(energyIcon).join(' ')||'';
   const health=mon?Math.max(0,c.hp-mon.damage)+' / '+c.hp+' KP':isMon?c.hp+' KP':'';
   return '<article class="mini-card" data-type="'+escape(c.type||'trainer')+'">'+
    '<div class="card-name">'+escape(c.name)+'</div>'+imgMarkup(id)+
    '<button type="button" class="inspect-btn" data-inspect="'+escape(id)+'">🔎 Karte vergrössern</button>'+
-   '<div class="card-info">'+(isMon?icon(c.type)+' '+health+(c.ex?' · ex':''):'📜 '+(c.kind==='supporter'?'Unterstützer':'Item'))+'</div>'+
-   (mon?'<div class="card-info">Energie: '+(energy||'–')+'</div>':'')+
+   '<div class="card-info">'+(isMon?energyIcon(c.type)+' '+health+(c.ex?' · ex':''):'📜 '+(c.kind==='supporter'?'Unterstützer':'Item'))+'</div>'+
+   (mon?'<div class="card-info card-energy">Energie: '+(energy||'–')+'</div>':'')+
    (actionText?'<button class="card-action" '+(action?'data-action="'+escape(action)+'"':'disabled')+'>'+escape(actionText)+'</button>':'')+
    '</article>';
  }
@@ -125,14 +130,15 @@
    return html;
   };
   const display=slot=>{const m=E.position(p,slot);if(!m)return '<p class="muted">Noch kein Pokémon</p>';return cardMarkup(m.id,{mon:m})+slotControls(slot,m)};
-  $(hostId).innerHTML='<h2>'+(self?'Deine Pokémon':'Computer · '+escape(deckName(p.id)))+'</h2><div class="board"><div class="active-zone"><h3>Aktiv</h3>'+display('active')+'</div><div class="bench-zone"><h3>Bank · '+p.bench.length+' / 3</h3><div class="cards">'+(p.bench.length?p.bench.map((_,i)=>display(i)).join(''):'<p class="muted">Leer</p>')+'</div></div></div>';
+  $(hostId).innerHTML='<h2>'+(self?'Deine Pokémon':'Computer · '+escape(deckName(p.id)))+'</h2><div class="board"><div class="active-zone"><h3>Aktiv</h3>'+display('active')+'</div><div class="bench-zone"><h3>Bank · '+p.bench.length+' / 3</h3><div class="cards">'+(p.bench.length?p.bench.map((_,i)=>display(i)).join(''):'<p class="muted">Leer</p>')+'</div></div></div>'+
+   (!self?'<h3>Verdeckte Handkarten · '+p.hand.length+'</h3><div class="opponent-hand">'+p.hand.map(()=>'<div class="mini-back card-back" aria-label="Verdeckte Karte"></div>').join('')+'</div>':'');
  }
  function render(){
   if(!game)return;
   const turn=game.turn===0?'Du bist am Zug':'Der Computer ist am Zug';
   const p=game.players[0],bot=game.players[1];
   $('scorebar').innerHTML='<span>🏆 Du: '+p.points+' / 3</span><span>'+escape(game.gameOver?(game.winner===0?'Du gewinnst! 🎉':game.winner===1?'Computer gewinnt':'Unentschieden'):turn)+'</span><span>Computer: '+bot.points+' / 3 🏆</span>'+
-    '<span>⚡ Energiezone: '+(p.energyNext?icon(p.energyNext):'leer')+(p.attached?' · normale Energie benutzt':' · normale Energie bereit')+' · '+p.energyPile.length+' im Energiestapel</span>'+
+    '<span>⚡ Energiezone: '+(p.energyNext?energyIcon(p.energyNext):'leer')+(p.attached?' · normale Energie benutzt':' · normale Energie bereit')+' · '+p.energyPile.length+' im Energiestapel</span>'+
     '<span>Karten: '+p.pile.length+' | Computer: '+bot.pile.length+'</span>';
   renderBattlefield(1,'enemy');renderBattlefield(0,'yours');
   const legal=E.legalOptions(game,0);
@@ -154,7 +160,7 @@
  function renderDeckPreview(){
   const id=$('yourDeck').value,deck=D.decks.find(d=>d.id===id);if(!deck)return;
   const pokemon=Object.entries(deck.ids).filter(([id])=>card(id).kind==='pokemon');
-  $('deckPreview').innerHTML='<h3>'+icon(deck.type)+' '+escape(deck.name)+' · '+('⭐'.repeat(deck.level))+'</h3><p>'+
+  $('deckPreview').innerHTML='<h3>'+energyIcon(deck.type)+' '+escape(deck.name)+' · '+('⭐'.repeat(deck.level))+'</h3><p>'+
    pokemon.map(([id,num])=>num+'× '+escape(card(id).name)).join(' · ')+'</p><small>20 Karten · Energie: '+(deck.type==='colorless'?'gemischte Energietypen':icon(deck.type)+' '+escape(deck.type))+'</small>';
  }
  function start(){

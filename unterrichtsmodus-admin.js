@@ -34,7 +34,7 @@
   if(kind==='subject'&&!subjects[subject])throw Error('Bitte ein gültiges Fach auswählen');
   const active=kind==='arrival'||kind==='subject';
   const ids=[...new Set(arr(assignmentIds).map(Number))];
-  if(active&&(!ids.length||ids.some(id=>!Number.isSafeInteger(id)||id<1)))throw Error('Zuerst gültige Pflichtaufträge für diesen Modus zuweisen');
+  if(ids.some(id=>!Number.isSafeInteger(id)||id<1))throw Error('Ungültiger Pflichtauftrag');
   if(!Number.isFinite(Date.parse(expiresAt))||Date.parse(expiresAt)<=Date.now())throw Error('Bitte eine gültige Endzeit in der Zukunft wählen');
   return {kind,subject:kind==='subject'?subject:null,required_assignment_ids:active?ids:[],require_verified:requireVerified,expires_at:new Date(expiresAt).toISOString()};
  }
@@ -86,13 +86,13 @@
     tasks.innerHTML=found.length?'<fieldset class="admin-mode-tasks"><legend>Welche Pflichtaufträge gelten während dieses Modus?</legend>'+
       found.map(a=>'<label><input type="checkbox" value="'+Number(a.id)+'" '+(selectedIds.has(Number(a.id))?'checked':'')+'>'+
         '<span><strong>'+esc(a.title)+'</strong><small>'+esc(a.audience==='all'?'Ganze Klasse':a.username||'Einzelnes Kind')+'</small></span></label>').join('')+'</fieldset>':
-      '<span class="pd-warning">Keine passenden aktuellen Pflichtaufträge. Weise sie zuerst unter «Lernaufträge» zu.</span>';
+      '<span class="pd-info">Keine passenden Pflichtaufträge vorhanden. Du kannst diesen Modus trotzdem einschalten. Falls du bestimmte Aufgaben verpflichtend machen möchtest, erstelle sie unter «Lernaufträge».</span>';
     tasks.querySelectorAll('input[type="checkbox"]').forEach(b=>b.onchange=()=>{
       const id=Number(b.value);
       if(b.checked)selectedIds.add(id);else selectedIds.delete(id);
-      form.querySelector('[type=submit]').disabled=selectedIds.size===0;
+      form.querySelector('[type=submit]').disabled=false;
     });
-    form.querySelector('[type=submit]').disabled=selectedIds.size===0;
+    form.querySelector('[type=submit]').disabled=false;
    }else{
     tasks.textContent='Alle Bereiche frei zugänglich – keine Pflichtaufträge notwendig.';
     selectedKey='';
@@ -127,7 +127,11 @@
     const selected=matchingAssignments(registered,kind,subject).filter(a=>selectedIds.has(Number(a.id)));
     const payload=payloadOf({kind,subject,assignmentIds:selected.map(a=>a.id),expiresAt:new Date(form.elements.until.value).toISOString()});
     btn.disabled=true;status.textContent='Modus wird von Cloudflare gespeichert …';
-    await saveMode(payload);status.textContent='Modus erfolgreich auf Cloudflare gespeichert.';await load();
+    const saved=await saveMode(payload);
+    if(saved?.ok!==true||saved?.classroomMode?.kind!==kind)throw Error('Cloudflare hat den gewählten Modus nicht bestätigt.');
+    await load();
+    if(form.elements.kind.value!==kind)throw Error('Cloudflare hat einen anderen Modus zurückgegeben. Bitte die Worker-Version prüfen.');
+    status.textContent='✅ '+(kind==='arrival'?'Ankunftszeit':kind==='subject'?'Fachunterricht':kind==='free'?'Entdeckungszeit':'Geschlossen')+' ist auf Cloudflare aktiviert.';
    }catch(err){status.textContent='Nicht gespeichert: '+String(err.message||err);update()}
    finally{btn.disabled=false;update()}
   };

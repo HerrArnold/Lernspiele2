@@ -29,8 +29,13 @@ ul,ol{padding-left:22px}li{margin:7px 0}a{color:#1d639c}.footer{margin:22px 0;fo
 .card-image-fallback{background:#f3edd6;border:1px solid #dbc39c;min-height:70px;padding:10px;border-radius:9px;text-align:center}
 .practice-card-picture{max-width:220px;max-height:305px;margin:12px auto 18px;display:grid;place-items:center}
 .practice-card-picture img{max-width:100%;max-height:305px;object-fit:contain;border-radius:12px}
+
+.pokemon-safari-hero{background:linear-gradient(110deg,#1b4a65db,#2f7152d2),url("../assets/pokemon-pocket/pocket-hero.webp") center 36%/cover;display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,240px);align-items:center;gap:15px;min-height:230px;overflow:hidden}
+.pokemon-hero-content{position:relative;z-index:1}.pokemon-safari-logo{width:min(290px,85%);max-height:130px;object-fit:contain;object-position:left center;display:block;margin-bottom:8px;filter:drop-shadow(0 4px 4px #1239)}
+.pokemon-hero-ball{width:100%;max-height:210px;object-fit:cover;border-radius:16px;box-shadow:0 8px 25px #082e335a}
+@media(max-width:640px){.pokemon-safari-hero{grid-template-columns:1fr}.pokemon-hero-ball{max-height:135px;object-position:center 45%}}
 </style></head><body><main class="shell" id="pokemonPreview" hidden>
-<header class="hero"><small>🏝️ LERNSAFARI · OASE · FLAMINGO-VORSCHAU</small><h1>⚡ Pokémon Pocket</h1><p>Entdecke die Karten, lerne die Regeln Schritt für Schritt und übe für das gemeinsame Spielen mit echten Pokémon-Karten.</p></header>
+<header class="hero pokemon-safari-hero"><div class="pokemon-hero-content"><img class="pokemon-safari-logo" src="../assets/pokemon-pocket/pokemon-safari-logo.webp" alt="Pokémon Safari" onerror="this.hidden=true"><small>🏝️ LERNSAFARI · OASE · FLAMINGO-VORSCHAU</small><h1>⚡ Pokémon Pocket</h1><p>Entdecke die Karten, lerne die Regeln Schritt für Schritt und übe für das gemeinsame Spielen mit echten Pokémon-Karten.</p></div><img class="pokemon-hero-ball" src="../assets/pokemon-pocket/safari-ball-scene.webp" alt="Safari-Ball in der Savanne" onerror="this.hidden=true"></header>
 <nav class="tabs" aria-label="Bereiche"><button class="tab" data-view="lexikon" aria-selected="true">📖 Lexikon</button><button class="tab" data-view="uebungen" aria-selected="false">🎲 Übungsschritte</button><button class="tab" data-view="analog" aria-selected="false">🃏 Mit echten Karten spielen</button></nav>
 <section class="note"><strong>Zwei Regelwelten:</strong> Die digitalen Pocket-Regeln sind die Grundlage. Für das Spielen mit echten Karten verwenden wir zusätzlich vereinfachte <strong>Klassenregeln nach dem Reddit-Vorschlag</strong>. Diese sind nicht die offiziellen Pocket-Regeln. Original-Karten können abweichende Aufdrucke oder Effekte haben.</section>
 <section id="lexikon">

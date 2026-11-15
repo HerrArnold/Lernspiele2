@@ -34,7 +34,7 @@
   const catalog=gameMap(original);
   const assignedGames=[...allowed].filter(x=>x.startsWith('game:')).map(x=>({id:x.slice(5),...catalog.get(x.slice(5))}));
   const subjects=new Set(assignedGames.map(x=>x.subject).filter(Boolean));
-  const daily=[...allowed].some(x=>x.startsWith('daily:')||x.startsWith('number:')||x==='page:aufgaben');
+  const daily=kind==='arrival'||[...allowed].some(x=>x.startsWith('daily:')||x.startsWith('number:')||x==='page:aufgaben');
   const subjectCodes={math:'Mathe',german:'Deutsch',nmg:'NMG',music:'Musik',english:'Englisch'};
   const allowedSubject=kind==='subject'?mode.subject:null;
   const isCurrentSubjectGame=id=>allowedSubject&&catalog.get(id)?.subject===allowedSubject;

@@ -4,3 +4,12 @@
 .oase-coming-soon .oase-group-head{margin-bottom:8px}
 .oase-coming-soon .oase-group-head h3{color:#646a61}
 .oase-preview-notice{display:inline-block;background:#e5e4d9;border:1px solid #d0cfc1;color:#595f57;padding:9px 13px;border-radius:12px;font-weight:750;margin:5px 0}
+
+/* Dedicated Pokemon Safari showcase (teacher preview); child placeholder stays locked. */
+.oase-pokemon{position:relative;overflow:hidden;background:linear-gradient(110deg,#eaf6e4f2,#f4e2adf0),url('original/assets/pokemon-pocket/pocket-hero.webp') center 40%/cover}
+.oase-pokemon .oase-group-head{position:relative;z-index:1}
+.oase-pokemon .oase-pokemon-logo{display:block;width:min(340px,95%);max-height:125px;object-fit:contain;object-position:left center;margin:4px 0 13px}
+.oase-pokemon .oase-pokemon-ball{position:absolute;right:6px;top:6px;width:min(210px,25%);height:130px;object-fit:cover;opacity:.48;border-radius:20px;pointer-events:none}
+.oase-pokemon .oase-game-grid{position:relative;z-index:1}
+.oase-pokemon .oase-card{background:#fffcf4ed}
+@media(max-width:600px){.oase-pokemon .oase-pokemon-ball{display:none}}

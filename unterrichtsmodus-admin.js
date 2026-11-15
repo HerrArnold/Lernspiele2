@@ -45,6 +45,7 @@
    <h4>🧭 Unterrichtsmodus</h4>
    <p>Steuere, welche Aufgaben die Kinder jetzt bearbeiten dürfen. Änderungen gelten erst, nachdem Cloudflare sie gespeichert hat.</p>
    <p id="classModeStatus" role="status">Unterrichtssteuerung wird geprüft …</p>
+   <p id="classModeSelection" role="status" aria-live="polite"></p>
    <form id="classModeForm" hidden>
     <div class="admin-mode-picker" role="group" aria-label="Unterrichtsmodus wählen">
       <button type="button" data-mode-kind="arrival"><span>🌅</span><strong>Ankunftszeit</strong><small>Aufgaben des Tages zuerst</small></button>
@@ -70,10 +71,12 @@
   let registered=arr(assignments);
   let selectedKey='';
   let selectedIds=new Set();
+  const selection=mount.querySelector('#classModeSelection');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
   function update(){
    const kind=form.elements.kind.value,subject=form.elements.subject.value;
    subjectWrap.hidden=kind!=='subject';
+   selection.textContent='Ausgewählt: '+(kind==='subject'?'Fachunterricht – '+(subjects[subject]||subject):kind==='arrival'?'Ankunftszeit':kind==='free'?'Entdeckungszeit':'Geschlossen')+' · Noch nicht gespeichert';
    mount.querySelectorAll('[data-mode-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.modeKind===kind)));
    const found=matchingAssignments(registered,kind,subject);
    if(kind==='arrival'||kind==='subject'){
@@ -90,13 +93,13 @@
     tasks.querySelectorAll('input[type="checkbox"]').forEach(b=>b.onchange=()=>{
       const id=Number(b.value);
       if(b.checked)selectedIds.add(id);else selectedIds.delete(id);
-      form.querySelector('[type=submit]').disabled=false;
+      form.querySelector('[type=submit]').removeAttribute('disabled');
     });
-    form.querySelector('[type=submit]').disabled=false;
+    form.querySelector('[type=submit]').removeAttribute('disabled');
    }else{
     tasks.textContent='Alle Bereiche frei zugänglich – keine Pflichtaufträge notwendig.';
     selectedKey='';
-    form.querySelector('[type=submit]').disabled=false;
+    form.querySelector('[type=submit]').removeAttribute('disabled');
    }
   }
   async function load(){
@@ -131,9 +134,10 @@
     if(saved?.ok!==true||saved?.classroomMode?.kind!==kind)throw Error('Cloudflare hat den gewählten Modus nicht bestätigt.');
     await load();
     if(form.elements.kind.value!==kind)throw Error('Cloudflare hat einen anderen Modus zurückgegeben. Bitte die Worker-Version prüfen.');
-    status.textContent='✅ '+(kind==='arrival'?'Ankunftszeit':kind==='subject'?'Fachunterricht':kind==='free'?'Entdeckungszeit':'Geschlossen')+' ist auf Cloudflare aktiviert.';
+    status.textContent='✅ '+(kind==='arrival'?'Ankunftszeit':kind==='subject'?'Fachunterricht – '+(subjects[subject]||subject):kind==='free'?'Entdeckungszeit':'Geschlossen')+' ist auf Cloudflare aktiviert.';
+    selection.textContent='Aktiver Modus: '+(kind==='subject'?subjects[subject]+' · Fachunterricht':kind==='arrival'?'Ankunftszeit':kind==='free'?'Entdeckungszeit':'Geschlossen');
    }catch(err){status.textContent='Nicht gespeichert: '+String(err.message||err);update()}
-   finally{btn.disabled=false;update()}
+   finally{btn.removeAttribute('disabled');update()}
   };
   load();
  }

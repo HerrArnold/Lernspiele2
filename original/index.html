@@ -14,7 +14,7 @@
 <script defer src="assets/safari.js?v=14"></script><link rel="stylesheet" href="assets/zahl-des-tages.css?v=12"><script defer src="assets/zahl-des-tages.js?v=13"></script>
 <link rel="stylesheet" href="assets/tierwelt.css?v=12"><script defer src="assets/tierwelt-data.js?v=11"></script><script defer src="assets/tierwelt.js?v=11"></script><script defer src="assets/agenda.js?v=12"></script><link rel="stylesheet" href="assets/lernsteuerung.css?v=2"><script defer src="assets/lernsteuerung.js?v=1"></script><script defer src="assets/lernhelfer.js?v=1"></script><script defer src="assets/exit-ticket.js?v=1"></script><link rel="stylesheet" href="assets/new-safari-skin.css">
 <link rel="stylesheet" href="assets/tierwelt-palette.css?v=1">
-<link rel="stylesheet" href="assets/tages-tal-palette.css?v=1"></head>
+<link rel="stylesheet" href="assets/tages-tal-palette.css?v=1"><link rel="stylesheet" href="assets/tages-tal-akkordeon.css?v=2"></head>
 <body>
 <header class="site-header" id="main-header">
  <div class="header-inner">
@@ -48,6 +48,9 @@
 <main class="shell">
  <section class="view" id="view-aufgaben">
   <div class="today-flow">
+   <details class="valley-accordion valley-accordion-number" open>
+    <summary><span class="valley-accordion-icon">🔢</span><span><strong>Die Tageszahl</strong><small>Die Zahl entdecken und sechs Aufgaben lösen</small></span><span class="valley-accordion-arrow" aria-hidden="true">⌄</span></summary>
+    <div class="valley-accordion-body">
    <section class="today-intro-duo" aria-label="Einführung Zahl des Tages">
     
     <div id="zdt-example" class="today-example"></div>
@@ -58,6 +61,11 @@
    </section>
    <section id="zahl-des-tages" class="zdt-shell" aria-label="Zahl des Tages"></section>
 
+    </div>
+   </details>
+   <details class="valley-accordion valley-accordion-other">
+    <summary><span class="valley-accordion-icon">✏️</span><span><strong>Aufgaben des Tages</strong><small>Vier abwechslungsreiche Aufgaben bearbeiten</small></span><span class="valley-accordion-arrow" aria-hidden="true">⌄</span></summary>
+    <div class="valley-accordion-body">
    <section class="today-meerkat-intro" aria-label="Die anderen Tagesaufgaben">
     <div class="secret-wrap today-meerkat-figure">
      <button type="button" class="secret-image" id="meerkat-secret" aria-label="Erdmännchen"><img class="meerkat-figure" src="assets/erdmaennchen-denkend.png" alt="Nachdenkliches Erdmännchen"></button>
@@ -76,6 +84,8 @@
     <div class="preview-note" id="preview-notice" hidden><span>Wochenvorschau</span><button id="return-today" type="button">Zur heutigen Aufgabe</button></div>
     <div id="daily-tasks"></div>
    </div>
+    </div>
+   </details>
   </div>
  </section>
  <section class="view" id="view-todo" hidden><div id="lernsteuerung-todo" class="ls-todo-root"></div><div id="ls-exit-kids"></div></section>

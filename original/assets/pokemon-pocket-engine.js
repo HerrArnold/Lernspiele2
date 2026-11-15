@@ -130,6 +130,13 @@
    addLog(g,'Zebritz ex: '+(accept?'mit dem aktiven Pokémon gewechselt.':'nicht gewechselt.'));
    g.pending=null;return;
   }
+  if(pending.kind==='forceSwitch'){
+   const p=g.players[pending.side],slot=Number(accept);
+   if(!Number.isInteger(slot)||slot<0||slot>=p.bench.length)throw Error('Wähle ein Pokémon deiner eigenen Bank.');
+   moveActive(p,slot,p.turnCount);
+   addLog(g,'Angstmacherei: der Gegner hat sein Bank-Pokémon ausgewählt.');
+   g.pending=null;return;
+  }
   if(pending.kind==='postAttackLook'){
    const p=g.players[pending.side];
    if(accept===true&&p.pile.length>1){p.pile.push(p.pile.shift());addLog(g,'Damhirplex legt die oberste Deckkarte nach unten.');}
@@ -176,7 +183,7 @@
    case 'heal25':return getHealTargets(g,s).map(slot=>({slot}));
    case 'metalHeal30':return getHealTargets(g,s,'metal').map(slot=>({slot}));
    case 'switch':return bench.map(slot=>({slot}));
-   case 'forceSwitch':return g.players[1-s].bench.map((_,i)=>({slot:i}));
+   case 'forceSwitch':return g.players[1-s].bench.length?[{}]:[];
    case 'noWeakness':return own.map(slot=>({slot}));
    case 'moveEnergy':return own.flatMap(from=>{
     const m=position(p,from);return (m?.energy||[]).flatMap((type,ei)=>
@@ -232,7 +239,15 @@
    case 'heal25':own(choice.slot).damage=Math.max(0,own(choice.slot).damage-25);break;
    case 'metalHeal30':own(choice.slot).damage=Math.max(0,own(choice.slot).damage-30);break;
    case 'switch':moveActive(p,choice.slot,p.turnCount);break;
-   case 'forceSwitch':moveActive(g.players[1-s],choice.slot,g.players[1-s].turnCount);break;
+   case 'forceSwitch':{
+    const victimSide=1-s,enemy=g.players[victimSide];
+    if(victimSide===0){g.pending={kind:'forceSwitch',side:0,actor:s};}
+    else{
+     const slot=enemy.bench.reduce((best,m,i)=>scoreTarget(g,victimSide,i)>scoreTarget(g,victimSide,best)?i:best,0);
+     moveActive(enemy,slot,enemy.turnCount);
+    }
+    break;
+   }
    case 'noWeakness':own(choice.slot).weakShield=true;own(choice.slot).weakShieldAgainst=1-s;break;
    case 'moveEnergy':{
     const energy=own(choice.from).energy.splice(choice.ei,1)[0];
@@ -295,6 +310,7 @@
    endTurn(g,s);
   }
  }
+ function chooseForcedSwitch(g,s,slot){if(g.pending?.kind!=='forceSwitch'||g.pending.side!==s)throw Error('Keine gegnerische Wechselentscheidung offen.');resolvePending(g,slot);}
  function finishLook(g,s,sendToBottom){if(g.pending?.kind!=='postAttackLook'||g.pending.side!==s)throw Error('Keine Karteneinsicht offen.');resolvePending(g,sendToBottom);}
  function finishSwitch(g,s,slot){if(g.pending?.kind!=='postAttackSwitch'||g.pending.side!==s)throw Error('Kein freier Wechsel offen.');resolvePending(g,slot);}
  function switchOnEvolution(g,s,yes){if(g.pending?.kind!=='evolveSwitch'||g.pending.side!==s)throw Error('Keine Entwicklungsauswahl.');resolvePending(g,yes);}
@@ -327,6 +343,7 @@
   let steps=0;
   const best=(values,fn)=>values.reduce((x,y)=>fn(y)>fn(x)?y:x);
   while(!g.gameOver&&g.turn===1&&steps++<42){
+   if(g.pending?.kind==='forceSwitch')return; // Human must choose which of their Pokémon becomes active.
    if(g.pending?.kind==='evolveSwitch'){
     const current=p.active?scoreTarget(g,1,'active'):-99;
     const other=scoreTarget(g,1,g.pending.slot);
@@ -395,7 +412,7 @@
   if(steps>=42&&!g.gameOver&&g.turn===1&&!g.pending)endTurn(g,1);
  }
  const API={createGame,shuffle,clone,position,energyNeeded,retreatCost,trainerOptions,
-  playBasic,evolve,attach,retreat,playTrainer,attack,endTurn,finishSwitch,finishLook,switchOnEvolution,
+  playBasic,evolve,attach,retreat,playTrainer,attack,endTurn,finishSwitch,finishLook,chooseForcedSwitch,switchOnEvolution,
   availableAttacks,legalOptions,aiPlay,attackDamage,deal,knockOut,scoreTarget};
  root.PokemonPocketEngine=API;
  if(typeof module!=='undefined'&&module.exports)module.exports=API;

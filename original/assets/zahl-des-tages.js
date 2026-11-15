@@ -50,7 +50,7 @@ function solvedExample(){
  <p class="zdt-example-caption">324 liegt zwischen 300 und 400, ein bisschen näher bei 300.</p></div>
  </div></aside>`;
 }
-function section(id,title,description,content){return `<section class="zdt-task" data-step="${id}"><h3>${title}</h3><p>${description}</p>${content}<button type="button" class="zdt-check" data-check-step="${id}">Prüfen</button><span class="zdt-feedback" data-feedback="${id}" aria-live="polite"></span></section>`}
+function section(id,title,description,content){return `<details class="zdt-task zdt-disclosure" data-step="${id}" ${id==='word'?'open':''}><summary class="zdt-step-summary"><span>${title}</span><span class="zdt-chevron" aria-hidden="true">⌄</span></summary><div class="zdt-step-content"><p>${description}</p>${content}<button type="button" class="zdt-check" data-check-step="${id}">Prüfen</button><span class="zdt-feedback" data-feedback="${id}" aria-live="polite"></span></div></details>`}
 function apiBase(){return String(window.LERNSAFARI_BACKEND_URL||'https://lernsafari-api.ergohd02.workers.dev').replace(/\/+$/,'');}
 async function render(date){
  const host=$('zahl-des-tages');if(!host)return;

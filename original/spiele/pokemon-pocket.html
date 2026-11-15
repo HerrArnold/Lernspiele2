@@ -20,6 +20,15 @@ h2{font-size:clamp(23px,3vw,30px);margin:0 0 8px;color:#225478}h3{margin:3px 0 8
 ul,ol{padding-left:22px}li{margin:7px 0}a{color:#1d639c}.footer{margin:22px 0;font-size:13px;color:#52636d}
 [hidden]{display:none!important}@media(max-width:600px){.panel{padding:14px}.hero{padding:18px}.tab{flex:1}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style><style>
+.pokemon-card-browser{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:13px;margin:15px 0}
+.pokemon-image-card{border:2px solid #cbd9d4;border-radius:13px;padding:8px;background:#fff;cursor:pointer;color:#24465a;font:inherit;display:flex;flex-direction:column;align-items:center;gap:8px}
+.pokemon-image-card:hover,.pokemon-image-card:focus-visible{border-color:#287862}
+.pokemon-image-card img{width:100%;max-width:170px;aspect-ratio:480/670;object-fit:contain;border-radius:8px}
+.pokemon-image-card strong{font-size:13px;line-height:1.25}
+.card-image-fallback{background:#f3edd6;border:1px solid #dbc39c;min-height:70px;padding:10px;border-radius:9px;text-align:center}
+.practice-card-picture{max-width:220px;max-height:305px;margin:12px auto 18px;display:grid;place-items:center}
+.practice-card-picture img{max-width:100%;max-height:305px;object-fit:contain;border-radius:12px}
 </style></head><body><main class="shell" id="pokemonPreview" hidden>
 <header class="hero"><small>🏝️ LERNSAFARI · OASE · FLAMINGO-VORSCHAU</small><h1>⚡ Pokémon Pocket</h1><p>Entdecke die Karten, lerne die Regeln Schritt für Schritt und übe für das gemeinsame Spielen mit echten Pokémon-Karten.</p></header>
 <nav class="tabs" aria-label="Bereiche"><button class="tab" data-view="lexikon" aria-selected="true">📖 Lexikon</button><button class="tab" data-view="uebungen" aria-selected="false">🎲 Übungsschritte</button><button class="tab" data-view="analog" aria-selected="false">🃏 Mit echten Karten spielen</button></nav>
@@ -28,6 +37,7 @@ ul,ol{padding-left:22px}li{margin:7px 0}a{color:#1d639c}.footer{margin:22px 0;fo
  <div class="panel"><h2>📖 Karten- und Spiellexikon</h2><p>Beginne bei den Grundlagen. Die schwierigeren Sonderregeln findest du weiter unten. Öffne die Karten einzeln.</p>
  <div class="mock" aria-label="Erklärkarte – schematische Darstellung, keine offizielle Pokémon-Karte"><div class="mock-top"><span>🌱 BASIS · Beispiel-Pokémon</span><span>70 KP ❤️</span></div><div class="mock-art"><strong>DEMO-KARTE</strong><small>Eigene Skizze · kein echtes Kartenbild</small></div><div class="mock-attack"><span>⚡⚪ <strong>Funkenschlag</strong></span><strong>30</strong></div><div class="mock-foot">Schwäche: 🔥 +20 &nbsp; | &nbsp; Rückzug: ⚪</div></div>
  <p class="muted">Anhand der Beispielkarte: Oben stehen Name, Entwicklungsstufe und KP. Beim Angriff stehen Energiekosten und Schaden. Unten erkennst du Schwäche und Rückzugskosten.</p></div>
+ <div class="panel"><h2>🃏 Unsere echten Safari-Karten</h2><p>Klicke auf eine Pokémon- oder Trainerkarte. Ihre Werte und besonderen Effekte sind auch im Computerspiel eingebaut.</p><div class="filters" id="cardFilters"></div><div id="cardsBrowse" class="pokemon-card-browser"></div><div id="cardDetail" class="challenge" hidden></div></div>
  <h2>🌱 Grundlagen – damit beginnst du</h2><div id="basicLex" class="lex-grid"></div>
  <div class="advanced"><h2>🔍 Für Fortgeschrittene</h2><p>Diese Regeln kannst du später dazulernen. Beim ersten Kennenlernen brauchst du sie noch nicht alle.</p><div id="advancedLex" class="lex-grid"></div></div>
 </section>
@@ -42,6 +52,7 @@ ul,ol{padding-left:22px}li{margin:7px 0}a{color:#1d639c}.footer{margin:22px 0;fo
 <footer class="footer">LernSafari · Übungsangebot für die Primarschule · Keine offizielle Pokémon-Seite. Erklärtexte in eigenen Worten. Regeln: <a href="https://www.pokewiki.de/Pok%C3%A9mon-Sammelkartenspiel-Pocket" target="_blank" rel="noopener">PokéWiki Pocket</a>, <a href="https://support.pokemon.com/hc/en-us/articles/38906248102292-Pok%C3%A9mon-TCG-Pocket-Battle-Rules-FAQ" target="_blank" rel="noopener">Pokémon Support</a>, <a href="https://www.reddit.com/r/PTCGP/comments/1hjp5i1/pokemon_pocket_rules_with_irl_pokemon_cards/" target="_blank" rel="noopener">Reddit-Vorlage für analoge Karten</a>.</footer>
 </main>
 <script src="../assets/login-config.js"></script>
+<script src="../assets/pokemon-pocket-cards.js"></script>
 <script>
 'use strict';
 const basic=[
@@ -86,6 +97,27 @@ const enc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 function renderLex(host,entries){host.innerHTML=entries.map((e,i)=>'<article class="lex-card"><details><summary><span class="lex-icon">'+e[0]+'</span><span><strong>'+enc(e[1])+'</strong><small>Zum Nachlesen öffnen</small></span><span aria-hidden="true">⌄</span></summary><div class="lex-content"><p>'+enc(e[2])+'</p><p class="analogue"><strong>Mit echten Karten:</strong> '+enc(e[3])+'</p></div></details></article>').join('')}
 renderLex(document.getElementById('basicLex'),basic);
 renderLex(document.getElementById('advancedLex'),advanced);
+const PD=window.PokemonPocketData;
+const cardIdByLesson=['yanma','kecleon','elezeba','elezeba','yanmega','flaminkno','mopex-ex','professor','energietausch','safari-ball','kecleon','gortrom-ex'];
+const cardText=c=>c.kind==='pokemon'?
+  c.hp+' KP · '+(c.stage===0?'Basis':('Phase '+c.stage+' · Entwicklung aus '+c.from))+
+  ' · '+PD.symbols[c.type]+' · Schwäche '+PD.symbols[c.weak]+' +20 · Rückzug '+c.retreat+
+  ' · '+c.attacks.map(a=>a.name+' · '+a.cost.map(t=>PD.symbols[t]).join('')+' · '+a.damage+(a.effect?' (Sondereffekt)':'')).join(' | '):
+  (c.kind==='supporter'?'Unterstützer':'Item')+' · '+({draw2:'2 Karten ziehen',searchBasic4:'4 Karten ansehen, 1 Basis-Pokémon nehmen',searchEvolution4:'4 Karten ansehen, 1 Entwicklung nehmen',heal20:'20 Schaden heilen',heal25:'25 Schaden heilen',metalHeal30:'30 Schaden bei Stahl heilen',switch:'Aktives Pokémon wechseln',moveEnergy:'Eine Energie verschieben',noWeakness:'Schwäche vorübergehend aufheben',energyGrassEvolved:'Pflanzen-Energie an entwickeltes Pflanzen-Pokémon',coinElectricBench:'Münzwurf für Elektro-Energie an die Bank',bench20:'20 Schaden auf Gegner-Bank',forceSwitch:'Gegnerisches aktives Pokémon auswechseln',look2:'Zwei Deckkarten ansehen und sortieren'})[c.effect];
+const cardPicture=id=>'<img src="../assets/pokemon-pocket/'+id+'.webp" alt="Karte: '+enc(PD.byId[id].name)+'" loading="lazy" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="card-image-fallback" hidden>🃏 '+enc(PD.byId[id].name)+'</span>';
+let cardFilter='alle';
+function renderCatalog(){
+ const cards=PD.cards.filter(c=>cardFilter==='alle'||cardFilter==='pokemon'&&c.kind==='pokemon'||cardFilter==='trainer'&&c.kind!=='pokemon');
+ document.getElementById('cardFilters').innerHTML=[['alle','Alle Karten'],['pokemon','Pokémon'],['trainer','Trainerkarten']].map(([id,name])=>'<button class="filter" aria-pressed="'+(id===cardFilter)+'" data-filter="'+id+'">'+name+'</button>').join('');
+ document.getElementById('cardsBrowse').innerHTML=cards.map(c=>'<button class="pokemon-image-card" type="button" data-card-id="'+c.id+'">'+cardPicture(c.id)+'<strong>'+enc(c.name)+'</strong></button>').join('');
+ document.querySelectorAll('[data-filter]').forEach(button=>button.onclick=()=>{cardFilter=button.dataset.filter;renderCatalog()});
+ document.querySelectorAll('[data-card-id]').forEach(button=>button.onclick=()=>{
+  const c=PD.byId[button.dataset.cardId],detail=document.getElementById('cardDetail');
+  detail.hidden=false;detail.innerHTML='<h3>'+enc(c.name)+'</h3><p>'+enc(cardText(c))+'</p>';
+  detail.scrollIntoView({block:'nearest',behavior:'smooth'});
+ });
+}
+renderCatalog();
 let index=0,answers=Array(exercises.length).fill(null);
 function renderPractice(){
  const e=exercises[index],chosen=answers[index],complete=answers.filter(v=>v!==null).length;
@@ -94,7 +126,7 @@ function renderPractice(){
  const presented=e.answers.map((label,i)=>({label,original:i})).slice(rotation).concat(e.answers.map((label,i)=>({label,original:i})).slice(0,rotation));
  document.getElementById('progressText').textContent='Schritt '+(index+1)+' von '+exercises.length+' · '+complete+' bearbeitet';
  document.getElementById('progressBar').style.width=(complete/exercises.length*100)+'%';
- document.getElementById('exercise').innerHTML='<span class="step">Schritt '+(index+1)+'</span><h3>'+enc(e.title)+'</h3><p>'+enc(e.question)+'</p><div class="choices">'+presented.map(item=>'<button class="choice '+(chosen===item.original?(item.original===e.correct?'selected':'wrong'):'')+'" data-answer="'+item.original+'" '+(chosen!==null?'disabled':'')+'>'+enc(item.label)+'</button>').join('')+'</div>'+
+ document.getElementById('exercise').innerHTML='<span class="step">Schritt '+(index+1)+'</span><h3>'+enc(e.title)+'</h3><div class="practice-card-picture">'+cardPicture(cardIdByLesson[index])+'</div><p>'+enc(e.question)+'</p><div class="choices">'+presented.map(item=>'<button class="choice '+(chosen===item.original?(item.original===e.correct?'selected':'wrong'):'')+'" data-answer="'+item.original+'" '+(chosen!==null?'disabled':'')+'>'+enc(item.label)+'</button>').join('')+'</div>'+
  (chosen!==null?'<div role="status" class="feedback '+(chosen===e.correct?'':'wrong')+'"><strong>'+(chosen===e.correct?'Richtig! 🌟':'Schau dir die Erklärung an.')+'</strong><p>'+enc(e.why)+'</p></div><div class="challenge"><strong>Jetzt mit echten Karten üben:</strong> '+enc(e.task)+'</div>':'<p class="muted">Wähle eine Antwort. Anschliessend erscheint deine Übung mit echten Karten.</p>');
  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{if(answers[index]!==null)return;answers[index]=Number(b.dataset.answer);renderPractice()});
  document.getElementById('prev').disabled=index===0;

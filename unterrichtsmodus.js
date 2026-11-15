@@ -29,7 +29,9 @@
   const missing=requiredIds.filter(id=>!tasks.some(a=>Number(a.id)===id));
   const requireVerified=mode.require_verified!==false;
   const pending=required.filter(a=>!(requireVerified?verified:done).has(Number(a.id)));
-  const restricted=kind==='closed'||(kind!=='free'&&(pending.length>0||missing.length>0||requiredIds.length===0));
+  // A classroom mode is an explicit teacher choice. Completing an assignment
+  // must not unlock other subjects or areas before the teacher changes mode.
+  const restricted=kind!=='free';
   const allowed=new Set(required.map(a=>a.target));
   const catalog=gameMap(original);
   const assignedGames=[...allowed].filter(x=>x.startsWith('game:')).map(x=>({id:x.slice(5),...catalog.get(x.slice(5))}));
@@ -37,19 +39,32 @@
   const daily=kind==='arrival'||[...allowed].some(x=>x.startsWith('daily:')||x.startsWith('number:')||x==='page:aufgaben');
   const subjectCodes={math:'Mathe',german:'Deutsch',nmg:'NMG',music:'Musik',english:'Englisch'};
   const allowedSubject=kind==='subject'?mode.subject:null;
-  const isCurrentSubjectGame=id=>allowedSubject&&catalog.get(id)?.subject===allowedSubject;
-  const allowTarget=x=>!restricted||kind!=='closed'&&(allowed.has(x)||(x.startsWith('game:')&&isCurrentSubjectGame(x.slice(5))));
+  // The topic catalog also contains newer games absent from ORIGINAL_GAMES.
+  // Resolve these too so an allowed subject's hearing/maths games still open.
+  const topicSubjects=new Map();
+  for(const [subject,topics] of Object.entries(root.LernSafariTopicCatalog||{})){
+   for(const topic of arr(topics))for(const game of arr(topic.games)){
+    const file=Array.isArray(game)?game[1]:game?.file;
+    if(typeof file==='string'&&file.endsWith('.html'))topicSubjects.set(file.replace(/\.html$/i,''),subject);
+   }
+  }
+  const resolveSubject=id=>catalog.get(id)?.subject||topicSubjects.get(id)||null;
+  const selectedSubject=code=>subjectCodes[code]||code;
+  const allowSelectedSubject=subject=>kind==='subject'&&(allowedSubject==='Alle'||selectedSubject(subject)===allowedSubject);
+  const allowGame=id=>!restricted||(kind==='subject'&&allowSelectedSubject(resolveSubject(id)))||
+   (kind==='arrival'&&allowed.has('game:'+id));
+  const allowTarget=x=>!restricted||kind==='arrival'&&allowed.has(x)||
+   kind==='subject'&&x.startsWith('game:')&&allowGame(x.slice(5));
   const allowDestination=area=>{
    if(!restricted||area==='camp'||area==='map')return true;
    if(kind==='closed')return false;
-   if(area==='valley')return daily;
-   if(area==='lagoon')return kind==='subject'||assignedGames.some(x=>x.subject!=='Allgemein');
-   if(area==='oasis')return assignedGames.some(x=>x.subject==='Allgemein');
-   if(area==='baobab')return ['page:tiere','page:advent'].some(x=>allowed.has(x));
-   return false;
+   if(area==='lagoon')return kind==='subject';
+   if(area==='valley')return kind==='arrival'||(kind==='arrival'&&daily);
+   return kind==='arrival'&&(
+    area==='oasis'&&assignedGames.some(x=>x.subject==='Allgemein')||
+    area==='baobab'&&['page:tiere','page:advent'].some(x=>allowed.has(x)));
   };
-  const allowSubject=code=>!restricted||kind!=='closed'&&(allowedSubject=== (subjectCodes[code]||code)||subjects.has(subjectCodes[code]||code));
-  const allowGame=id=>!restricted||kind!=='closed'&&(allowed.has('game:'+id)||isCurrentSubjectGame(id));
+  const allowSubject=code=>!restricted||allowSelectedSubject(code);
   return {kind,focus:kind!=='free',restricted,pending,missing,requiredIds,
    assigned:allowed,assignedGames,hasDaily:daily,subjects,allowTarget,allowDestination,allowSubject,allowGame,
    verificationRequired:requireVerified,expired};

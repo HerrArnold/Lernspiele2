@@ -29,3 +29,10 @@ button:hover:not(:disabled){border-color:#267e75;filter:brightness(.97)}button:f
 .card-back{aspect-ratio:5/7;background:radial-gradient(circle,#f7c939 7%,#3d75c8 8%,#16488d 65%,#0d315d);border:5px solid #e7e1ce;border-radius:14px;box-shadow:0 5px 14px #184a7033}
 @media(max-width:650px){.shell{padding:8px}.panel,.play-area{padding:11px}.mini-card{flex:0 1 135px;min-width:115px}.hand .mini-card{flex:0 1 133px}.active-zone{flex:0 1 185px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+.inspect-btn{font:inherit;font-size:11px;border:0;background:none;text-decoration:underline;color:#28698a;cursor:pointer;display:block;width:100%;padding:5px}
+.pokemon-zoom{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:20px}
+.pokemon-zoom-backdrop{position:absolute;inset:0;background:#15252bd9}
+.pokemon-zoom-content{position:relative;background:#fffdf7;border-radius:17px;padding:15px;max-height:94vh;width:min(540px,100%);overflow:auto;text-align:center;box-shadow:0 14px 45px #0006}
+.pokemon-zoom-content .art{max-width:400px;margin:auto}.pokemon-zoom-content .art img{width:100%;max-height:72vh;object-fit:contain}
+.pokemon-zoom-content h2{font-size:20px;margin:7px 0}

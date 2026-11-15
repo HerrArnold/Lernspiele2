@@ -20,6 +20,7 @@
   const health=mon?Math.max(0,c.hp-mon.damage)+' / '+c.hp+' KP':isMon?c.hp+' KP':'';
   return '<article class="mini-card" data-type="'+escape(c.type||'trainer')+'">'+
    '<div class="card-name">'+escape(c.name)+'</div>'+imgMarkup(id)+
+   '<button type="button" class="inspect-btn" data-inspect="'+escape(id)+'">🔎 Karte vergrössern</button>'+
    '<div class="card-info">'+(isMon?icon(c.type)+' '+health+(c.ex?' · ex':''):'📜 '+(c.kind==='supporter'?'Unterstützer':'Item'))+'</div>'+
    (mon?'<div class="card-info">Energie: '+(energy||'–')+'</div>':'')+
    (actionText?'<button class="card-action" '+(action?'data-action="'+escape(action)+'"':'disabled')+'>'+escape(actionText)+'</button>':'')+
@@ -58,6 +59,19 @@
   });
   $('cancelChoice').onclick=()=>{choice=null;render()};
   host.scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
+ function inspectCard(id){
+  const c=card(id);if(!c)return;
+  const name=escape(c.name);
+  const el=document.createElement('div');el.className='pokemon-zoom';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Karte '+c.name);
+  el.innerHTML='<div class="pokemon-zoom-backdrop"></div><div class="pokemon-zoom-content"><button type="button" class="action" data-close-zoom>✕ Schliessen</button><h2>'+name+'</h2>'+imgMarkup(id)+'</div>';
+  document.body.appendChild(el);
+  const close=()=>{document.removeEventListener('keydown',escapeKey);el.remove()};
+  const escapeKey=e=>{if(e.key==='Escape')close()};
+  document.addEventListener('keydown',escapeKey);
+  el.querySelector('[data-close-zoom]').onclick=close;
+  el.querySelector('.pokemon-zoom-backdrop').onclick=close;
+  el.querySelector('[data-close-zoom]').focus();
  }
  function showNotice(message){const node=$('choice');node.hidden=false;node.innerHTML='<p class="warning">'+escape(message)+'</p><button class="option" id="dismiss">Schliessen</button>';$('dismiss').onclick=()=>{node.hidden=true;render()};}
  function take(fn){
@@ -123,6 +137,7 @@
    (game.gameOver?'<button class="big-button" id="newGame">Neue Partie</button>':'')+
    (game.turn===1&&!game.gameOver?'<span class="status">🤖 Der Computer denkt …</span>':'');
   $('gameLog').innerHTML=game.log.map(message=>'<li>'+escape(message)+'</li>').join('');
+  document.querySelectorAll('[data-inspect]').forEach(b=>b.onclick=()=>inspectCard(b.dataset.inspect));
   document.querySelectorAll('[data-action^="hand:"]').forEach(b=>b.onclick=()=>handAction(Number(b.dataset.action.split(':')[1])));
   document.querySelectorAll('[data-attach]').forEach(b=>b.onclick=()=>take(()=>E.attach(game,0,b.dataset.attach==='active'?'active':Number(b.dataset.attach))));
   document.querySelectorAll('[data-retreat]').forEach(b=>b.onclick=()=>take(()=>E.retreat(game,0,Number(b.dataset.retreat))));

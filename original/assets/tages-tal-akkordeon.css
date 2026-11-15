@@ -24,3 +24,12 @@
 #view-aufgaben .today-intro-duo,#view-aufgaben .today-panel,#view-aufgaben .zdt-shell{min-width:0}
 @media(max-width:600px){#view-aufgaben .valley-accordion>summary{padding:14px 13px}#view-aufgaben .zdt-disclosure>summary,#view-aufgaben .daily-disclosure>summary{padding:13px 10px}#view-aufgaben .valley-accordion-body{padding:12px 8px 18px}#view-aufgaben .zdt-step-content,#view-aufgaben .daily-step-content{padding:12px 8px 16px}}
 @media(prefers-reduced-motion:reduce){#view-aufgaben .valley-accordion-arrow,#view-aufgaben .zdt-chevron,#view-aufgaben .daily-chevron{transition:none}}
+
+/* Das geloeste Beispiel klappt unabhaengig von den sechs Aufgaben auf. */
+#view-aufgaben .zdt-example-accordion{border:1px solid #d4bd8f;border-radius:14px;background:#fff8e9;overflow:hidden;margin:12px 0 18px;min-width:0}
+#view-aufgaben .zdt-example-accordion>summary{display:flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:16px 18px;background:#f3e8cb;color:#46391e;font-size:18px;font-weight:750}
+#view-aufgaben .zdt-example-accordion>summary::-webkit-details-marker{display:none}
+#view-aufgaben .zdt-example-accordion>summary:focus-visible{outline:3px solid #2d765a;outline-offset:-4px}
+#view-aufgaben .zdt-example-accordion>summary .zdt-chevron{font-size:24px;margin-left:auto;transition:transform .2s}
+#view-aufgaben .zdt-example-accordion[open]>summary .zdt-chevron{transform:rotate(180deg)}
+#view-aufgaben .zdt-example-accordion>.today-example{padding:13px;min-width:0}

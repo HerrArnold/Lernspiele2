@@ -1,0 +1,10 @@
+/* Hörverständnis im Tages-Tal: Hörtext und Bedienelemente ohne Textspoiler. */
+.daily-audio-tools{background:#eef6ee;border:2px solid #adcbb5;border-radius:16px;padding:15px 18px;margin:15px 0 20px;color:#285744}
+.daily-audio-header{display:flex;gap:12px;align-items:center}
+.daily-audio-header>span{font-size:27px}
+.daily-audio-header strong,.daily-audio-header small{display:block}
+.daily-audio-header strong{font-size:18px}
+.daily-audio-header small{font-size:14px;margin-top:3px}
+.daily-audio-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.daily-audio-actions button{min-height:42px}
+#daily-audio-status{font-size:14px;margin:8px 0 0;min-height:1.2em}

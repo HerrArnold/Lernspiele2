@@ -30,6 +30,8 @@
   if(option.skip)return 'Keine Karte nehmen';
   if('id' in option)return 'Nimm '+card(option.id).name+' auf die Hand';
   if('swap' in option)return option.swap?'Die zwei obersten Karten vertauschen':'Reihenfolge behalten';
+  if('bottom' in option)return option.bottom?'Unter das Deck legen':'Oben lassen';
+  if('yes' in option)return option.yes?'Ja, Zebritz ex nach vorne wechseln':'Nein, nicht wechseln';
   if('from' in option)return card(E.position(p,option.from).id).name+' → '+card(E.position(p,option.to).id).name+' (Energie '+(option.ei+1)+')';
   if('slot' in option){
    const victim=['bench20','forceSwitch'].includes(choice?.effect)?game.players[1-side]:p;
@@ -87,6 +89,11 @@
   if(game.pending.kind==='postAttackSwitch'){
    showChoices('Mopex ex: Wähle ein Bank-Pokémon für den Wechsel nach dem Angriff.',
     game.players[0].bench.map((_,slot)=>({slot})),o=>take(()=>E.finishSwitch(game,0,o.slot)));
+   return;
+  }
+  if(game.pending.kind==='postAttackLook'){
+   showChoices('Damhirplex – oberste Karte: '+card(game.pending.cardId).name+'. Wohin soll sie?',
+    [{bottom:false},{bottom:true}],o=>take(()=>E.finishLook(game,0,o.bottom)));
   }
  }
  function renderBattlefield(side,hostId){

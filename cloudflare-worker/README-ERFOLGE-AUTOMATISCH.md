@@ -12,7 +12,7 @@ Titel: **FLEISSIG**
 
 ## FEHLERFREI
 
-Ein voller, mit einem Abschlussereignis dokumentierter Lern-Lagunen-Aufgabensatz muss **beim ersten Versuch vollständig richtig** gelöst sein. Die Cloudflare-Datenbank kontrolliert die bisherigen einzelnen Prüfungen des jeweiligen Spiels. Nachträgliche Korrekturen, Neu-Starts und wiederholte Abschlussmeldungen dürfen den Erfolg nicht mehr auslösen.
+Ein vollständiger Lern-Lagunen-Aufgabensatz muss **beim ersten Versuch vollständig richtig** gelöst sein. Unterstützt sind die vollständig protokollierten NMG-Sets, Einmaleins-Sets mit Abschlussmeldung und die Hörverständnisse mit einer ersten Gesamtauswertung. Die Cloudflare-Datenbank kontrolliert die bisherigen Prüfungen des jeweiligen Spiels; bei Hörverständnissen, die nur eine Gesamtauswertung melden, muss die erste abgegebene Gesamtauswertung fehlerfrei sein. Nachträgliche Korrekturen, Neu-Starts und wiederholte Abschlussmeldungen dürfen den Erfolg nicht mehr auslösen.
 
 Titel: **FEHLERFREI**
 
@@ -22,6 +22,6 @@ Jeder Schüler kann diesen Erfolg pro geeignetem Spiel **höchstens einmal** erh
 
 ## Technische Hinweise
 
-Die Aktionen werden vom bestehenden authentifizierten `POST /game-attempt` ausgelöst. Kein Browser-Timer und keine geplante Cloudflare-Cron-Aufgabe erforderlich. Die Vergabe und Briefzustellung erfolgen serverseitig in D1. Zwei automatisch erstellte Tabellen sichern die Einmaligkeit. Die vorhandenen Polaroid-, Mail- und Unterrichtsmodus-Routen bleiben erhalten.
+Die Aktionen werden vom bestehenden authentifizierten `POST /game-attempt` ausgelöst. Kein Browser-Timer und keine geplante Cloudflare-Cron-Aufgabe erforderlich. Die Vergabe und Briefzustellung erfolgen serverseitig in D1. Zwei automatisch erstellte Tabellen sichern die Einmaligkeit. Die beiden Auszeichnungen wurden in 25 gezielten SQLite/D1-kompatiblen Tests geprüft. Die vorhandenen Polaroid-, Mail- und Unterrichtsmodus-Routen bleiben erhalten.
 
-**Wichtig:** GitHub speichert die technische Beschreibung; der aktualisierte vollständige Cloudflare Worker wird separat als ZIP geliefert. Erst nach **Cloudflare Deploy** werden die Erfolge live. Für vorhandene Lernspiele, die noch keine auswertbare Abschlussmeldung liefern, ist später eine geeignete Abschlussmeldung nötig.
+**Wichtig:** GitHub enthält die aktualisierten Lernspiele und diese technische Beschreibung; der vollständige Cloudflare Worker wird separat als ZIP geliefert. Die neue ZIP ersetzt die frühere ZIP, damit nur eine Worker-Aktualisierung nötig ist. Erst nach **Cloudflare Deploy** werden die Erfolge live. Für vorhandene Lernspiele, die noch keine auswertbare Abschlussmeldung liefern, ist später eine geeignete Abschlussmeldung nötig.

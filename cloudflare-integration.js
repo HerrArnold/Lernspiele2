@@ -393,7 +393,7 @@
   finally{focusBusy=false}
  }
  function showFocusNotice(){
-  notify('🔒 Zuerst deine offenen Pflichtaufträge im Logbuch bearbeiten.');
+  notify('🔒 Dieser Bereich ist im aktuellen Unterrichtsmodus nicht freigegeben.');
  }
  function blockedInClass(target,kind){
   if(!loggedChild()||!focusGate?.restricted)return false;
@@ -411,11 +411,11 @@
     :blockedInClass(el.dataset.lagoonSubject||el.dataset.originalSubject,'subject');
    el.classList.toggle('cloud-focus-locked',locked);
    el.setAttribute('aria-disabled',locked?'true':'false');
-   if(locked)el.title='Zuerst deine offenen Pflichtaufträge bearbeiten';
-   else if(el.title==='Zuerst deine offenen Pflichtaufträge bearbeiten')el.removeAttribute('title');
+   if(locked)el.title='Im aktuellen Unterrichtsmodus gesperrt';
+   else if(el.title==='Im aktuellen Unterrichtsmodus gesperrt')el.removeAttribute('title');
   }
   const hint=document.querySelector('#campHint');
-  if(hint){hint.textContent=focusGate?.restricted?'🔒 Fokuszeit: Öffne dein Logbuch und bearbeite deine To-dos.':'Klicke auf einen Gegenstand und entdecke die Safari!';}
+  if(hint){hint.textContent=focusGate?.restricted?'🔒 Unterrichtsmodus: Nur freigegebene Bereiche sind verfügbar.':'Klicke auf einen Gegenstand und entdecke die Safari!';}
   for(const button of document.querySelectorAll('[data-topic-index],[data-topic-game]')){
    // Topic and game cards belong to the currently displayed subject.
    const locked=blockedInClass(safariSubject,'subject');
@@ -446,7 +446,7 @@
     frame.removeAttribute('src');frame.remove();
     const surface=document.querySelector('.integration-game-surface');
     if(surface){
-     surface.innerHTML='<div class="cloud-focus-interrupted" role="status"><h3>🔒 Neue Pflichtaufgaben</h3><p>Die Lehrperson hat neue To-dos freigeschaltet. Bitte bearbeite zuerst deine offenen Aufträge.</p><button type="button" class="pd-action" id="cloudFocusToLogbook">Mein Logbuch öffnen</button></div>';
+     surface.innerHTML='<div class="cloud-focus-interrupted" role="status"><h3>🔒 Unterrichtsmodus</h3><p>Dieses Spiel ist im aktuellen Unterrichtsmodus nicht freigegeben. Öffne die Lern-Lagune und wähle ein freigegebenes Fach.</p><button type="button" class="pd-action" id="cloudFocusToLogbook">Mein Logbuch öffnen</button></div>';
      surface.querySelector('#cloudFocusToLogbook')?.addEventListener('click',()=>showModal('logbook'));
     }
    }
@@ -459,7 +459,7 @@
   }
   if(state.screen==='destination'&&state.destination&&blockedInClass(state.destination,'area')){
    goCamp();
-   notify('🔒 Für diesen Bereich gibt es gerade neue Pflichtaufträge. Schau in dein Logbuch.');
+   notify('🔒 Dieser Bereich ist im aktuellen Unterrichtsmodus gesperrt.');
   }
  }
 

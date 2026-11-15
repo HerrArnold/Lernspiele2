@@ -108,6 +108,11 @@
   if(game.pending.kind==='postAttackLook'){
    showChoices('Damhirplex – oberste Karte: '+card(game.pending.cardId).name+'. Wohin soll sie?',
     [{bottom:false},{bottom:true}],o=>take(()=>E.finishLook(game,0,o.bottom)));
+   return;
+  }
+  if(game.pending.kind==='forceSwitch'){
+   showChoices('Angstmacherei: Der Computer zwingt dich zum Wechsel. Du darfst das Pokémon deiner Bank bestimmen.',
+    game.players[0].bench.map((_,slot)=>({slot})),o=>take(()=>E.chooseForcedSwitch(game,0,o.slot)));
   }
  }
  function renderBattlefield(side,hostId){

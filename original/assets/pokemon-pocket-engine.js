@@ -268,6 +268,15 @@
   }
   addLog(g,card.name+' wurde gespielt.');
  }
+ function expectedAttackDamage(g,s,attack){
+  // Planning uses expected values, never consumes a real coin flip.
+  if(attack.effect==='coin2x30')return 30;
+  const preview=Object.assign({},g,{rng:()=>0.99});
+  const base=attackDamage(preview,s,attack);
+  if(attack.effect==='coinPlus20')return base+10;
+  if(attack.effect==='coinPlus10')return base+5;
+  return base;
+ }
  function attackDamage(g,s,attack){
   const p=g.players[s],enemy=g.players[1-s],m=p.active;
   let damage=attack.damage;
@@ -404,7 +413,16 @@
    }
    if(legal.attacks.length){
     const chosen=level===1?legal.attacks[Math.floor(g.rng()*legal.attacks.length)]:
-      best(legal.attacks,o=>attackDamage(g,1,o.attack)+(human.active&&human.active.damage+o.attack.damage>=C(human.active.id).hp?(C(human.active.id).ex?180:100):0));
+      best(legal.attacks,o=>{
+       const defender=C(human.active?.id);
+       const weakness=defender?.weak===C(p.active.id).type?20:0;
+       const armor=defender?.ability==='reduce10'?10:0;
+       const expected=Math.max(0,expectedAttackDamage(g,1,o.attack)+weakness-armor);
+       const missing=defender?defender.hp-human.active.damage:999;
+       const probableKO=expected>=missing;
+       const knockOutValue=probableKO?(defender.ex?195:120):0;
+       return expected+knockOutValue;
+      });
     attack(g,1,chosen.index);continue;
    }
    endTurn(g,1);

@@ -139,7 +139,7 @@
   const turn=game.turn===0?'Du bist am Zug':'Der Computer ist am Zug';
   const p=game.players[0],bot=game.players[1];
   $('scorebar').innerHTML='<span>🏆 Du: '+p.points+' / 3</span><span>'+escape(game.gameOver?(game.winner===0?'Du gewinnst! 🎉':game.winner===1?'Computer gewinnt':'Unentschieden'):turn)+'</span><span>Computer: '+bot.points+' / 3 🏆</span>'+
-    '<span>⚡ Energiezone: '+(p.energyNext?energyIcon(p.energyNext):'leer')+(p.attached?' · normale Energie benutzt':' · normale Energie bereit')+' · '+p.energyPile.length+' im Energiestapel</span>'+
+    '<span>⚡ Energiezone (∞): '+(p.energyNext?energyIcon(p.energyNext):'leer')+(p.attached?' · Energie für diesen Zug angehängt':' · Energie bereit')+'</span>'+
     '<span>Karten: '+p.pile.length+' | Computer: '+bot.pile.length+'</span>';
   renderBattlefield(1,'enemy');renderBattlefield(0,'yours');
   const legal=E.legalOptions(game,0);

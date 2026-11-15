@@ -29,7 +29,11 @@
       groups.map((group,g)=>{
         const isTeacher=state.role==='cloudflare-admin';
         if(group.previewOnly&&!isTeacher)return '<section class="oase-section oase-coming-soon" aria-label="Pokémon Pocket – noch nicht verfügbar"><div class="oase-group-head"><span aria-hidden="true">'+group.icon+'</span><div><h3>'+group.title+' 🔒</h3><p>Noch nicht verfügbar. Der Flamingo bereitet diesen Bereich vor.</p></div></div><p class="oase-preview-notice">🛠️ Hier wird gerade noch gebaut.</p></section>';
-        return '<section class="oase-section"><div class="oase-group-head"><span aria-hidden="true">'+group.icon+'</span><div><h3>'+group.title+(group.previewOnly?' · Flamingo-Vorschau':'')+'</h3><p>'+group.hint+'</p></div></div><div class="oase-game-grid">'+group.games.map((game,i)=>'<button type="button" class="oase-card" data-oase-section="'+g+'" data-oase-game="'+i+'"><span class="oase-card-icon">'+game.emoji+'</span><span><strong>'+game.title+'</strong><small>'+game.description+'</small></span><span class="oase-arrow">›</span></button>').join('')+'</div></section>';
+        return '<section class="oase-section'+(group.previewOnly?' oase-pokemon':'')+'">'+
+          (group.previewOnly?'<img class="oase-pokemon-ball" src="original/assets/pokemon-pocket/safari-ball-scene.webp" alt="" onerror="this.hidden=true">':'')+
+          '<div class="oase-group-head"><span aria-hidden="true">'+group.icon+'</span><div><h3>'+group.title+(group.previewOnly?' · Flamingo-Vorschau':'')+'</h3><p>'+group.hint+'</p></div></div>'+
+          (group.previewOnly?'<img class="oase-pokemon-logo" src="original/assets/pokemon-pocket/pokemon-safari-logo.webp" alt="Pokémon Safari" onerror="this.hidden=true">':'')+
+          '<div class="oase-game-grid">'+group.games.map((game,i)=>'<button type="button" class="oase-card" data-oase-section="'+g+'" data-oase-game="'+i+'"><span class="oase-card-icon">'+game.emoji+'</span><span><strong>'+game.title+'</strong><small>'+game.description+'</small></span><span class="oase-arrow">›</span></button>').join('')+'</div></section>';
       }).join('')+'</section>';
     root.querySelectorAll('[data-oase-game]').forEach(button=>button.onclick=()=>{
       const group=groups[Number(button.dataset.oaseSection)],game=group?.games[Number(button.dataset.oaseGame)];if(!game)return;

@@ -97,7 +97,7 @@
   const ord=data.task4.map(q=>answers.order[q.id]);if(new Set(ord).size!==4||ord.some(n=>!(n>=1&&n<=4))){alert('Bitte benutze bei der Reihenfolge die Zahlen 1, 2, 3 und 4 je einmal.');return}
   if(missing){alert('Bitte beantworte zuerst alle Fragen. Es fehlen noch '+missing+' Antworten.');return}
   finished=true;unlockReading();get('#hvRead').hidden=false;showResult();const score=assessment().score,percent=Math.round(score/20*100);
-  try{const api=window.parent.SafariLogin;if(api?.auth?.()?.role==='child'&&api?.request)api.request('/game-attempt','POST',{game:'hoerverstehen-kurz-'+id,task:data.title,correct:score===20,correctCount:score,total:20,answer:String(score),expected:'20',details:percent+' Prozent richtig'}).catch(()=>{})}catch{}
+  try{const api=window.parent.SafariLogin;if(api?.auth?.()?.role==='child'&&api?.request)api.request('/game-attempt','POST',{game:'hoerverstehen-kurz-'+id,task:data.title+' Abschluss',correct:score===20,correctCount:score,total:20,answer:String(score),expected:'20',details:percent+' Prozent richtig'}).catch(()=>{})}catch{}
   void helpers();
  }
  try{if(!/^(affe|loewe|brille|wettrennen|kuchen)$/.test(id))throw Error('Unbekanntes Hörverständnis');

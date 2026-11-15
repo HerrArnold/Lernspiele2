@@ -47,8 +47,9 @@
    if(!hand.some(isBasic))throw Error('Kein Basis-Pokémon im Startdeck');
    const basic=hand.findIndex(isBasic);
    const active=mon(hand.splice(basic,1)[0],0);active.activeSince=0;
+   const energyPile=shuffle(Array.from({length:20},()=>definition.energy[Math.floor(rng()*definition.energy.length)]),rng);
    players.push({id:deckId,hand,pile,discard:[],active,bench:[],points:0,
-    energyTypes:definition.energy,energyNext:null,attached:false,retreated:false,supporter:false,turnCount:0});
+    energyTypes:definition.energy,energyPile,energyDiscard:[],energyNext:null,attached:false,retreated:false,supporter:false,turnCount:0});
   }
   const first=validSide(forceFirst)?forceFirst:Math.floor(rng()*2);
   const game={players,turn:first,first,ply:0,gameOver:false,winner:null,log:[],rng,difficulty,pending:null};
@@ -57,9 +58,23 @@
   return game;
  }
  function assertTurn(g,s){if(g.gameOver)throw Error('Die Partie ist bereits beendet.');if(g.turn!==s)throw Error('Du bist gerade nicht am Zug.');if(g.pending)throw Error('Schliesse zuerst die Kartenauswahl ab.');}
+ function nextEnergy(g,p){
+  if(!p.energyPile.length&&p.energyDiscard.length){p.energyPile=shuffle(p.energyDiscard,g.rng);p.energyDiscard=[];}
+  p.energyNext=p.energyPile[0]||null;
+ }
+ function takeEnergy(g,s,requested=null){
+  const p=g.players[s];nextEnergy(g,p);
+  if(!p.energyNext)return null;
+  const type=p.energyPile.shift();
+  nextEnergy(g,p);
+  // Cards in these mono-type decks always provide their printed type.
+  // For mixed decks an effect only takes the current visible Energy.
+  if(requested&&type!==requested){p.energyPile.unshift(type);nextEnergy(g,p);return null;}
+  return type;
+ }
  function startTurn(g,s){
   const p=g.players[s];p.turnCount++;p.attached=false;p.retreated=false;p.supporter=false;
-  p.energyNext=energyType(g,s);
+  nextEnergy(g,p);
   draw(p,1);
  }
  function endTurn(g,s){
@@ -89,7 +104,10 @@
  function applyEvolveAbility(g,s,slot){
   const p=g.players[s],m=position(p,slot),c=C(m.id);
   if(c.ability==='draw1OnEvolve'){draw(p,1);addLog(g,'Farigiraf ex: eine Karte gezogen.');}
-  if(c.ability==='evolveGrassEnergy'){m.energy.push('grass');addLog(g,'Gortrom ex erhält eine Pflanzen-Energie aus der Energiezone.');}
+  if(c.ability==='evolveGrassEnergy'){
+   const gained=takeEnergy(g,s,'grass');
+   if(gained){m.energy.push(gained);addLog(g,'Gortrom ex erhält eine Pflanzen-Energie aus der Energiezone.');}
+  }
   if(c.ability==='evolveSwitch'&&slot!=='active'){
    g.pending={kind:'evolveSwitch',side:s,slot:Number(slot)};
   }
@@ -129,15 +147,16 @@
  }
  function attach(g,s,slot){
   assertTurn(g,s);const p=g.players[s],target=position(p,slot);
-  if(!target||p.attached||(p.turnCount===1&&g.first===s))throw Error('Du darfst noch keine Energie anhängen.');
-  target.energy.push(p.energyNext);p.attached=true;
-  addLog(g,'Eine '+p.energyNext+'-Energie wird an '+C(target.id).name+' angehängt.');
+  if(!target||p.attached||(p.turnCount===1&&g.first===s)||!p.energyNext)throw Error('Du darfst noch keine Energie anhängen.');
+  const attached=takeEnergy(g,s);
+  target.energy.push(attached);p.attached=true;
+  addLog(g,'Eine '+attached+'-Energie wird an '+C(target.id).name+' angehängt.');
  }
  function retreat(g,s,slot){
   assertTurn(g,s);const p=g.players[s],cost=retreatCost(g,s);
   if(p.retreated||!p.active||p.bench.length<1||p.active.energy.length<cost)throw Error('Rückzug gerade nicht möglich.');
   // Generic retreat cost: discard exactly the printed number of attached Energy.
-  p.discard.push(...p.active.energy.splice(0,cost).map(x=>'energy:'+x));
+  p.energyDiscard.push(...p.active.energy.splice(0,cost));
   moveActive(p,Number(slot),p.turnCount);p.retreated=true;
   addLog(g,'Rückzug zum Bank-Pokémon.');
  }
@@ -163,8 +182,8 @@
     const m=position(p,from);return (m?.energy||[]).flatMap((type,ei)=>
       own.filter(to=>String(to)!==String(from)).map(to=>({from,to,ei})));
    });
-   case 'energyGrassEvolved':return own.filter(slot=>{const m=position(p,slot);return C(m?.id)?.type==='grass'&&C(m?.id)?.stage>0}).map(slot=>({slot}));
-   case 'coinElectricBench':return bench.map(slot=>({slot}));
+   case 'energyGrassEvolved':return p.energyNext==='grass'?own.filter(slot=>{const m=position(p,slot);return C(m?.id)?.type==='grass'&&C(m?.id)?.stage>0}).map(slot=>({slot})):[];
+   case 'coinElectricBench':return p.energyNext==='electric'?bench.map(slot=>({slot})):[];
    case 'bench20':return g.players[1-s].bench.map((_,i)=>({slot:i}));
    case 'searchBasic4':case 'searchEvolution4':
     return p.pile.slice(0,4).map((id,i)=>({index:i,id})).filter(o=>
@@ -179,7 +198,8 @@
   const victim=g.players[targetSide],winner=g.players[1-targetSide];
   const pokemon=position(victim,slot);if(!pokemon||pokemon.damage<C(pokemon.id).hp)return;
   winner.points+=C(pokemon.id).ex?2:1;
-  victim.discard.push(pokemon.id,...pokemon.stack,...pokemon.energy.map(x=>'energy:'+x));
+  victim.discard.push(pokemon.id,...pokemon.stack);
+  victim.energyDiscard.push(...pokemon.energy);
   addLog(g,C(pokemon.id).name+' wurde besiegt! '+(C(pokemon.id).ex?'2 Punkte.':'1 Punkt.'));
   if(slot==='active'){
    victim.active=null;
@@ -218,9 +238,9 @@
     const energy=own(choice.from).energy.splice(choice.ei,1)[0];
     own(choice.to).energy.push(energy);break;
    }
-   case 'energyGrassEvolved':own(choice.slot).energy.push('grass');break;
+   case 'energyGrassEvolved':{const e=takeEnergy(g,s,'grass');if(e)own(choice.slot).energy.push(e);break;}
    case 'coinElectricBench':{
-    if(g.rng()<.5){own(choice.slot).energy.push('electric');addLog(g,'Kopf! Die zusätzliche Energie wurde angehängt.');}
+    if(g.rng()<.5){const e=takeEnergy(g,s,'electric');if(e)own(choice.slot).energy.push(e);addLog(g,'Kopf! Die zusätzliche Energie wurde angehängt.');}
     else addLog(g,'Zahl! Keine zusätzliche Energie.');break;
    }
    case 'bench20':deal(g,1-s,choice.slot,20,null);break;
@@ -260,7 +280,8 @@
   if(!g.gameOver){
    if(move.effect==='energyMetalBench'&&p.bench.length){
     const target=p.bench.reduce((best,m,i)=>m.energy.length<p.bench[best].energy.length?i:best,0);
-    p.bench[target].energy.push('metal');addLog(g,'Metallruf: Energie an '+C(p.bench[target].id).name+'.');
+    const e=takeEnergy(g,s,'metal');
+    if(e){p.bench[target].energy.push(e);addLog(g,'Metallruf: Energie an '+C(p.bench[target].id).name+'.');}
    }
    if(move.effect==='lookTopMayBottom'&&p.pile.length){
     const top=C(p.pile[0]);const wantsBottom=s===1&&top?.kind==='item'&&p.hand.length>6;
@@ -288,7 +309,7 @@
    if(p.turnCount>1&&target&&target.entered<p.turnCount&&target.evolved!==p.turnCount&&card.from===C(target.id).name&&card.stage===C(target.id).stage+1)
     evolutions.push({handIndex:i,slot});
   });});
-  const attachSlots=!p.attached&&!(p.turnCount===1&&g.first===s)?slots:[];
+  const attachSlots=!p.attached&&p.energyNext&&!(p.turnCount===1&&g.first===s)?slots:[];
   const retreatSlots=!p.retreated&&p.active&&p.active.energy.length>=retreatCost(g,s)?p.bench.map((_,i)=>i):[];
   const trainers=p.hand.map((id,i)=>({handIndex:i,options:trainerOptions(g,s,id)})).filter(x=>x.options.length);
   return {basics,evolutions,attach:attachSlots,retreat:retreatSlots,attacks:availableAttacks(g,s).filter(x=>x.ready),trainers};

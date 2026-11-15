@@ -47,9 +47,10 @@
    if(!hand.some(isBasic))throw Error('Kein Basis-Pokémon im Startdeck');
    const basic=hand.findIndex(isBasic);
    const active=mon(hand.splice(basic,1)[0],0);active.activeSince=0;
-   const energyPile=shuffle(Array.from({length:20},()=>definition.energy[Math.floor(rng()*definition.energy.length)]),rng);
+   // The Energy Zone is infinite: each new Energy is chosen randomly from the
+   // deck's declared Energy types. There is no finite Energy pile to exhaust.
    players.push({id:deckId,hand,pile,discard:[],active,bench:[],points:0,
-    energyTypes:definition.energy,energyPile,energyDiscard:[],energyNext:null,attached:false,retreated:false,supporter:false,turnCount:0});
+    energyTypes:definition.energy,energyNext:null,attached:false,retreated:false,supporter:false,turnCount:0});
   }
   const first=validSide(forceFirst)?forceFirst:Math.floor(rng()*2);
   const game={players,turn:first,first,ply:0,gameOver:false,winner:null,log:[],rng,difficulty,pending:null};
@@ -59,17 +60,16 @@
  }
  function assertTurn(g,s){if(g.gameOver)throw Error('Die Partie ist bereits beendet.');if(g.turn!==s)throw Error('Du bist gerade nicht am Zug.');if(g.pending)throw Error('Schliesse zuerst die Kartenauswahl ab.');}
  function nextEnergy(g,p){
-  if(!p.energyPile.length&&p.energyDiscard.length){p.energyPile=shuffle(p.energyDiscard,g.rng);p.energyDiscard=[];}
-  p.energyNext=p.energyPile[0]||null;
+  const types=p.energyTypes;
+  p.energyNext=types[Math.floor(g.rng()*types.length)]||'grass';
  }
  function takeEnergy(g,s,requested=null){
-  const p=g.players[s];nextEnergy(g,p);
-  if(!p.energyNext)return null;
-  const type=p.energyPile.shift();
+  const p=g.players[s];
+  // A special card may only take the Energy currently visible in the Zone.
+  // Using it does not consume the ordinary once-per-turn attachment.
+  if(!p.energyNext||requested&&p.energyNext!==requested)return null;
+  const type=p.energyNext;
   nextEnergy(g,p);
-  // Cards in these mono-type decks always provide their printed type.
-  // For mixed decks an effect only takes the current visible Energy.
-  if(requested&&type!==requested){p.energyPile.unshift(type);nextEnergy(g,p);return null;}
   return type;
  }
  function startTurn(g,s){
@@ -163,7 +163,7 @@
   assertTurn(g,s);const p=g.players[s],cost=retreatCost(g,s);
   if(p.retreated||!p.active||p.bench.length<1||p.active.energy.length<cost)throw Error('Rückzug gerade nicht möglich.');
   // Generic retreat cost: discard exactly the printed number of attached Energy.
-  p.energyDiscard.push(...p.active.energy.splice(0,cost));
+  p.discard.push(...p.active.energy.splice(0,cost).map(x=>'energy:'+x));
   moveActive(p,Number(slot),p.turnCount);p.retreated=true;
   addLog(g,'Rückzug zum Bank-Pokémon.');
  }
@@ -206,7 +206,7 @@
   const pokemon=position(victim,slot);if(!pokemon||pokemon.damage<C(pokemon.id).hp)return;
   winner.points+=C(pokemon.id).ex?2:1;
   victim.discard.push(pokemon.id,...pokemon.stack);
-  victim.energyDiscard.push(...pokemon.energy);
+  victim.discard.push(...pokemon.energy.map(x=>'energy:'+x));
   addLog(g,C(pokemon.id).name+' wurde besiegt! '+(C(pokemon.id).ex?'2 Punkte.':'1 Punkt.'));
   if(slot==='active'){
    victim.active=null;

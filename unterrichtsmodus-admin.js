@@ -3,7 +3,7 @@
 'use strict';
 (function(root){
  let currentCatalog={};
- const subjects={Mathe:'Mathematik',Deutsch:'Deutsch',NMG:'NMG',Musik:'Musik',Englisch:'Englisch'};
+ const subjects={Alle:'Gesamte Lern-Lagune',Mathe:'Mathematik',Deutsch:'Deutsch',NMG:'NMG',Musik:'Musik',Englisch:'Englisch'};
  const arr=x=>Array.isArray(x)?x:[];
  const subjectFor=target=>{
   const id=String(target||'').replace(/^game:/,'');
@@ -25,7 +25,7 @@
    if(a.end_at&&Date.parse(a.end_at)<=now)return false;
    const target=String(a.target||'');
    if(kind==='arrival')return target.startsWith('daily:')||target.startsWith('number:')||target==='page:aufgaben';
-   if(kind==='subject')return subjectFor(target)===subject;
+   if(kind==='subject')return subject==='Alle'?!!subjectFor(target):subjectFor(target)===subject;
    return false;
   });
  }
@@ -49,17 +49,17 @@
    <form id="classModeForm" hidden>
     <div class="admin-mode-picker" role="group" aria-label="Unterrichtsmodus wählen">
       <button type="button" data-mode-kind="arrival"><span>🌅</span><strong>Ankunftszeit</strong><small>Aufgaben des Tages zuerst</small></button>
-      <button type="button" data-mode-kind="subject"><span>📚</span><strong>Fachunterricht</strong><small>Nur das gewählte Fach</small></button>
+      <button type="button" data-mode-kind="subject"><span>📚</span><strong>Fachunterricht</strong><small>Ganze Lern-Lagune oder einzelne Fächer</small></button>
       <button type="button" data-mode-kind="free"><span>🌴</span><strong>Entdeckungszeit</strong><small>Alle Bereiche freigegeben</small></button>
     </div>
     <label class="admin-mode-advanced-label">Aktiver Modus<select name="kind">
      <option value="free">🌴 Entdeckungszeit</option><option value="arrival">🌅 Ankunftszeit</option>
      <option value="subject">📚 Fachunterricht</option><option value="closed">🔒 Geschlossen</option>
     </select></label>
-    <label id="classModeSubjectWrap" hidden>Schulfach<select name="subject">${Object.entries(subjects).map(([key,name])=>`<option value="${key}">${name}</option>`).join('')}</select></label>
+    <label id="classModeSubjectWrap" hidden>Was darf in der Lern-Lagune geöffnet werden?<select name="subject">${Object.entries(subjects).map(([key,name])=>`<option value="${key}">${name}</option>`).join('')}</select></label>
     <label>Bis wann?<input name="until" type="datetime-local" required></label>
     <p id="classModeAssignments"></p>
-    <p class="pd-warning">Aktuell verlangt Cloudflare die Bestätigung der Pflichtaufträge durch die Lehrperson. Eine automatische Freigabe nach tatsächlich gelösten Aufgaben erfordert zusätzlich eine serverseitige Ergebnisprüfung; ein Häkchen des Kindes genügt dafür nicht.</p>
+    <p class="pd-warning">Pflichtaufträge benötigen weiterhin eine Bestätigung durch die Lehrperson. Ein selbst gesetztes Häkchen gibt keine weiteren Fächer frei. Der gewählte Modus bleibt bestehen, bis die Lehrperson ihn ändert.</p>
     <button type="submit" class="pd-action">Modus für die Klasse aktivieren</button>
     <button type="button" class="pd-secondary" id="classModeReload">Aktualisieren</button>
    </form>

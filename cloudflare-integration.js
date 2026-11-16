@@ -8,6 +8,7 @@
  const esc=v=>escapeHtml(String(v??''));
  const html=(v)=>esc(v);
  let childToken='', adminToken='', person=null, plan=null, adminData=null, pending=false;
+ let oldClassroomModeRetired=false, oldClassroomRetirementError='';
  // No automatic classroom-mode polling.
  const safeGame=(name)=>Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({...g,subject}))).find(g=>g.file.replace(/\.html$/,'')===name);
  const dateFormat=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',day:'numeric',month:'short',year:'numeric'}).format(d):''};
@@ -185,11 +186,31 @@
  const BASIC_TARGETS=[...Array.from({length:4},(_,i)=>({v:'daily:'+i,label:`Heute · Tagesaufgabe ${i+1}`})),...Object.entries(STEP_LABELS).map(([id,label])=>({v:'number:'+id,label:'Zahl des Tages · '+label})),{v:'page:tiere',label:'Tierwelt'},{v:'page:aufgaben',label:'Aufgaben des Tages'},{v:'page:agenda',label:'Agenda'},{v:'page:advent',label:'Adventskalender'}];
  function targets(){return [...BASIC_TARGETS,...Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({v:'game:'+g.file.replace(/\.html$/,''),label:subject+' · '+g.title})))].sort((a,b)=>a.label.localeCompare(b.label,'de-CH'))}
  function selectOptions(items,field='v',label='label'){return items.map(i=>`<option value="${html(i[field])}">${html(i[label])}</option>`).join('')}
+ // Legacy cloud mode must be switched off once via the existing protected API.
+ // No UI, poller, or student-triggered writes are involved in this cleanup.
+ async function retireFormerClassroomMode(){
+  if(oldClassroomModeRetired)return;
+  try{
+   const current=await call('/admin-classroom-mode',{admin:true});
+   if(current?.available===true&&current.classroomMode?.kind!=='free'){
+    const expires_at=new Date(Date.now()+3*60*60*1000).toISOString();
+    const saved=await call('/admin-classroom-mode',{admin:true,method:'POST',body:{
+     kind:'free',subject:null,required_assignment_ids:[],require_verified:true,expires_at
+    }});
+    if(saved?.classroomMode?.kind!=='free')throw Error('Die Freigabe wurde nicht bestätigt.');
+   }
+   oldClassroomModeRetired=true;oldClassroomRetirementError='';
+  }catch(err){
+   oldClassroomRetirementError='Alte Unterrichtssperren konnten auf Cloudflare nicht automatisch aufgehoben werden. Bitte den Worker kontrollieren.';
+   console.warn('LernSafari: alte Modus-Einstellung noch nicht überprüft:',errorText(err));
+  }
+ }
  async function renderCloudAdmin(){
   if(!loggedTeacher())return;
   const host=DOM.modalBody;
   host.innerHTML='<div class="pd-panel"><h3>🛠️ Cloudflare-Verwaltung</h3><p>Verwaltungsdaten werden geladen …</p></div>';
   try{
+   if(!oldClassroomModeRetired)await retireFormerClassroomMode();
    const report=await call('/admin-learning',{admin:true});if(!loggedTeacher()||state.modal!=='admin')return;
    adminData=report;
    const kids=Array.isArray(report.students)?report.students:[];
@@ -198,6 +219,11 @@
    const done=Array.isArray(report.done)?report.done:[];
    const now=new Date(),later=new Date(now.getTime()+7*86400000);
    host.innerHTML=`<div class="pd-shell cloud-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🔐 Cloudflare · Lehrperson</span><h3>Verwaltung 🛠️</h3><p>Die Aufträge werden in deiner bestehenden Cloudflare-Verwaltung gespeichert.</p></div><div class="pd-total"><strong>${kids.length}</strong><span>Tierkonten</span></div></div><section class="pd-panel"><h4>Neuen Lernauftrag zuweisen</h4><form id="cloudAssignmentForm" class="pd-form"><label>Aufgabe oder Lernspiel<select name="target" required>${selectOptions(targets())}</select></label><label>Titel<input name="title" maxlength="110" placeholder="z. B. Die 6er-Reihe üben" required></label><div class="cloud-form-grid"><label>Art<select name="kind"><option value="pflicht">Pflichtaufgabe</option><option value="zusatz">Zusatzaufgabe</option></select></label><label>Für wen?<select name="audience"><option value="all">Ganze Klasse</option><option value="child">Ein Kind</option></select></label></div><label id="cloudChildWrap" hidden>Tierkonto<select name="username">${selectOptions(kids,'username','username')}</select></label><div class="cloud-form-grid"><label>Beginn<input type="datetime-local" name="start" value="${html(localDateTime(now))}" required></label><label>Ende<input type="datetime-local" name="end" value="${html(localDateTime(later))}" required></label></div><button type="submit" class="pd-action">Auftrag in Cloudflare speichern</button><p role="status" id="cloudAdminMessage"></p></form></section><section class="pd-panel"><div class="cloud-panel-head"><h4>Geplante Aufträge (${jobs.length})</h4><button class="pd-secondary" id="cloudRefreshAdmin">Aktualisieren</button></div><div class="pd-items">${jobs.length?jobs.map(a=>{const c=done.filter(d=>Number(d.assignment_id)===Number(a.id)).length;return `<article class="pd-task"><div class="pd-task-head"><span>📌</span><div><strong>${html(a.title)}</strong><small>${html(targetName(String(a.target||'')))} · ${a.audience==='all'?'Ganze Klasse':html(a.username)}</small><small>${html(dateFormat(a.start_at))} – ${html(dateFormat(a.end_at))} · ${c} Erledigt-Häkchen</small></div></div><div class="pd-task-actions"><button class="pd-secondary" data-cloud-edit="${html(a.id)}">Bearbeiten</button><button class="pd-secondary" data-cloud-remove="${html(a.id)}">Löschen</button></div></article>`}).join(''):'Noch keine Aufträge geplant.'}</div></section><section class="pd-panel" id="cloudProgressPanel"><h4>🎯 Lernfortschritt aus Spielen</h4><button type="button" class="pd-secondary" id="cloudLoadResults">Spielergebnisse laden</button><p>Gespeicherte Lernversuche und Highscores für jedes Tierkonto. Wird nur für angemeldete Lehrpersonen abgerufen.</p></section><section class="pd-panel"><h4>Aktivität</h4><p>${pres.length} aktive Konten gemäss Cloudflare. Hier werden bewusst keine umfangreichen individuellen Daten veröffentlicht.</p><button type="button" class="pd-secondary" id="cloudOpenLegacy">Erweiterte Cloudflare-Verwaltung öffnen</button><p class="pd-warning">Die ausführliche bisherige Verwaltung enthält Lernsteuerung, Fokus-Modus, Agenda, Klassenbericht und weitere Funktionen. Sie wird unverändert weiterverwendet.</p></section></div>`;
+   if(oldClassroomRetirementError){
+    const banner=host.querySelector('.pd-banner');
+    const caution=document.createElement('p');caution.className='pd-warning';caution.setAttribute('role','alert');
+    caution.textContent=oldClassroomRetirementError;banner?.append(caution);
+   }
    // Teacher-only features use the existing authenticated admin session.
    if(window.LernSafariExtras){
      const messageMount=document.createElement('div');

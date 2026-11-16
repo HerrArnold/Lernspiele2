@@ -192,7 +192,8 @@
   if(oldClassroomModeRetired)return;
   try{
    const current=await call('/admin-classroom-mode',{admin:true});
-   if(current?.available===true&&current.classroomMode?.kind!=='free'){
+   if(current?.available!==true||!current.classroomMode)throw Error('Cloudflare-Unterrichtsmodus nicht erreichbar.');
+   if(current.classroomMode.kind!=='free'){
     const expires_at=new Date(Date.now()+3*60*60*1000).toISOString();
     const saved=await call('/admin-classroom-mode',{admin:true,method:'POST',body:{
      kind:'free',subject:null,required_assignment_ids:[],require_verified:true,expires_at

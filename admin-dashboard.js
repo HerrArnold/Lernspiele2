@@ -77,7 +77,7 @@
    if(name==='progress')renderProgress();
    // Live activity is fetched only after an explicit click.
    if(name==='agenda')renderAgendaEditor();
-   if(name==='activity')checkMessagesAvailability();
+   // Messaging is checked only if the teacher explicitly opens it.
   }
   deck.querySelectorAll('[data-admin-section]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.adminSection)));
 
@@ -250,6 +250,7 @@
   messagingDetails.className='admin-detail-attempt';
   messagingDetails.innerHTML='<summary>✉️ Nachrichten an die Kinder (zusätzliche Verwaltung)</summary>';
   messagingDetails.append(messagePanel);
+  messagingDetails.addEventListener('toggle',()=>{if(messagingDetails.open)checkMessagesAvailability();});
   sections.activity.append(messagingDetails);
   if(sections.memories&&root.LernSafariProjects?.adminMount){
     const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';sections.memories.append(projectMount);

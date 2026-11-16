@@ -8,7 +8,7 @@
  const esc=v=>escapeHtml(String(v??''));
  const html=(v)=>esc(v);
  let childToken='', adminToken='', person=null, plan=null, adminData=null, pending=false;
- let oldClassroomModeRetired=false, oldClassroomRetirementError='';
+ let oldClassroomModeRetired=false, oldClassroomRetirementError='', obsoleteFocusRulesCleared=false;
  // No automatic classroom-mode polling.
  const safeGame=(name)=>Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({...g,subject}))).find(g=>g.file.replace(/\.html$/,'')===name);
  const dateFormat=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',day:'numeric',month:'short',year:'numeric'}).format(d):''};
@@ -214,6 +214,23 @@
    if(!oldClassroomModeRetired)await retireFormerClassroomMode();
    const report=await call('/admin-learning',{admin:true});if(!loggedTeacher()||state.modal!=='admin')return;
    adminData=report;
+   // Old class_focus_rules may still block saving game attempts on the Worker.
+   // Clear only current/future restrictions, leave expired history untouched.
+   if(!obsoleteFocusRulesCleared){
+    const ids=(Array.isArray(report.rules)?report.rules:[])
+      .filter(rule=>Date.parse(rule.end_at||'')>Date.now())
+      .map(rule=>Number(rule.id))
+      .filter(id=>Number.isSafeInteger(id)&&id>0);
+    try{
+     for(const id of ids)await call('/admin-focus-rules',{admin:true,method:'DELETE',body:{id}});
+     obsoleteFocusRulesCleared=true;
+     if(ids.length)report.rules=(report.rules||[]).filter(rule=>!ids.includes(Number(rule.id)));
+    }catch(err){
+     oldClassroomRetirementError+=(oldClassroomRetirementError?' ':'')+
+      'Alte Fokus-Sperren konnten noch nicht vollständig aufgehoben werden.';
+     console.warn('LernSafari: Alte Fokus-Sperren noch vorhanden:',errorText(err));
+    }
+   }
    const kids=Array.isArray(report.students)?report.students:[];
    const jobs=Array.isArray(report.assignments)?report.assignments:[];
    const pres=Array.isArray(report.presence)?report.presence:[];

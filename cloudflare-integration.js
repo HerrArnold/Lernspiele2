@@ -8,7 +8,7 @@
  const esc=v=>escapeHtml(String(v??''));
  const html=(v)=>esc(v);
  let childToken='', adminToken='', person=null, plan=null, adminData=null, pending=false;
- let focusGate=null, focusBusy=false;
+ let focusGate=null, focusBusy=false, lastFocusRefresh=0;
  const safeGame=(name)=>Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({...g,subject}))).find(g=>g.file.replace(/\.html$/,'')===name);
  const dateFormat=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',day:'numeric',month:'short',year:'numeric'}).format(d):''};
  const localDateTime=d=>{const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);return p.replace(' ','T')};
@@ -386,7 +386,8 @@
   enforceCurrentFocus();
  }
  async function refreshClassFocus(){
-  if(!loggedChild()||focusBusy)return;
+  if(!loggedChild()||focusBusy||Date.now()-lastFocusRefresh<25000)return;
+  lastFocusRefresh=Date.now();
   focusBusy=true;
   try{const p=await call('/learning-plan');if(loggedChild()){plan=p;updateClassFocus(p)}}
   catch(_){if(loggedChild())notify('Fokusregeln konnten nicht aktualisiert werden.')}
@@ -504,7 +505,7 @@
  if(modalRoot)observer.observe(modalRoot,{subtree:false,childList:true});
  window.addEventListener('focus',()=>refreshClassFocus());
  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshClassFocus()});
- setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},20000);
+ setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},60000);
  // Minimal, authenticated, short-lived presence reports. Never send guest data,
  // answer text, keyboard input, device identifiers or browser location.
  let activityEndpointUnavailable=false;

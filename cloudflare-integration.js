@@ -8,7 +8,7 @@
  const esc=v=>escapeHtml(String(v??''));
  const html=(v)=>esc(v);
  let childToken='', adminToken='', person=null, plan=null, adminData=null, pending=false;
- let focusGate=null, focusBusy=false, lastFocusRefresh=0;
+ // No automatic classroom-mode polling.
  const safeGame=(name)=>Object.entries(ORIGINAL_GAMES).flatMap(([subject,items])=>items.map(g=>({...g,subject}))).find(g=>g.file.replace(/\.html$/,'')===name);
  const dateFormat=s=>{const d=new Date(s);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('de-CH',{timeZone:'Europe/Zurich',day:'numeric',month:'short',year:'numeric'}).format(d):''};
  const localDateTime=d=>{const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d);return p.replace(' ','T')};
@@ -51,7 +51,7 @@
    try{localStorage.setItem(CHILD_KEY,childToken)}catch(_){/* browser storage unavailable */}
    document.querySelector('#password').value='';
    enter('cloudflare-child',String(identity.username||response.username||username));
-   refreshClassFocus();setTimeout(refreshUnreadBadge,950);
+   setTimeout(refreshUnreadBadge,950);
   }catch(e){notify('Anmeldung fehlgeschlagen: '+errorText(e));}
   finally{pending=false}
  }
@@ -72,7 +72,7 @@
  }
  async function signOut(){
   if(childToken){try{await call('/logout',{method:'POST',body:{}})}catch(_){/* invalidate locally anyway */}}
-  childToken='';person=null;adminToken='';plan=null;adminData=null;focusGate=null;
+  childToken='';person=null;adminToken='';plan=null;adminData=null;
   try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY);sessionStorage.removeItem(ADMIN_KEY)}catch(_){}
  }
  async function restore(){
@@ -82,7 +82,7 @@
    catch(_){adminToken='';try{sessionStorage.removeItem(ADMIN_KEY)}catch(_){}}
   }
   if(childToken){
-   try{const identity=await call('/me');if(!['child','class'].includes(identity.role))throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));refreshClassFocus();setTimeout(refreshUnreadBadge,950);return}
+   try{const identity=await call('/me');if(!['child','class'].includes(identity.role))throw Error('Unzulässige Rolle');person=identity;enter('cloudflare-child',String(identity.username||'Tierkonto'));setTimeout(refreshUnreadBadge,950);return}
    catch(_){childToken='';try{sessionStorage.removeItem(CHILD_KEY);localStorage.removeItem(CHILD_KEY)}catch(_){}}
   }
  }
@@ -168,7 +168,7 @@
        call('/messages').catch(()=>({available:false,messages:[]}))
      ]);
      if(!loggedChild()||state.modal!=='logbook')return;
-     plan=p;updateClassFocus(p);
+     plan=p;
      if(!window.LernSafariExtras)throw Error('Logbuchansicht nicht geladen');
      window.LernSafariExtras.logbook({
        host,plan:p,highscores,messages:post.available===true?post.messages:[],
@@ -198,18 +198,6 @@
    const done=Array.isArray(report.done)?report.done:[];
    const now=new Date(),later=new Date(now.getTime()+7*86400000);
    host.innerHTML=`<div class="pd-shell cloud-shell"><div class="pd-banner"><div><span class="pd-eyebrow">🔐 Cloudflare · Lehrperson</span><h3>Verwaltung 🛠️</h3><p>Die Aufträge werden in deiner bestehenden Cloudflare-Verwaltung gespeichert.</p></div><div class="pd-total"><strong>${kids.length}</strong><span>Tierkonten</span></div></div><section class="pd-panel"><h4>Neuen Lernauftrag zuweisen</h4><form id="cloudAssignmentForm" class="pd-form"><label>Aufgabe oder Lernspiel<select name="target" required>${selectOptions(targets())}</select></label><label>Titel<input name="title" maxlength="110" placeholder="z. B. Die 6er-Reihe üben" required></label><div class="cloud-form-grid"><label>Art<select name="kind"><option value="pflicht">Pflichtaufgabe</option><option value="zusatz">Zusatzaufgabe</option></select></label><label>Für wen?<select name="audience"><option value="all">Ganze Klasse</option><option value="child">Ein Kind</option></select></label></div><label id="cloudChildWrap" hidden>Tierkonto<select name="username">${selectOptions(kids,'username','username')}</select></label><div class="cloud-form-grid"><label>Beginn<input type="datetime-local" name="start" value="${html(localDateTime(now))}" required></label><label>Ende<input type="datetime-local" name="end" value="${html(localDateTime(later))}" required></label></div><button type="submit" class="pd-action">Auftrag in Cloudflare speichern</button><p role="status" id="cloudAdminMessage"></p></form></section><section class="pd-panel"><div class="cloud-panel-head"><h4>Geplante Aufträge (${jobs.length})</h4><button class="pd-secondary" id="cloudRefreshAdmin">Aktualisieren</button></div><div class="pd-items">${jobs.length?jobs.map(a=>{const c=done.filter(d=>Number(d.assignment_id)===Number(a.id)).length;return `<article class="pd-task"><div class="pd-task-head"><span>📌</span><div><strong>${html(a.title)}</strong><small>${html(targetName(String(a.target||'')))} · ${a.audience==='all'?'Ganze Klasse':html(a.username)}</small><small>${html(dateFormat(a.start_at))} – ${html(dateFormat(a.end_at))} · ${c} Erledigt-Häkchen</small></div></div><div class="pd-task-actions"><button class="pd-secondary" data-cloud-edit="${html(a.id)}">Bearbeiten</button><button class="pd-secondary" data-cloud-remove="${html(a.id)}">Löschen</button></div></article>`}).join(''):'Noch keine Aufträge geplant.'}</div></section><section class="pd-panel" id="cloudProgressPanel"><h4>🎯 Lernfortschritt aus Spielen</h4><button type="button" class="pd-secondary" id="cloudLoadResults">Spielergebnisse laden</button><p>Gespeicherte Lernversuche und Highscores für jedes Tierkonto. Wird nur für angemeldete Lehrpersonen abgerufen.</p></section><section class="pd-panel"><h4>Aktivität</h4><p>${pres.length} aktive Konten gemäss Cloudflare. Hier werden bewusst keine umfangreichen individuellen Daten veröffentlicht.</p><button type="button" class="pd-secondary" id="cloudOpenLegacy">Erweiterte Cloudflare-Verwaltung öffnen</button><p class="pd-warning">Die ausführliche bisherige Verwaltung enthält Lernsteuerung, Fokus-Modus, Agenda, Klassenbericht und weitere Funktionen. Sie wird unverändert weiterverwendet.</p></section></div>`;
-   if(window.LernSafariClassModeAdmin){
-    const classroomMount=document.createElement('div');
-    classroomMount.id='cloudClassroomModeContainer';
-    const firstPanel=host.querySelector('#cloudAssignmentForm')?.closest('section');
-    if(firstPanel)firstPanel.insertAdjacentElement('afterend',classroomMount);
-    window.LernSafariClassModeAdmin.render({
-     mount:classroomMount,assignments:jobs,originalGames:ORIGINAL_GAMES,
-     fetchMode:()=>call('/admin-classroom-mode',{admin:true}),
-     saveMode:body=>call('/admin-classroom-mode',{admin:true,method:'POST',body}),
-     refreshAssignments:async()=>{const data=await call('/admin-learning',{admin:true});return data.assignments||[]}
-    });
-   }
    // Teacher-only features use the existing authenticated admin session.
    if(window.LernSafariExtras){
      const messageMount=document.createElement('div');
@@ -377,135 +365,8 @@
      area.querySelector('#cloudAgendaRetry').onclick=renderCloudAgenda;
    }
  }
- // Existing Worker returns active blocks and assignments; this is a pedagogical UI gate,
- // NOT a verified mastery signal or security protection for public HTML files.
- function updateClassFocus(p){
-  if(!loggedChild()||!window.LernSafariFocusGate){focusGate=null;return;}
-  focusGate=window.LernSafariFocusGate.makeState(p,ORIGINAL_GAMES);
-  paintClassFocus();
-  enforceCurrentFocus();
- }
- async function refreshClassFocus(){
-  if(!loggedChild()||focusBusy||Date.now()-lastFocusRefresh<25000)return;
-  lastFocusRefresh=Date.now();
-  focusBusy=true;
-  try{const p=await call('/learning-plan');if(loggedChild()){plan=p;updateClassFocus(p)}}
-  catch(_){if(loggedChild())notify('Fokusregeln konnten nicht aktualisiert werden.')}
-  finally{focusBusy=false}
- }
- function showFocusNotice(){
-  notify('🔒 Dieser Bereich ist im aktuellen Unterrichtsmodus nicht freigegeben.');
- }
- function blockedInClass(target,kind){
-  if(!loggedChild()||!focusGate?.restricted)return false;
-  if(kind==='area')return !focusGate.allowDestination(target);
-  if(kind==='subject')return !focusGate.allowSubject(target);
-  if(kind==='game')return !focusGate.allowGame(target);
-  if(kind==='page')return !focusGate.allowTarget(target);
-  return false;
- }
- function paintClassFocus(){
-  if(!loggedChild())return;
-  for(const el of document.querySelectorAll('[data-map-destination],[data-lagoon-subject],[data-original-subject]')){
-   const locked=el.hasAttribute('data-map-destination')
-    ?blockedInClass(el.dataset.mapDestination,'area')
-    :blockedInClass(el.dataset.lagoonSubject||el.dataset.originalSubject,'subject');
-   el.classList.toggle('cloud-focus-locked',locked);
-   el.setAttribute('aria-disabled',locked?'true':'false');
-   if(locked)el.title='Im aktuellen Unterrichtsmodus gesperrt';
-   else if(el.title==='Im aktuellen Unterrichtsmodus gesperrt')el.removeAttribute('title');
-  }
-  const hint=document.querySelector('#campHint');
-  if(hint){hint.textContent=focusGate?.restricted?'🔒 Unterrichtsmodus: Nur freigegebene Bereiche sind verfügbar.':'Klicke auf einen Gegenstand und entdecke die Safari!';}
-  for(const button of document.querySelectorAll('[data-topic-index],[data-topic-game]')){
-   // Topic and game cards belong to the currently displayed subject.
-   const locked=blockedInClass(safariSubject,'subject');
-   button.classList.toggle('cloud-focus-locked',locked);
-   button.setAttribute('aria-disabled',locked?'true':'false');
-  }
-  for(const button of document.querySelectorAll('.integration-game-card[data-original-game]')){
-   const index=Number(button.dataset.originalGame);
-   const game=(ORIGINAL_GAMES[safariSubject]||[])[index];
-   const locked=!!game&&blockedInClass(game.file.replace(/\.html$/i,''),'game');
-   button.classList.toggle('cloud-focus-locked',locked);
-   button.setAttribute('aria-disabled',locked?'true':'false');
-  }
- }
- function enforceCurrentFocus(){
-  if(!loggedChild()||!focusGate?.restricted)return;
-  // Newly assigned work must take effect even when another game is already open.
-  // Removing the iframe stops that embedded game rather than merely covering it.
-  const frame=document.querySelector('#originalGameFrame');
-  if(frame){
-   const path=frame.getAttribute('src')||'';
-   const match=path.match(/(?:^|\/)spiele\/([a-z0-9-]+)\.html(?:[?#]|$)/i);
-   const blocked=match?blockedInClass(match[1],'game'):(
-    /(?:^|\/)original\/index\.html(?:[?#]|$)/i.test(path)
-      &&(blockedInClass('baobab','area')||blockedInClass('valley','area'))
-   );
-   if(blocked){
-    frame.removeAttribute('src');frame.remove();
-    const surface=document.querySelector('.integration-game-surface');
-    if(surface){
-     surface.innerHTML='<div class="cloud-focus-interrupted" role="status"><h3>🔒 Unterrichtsmodus</h3><p>Dieses Spiel ist im aktuellen Unterrichtsmodus nicht freigegeben. Öffne die Lern-Lagune und wähle ein freigegebenes Fach.</p><button type="button" class="pd-action" id="cloudFocusToLogbook">Mein Logbuch öffnen</button></div>';
-     surface.querySelector('#cloudFocusToLogbook')?.addEventListener('click',()=>showModal('logbook'));
-    }
-   }
-  }
-  if(state.screen==='destination'&&state.destination==='lagoon'
-     &&safariSubject&&blockedInClass(safariSubject,'subject')){
-   safariSubject=null;safariGame=null;
-   renderLagoon();
-   notify('🔒 Dieses Fach ist im aktuellen Unterrichtsmodus nicht freigegeben.');
-  }
-  if(state.screen==='destination'&&state.destination&&blockedInClass(state.destination,'area')){
-   goCamp();
-   notify('🔒 Dieser Bereich ist im aktuellen Unterrichtsmodus gesperrt.');
-  }
- }
-
- // Capture clicks before the original app's event handlers. Keep the logbook and
- // the compass/letterbox available, as they are navigational and informational.
- document.addEventListener('click',e=>{
-  if(!loggedChild()||!focusGate?.restricted)return;
-  const button=e.target.closest('[data-map-destination],[data-lagoon-subject],[data-original-subject],[data-topic-index],[data-topic-game],[data-original-game],[data-open],[data-baobab-section],[data-baobab-new]');
-  if(!button)return;
-  let locked=false;
-  if(button.hasAttribute('data-map-destination'))locked=blockedInClass(button.dataset.mapDestination,'area');
-  else if(button.hasAttribute('data-lagoon-subject'))locked=blockedInClass(button.dataset.lagoonSubject,'subject');
-  else if(button.hasAttribute('data-original-subject'))locked=blockedInClass(button.dataset.originalSubject,'subject');
-  else if(button.hasAttribute('data-topic-index')||button.hasAttribute('data-topic-game'))locked=blockedInClass(safariSubject,'subject');
-  else if(button.hasAttribute('data-original-game')){
-   const game=(ORIGINAL_GAMES[safariSubject]||[])[Number(button.dataset.originalGame)];
-   locked=blockedInClass(safariSubject,'subject')||!!game&&blockedInClass(game.file.replace(/\.html$/i,''),'game');
-  }
-  else if(button.hasAttribute('data-baobab-new')){
-   const section=button.dataset.baobabNew;
-   locked=section==='animals'?blockedInClass('page:tiere','page'):
-     section==='advent'?blockedInClass('page:advent','page'):
-     !!focusGate?.restricted;
-  }
-  else if(button.hasAttribute('data-baobab-section'))locked=blockedInClass('page:tiere','page');
-  else if(button.dataset.open&&!['logbook','map','agenda','mail','clock','help','admin'].includes(button.dataset.open))locked=true;
-  if(locked){e.preventDefault();e.stopImmediatePropagation();showFocusNotice();}
- },true);
- // Internal navigation may happen without a click on a map hotspot (e.g. direct
- // To-do links). Protect destinations AND embedded games as a second UI layer.
- const originalTravelTo=travelTo;
- travelTo=function(id){if(blockedInClass(id,'area')){showFocusNotice();return;}return originalTravelTo(id)};
- const unguardedFrame=originalFrame;
- originalFrame=function(relative,title,opts){
-  const match=String(relative).match(/(?:^|\/)spiele\/([a-z0-9-]+)\.html(?:[?#]|$)/i);
-  if(match&&blockedInClass(match[1],'game')){showFocusNotice();return;}
-  return unguardedFrame(relative,title,opts);
- };
- const contentRoot=document.querySelector('#destinationContent'),modalRoot=DOM.modalBody;
- const observer=new MutationObserver(()=>paintClassFocus());
- if(contentRoot)observer.observe(contentRoot,{subtree:false,childList:true});
- if(modalRoot)observer.observe(modalRoot,{subtree:false,childList:true});
- window.addEventListener('focus',()=>refreshClassFocus());
- document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshClassFocus()});
- setInterval(()=>{if(loggedChild()&&!document.hidden)refreshClassFocus()},60000);
+ // The former classroom mode and focus gates have been retired.
+ // All authenticated learning areas remain accessible; assignments still appear in the logbook.
  // Minimal, authenticated, short-lived presence reports. Never send guest data,
  // answer text, keyboard input, device identifiers or browser location.
  let activityEndpointUnavailable=false;

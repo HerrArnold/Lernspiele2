@@ -153,15 +153,17 @@
       button?.click();
       return;
     }
-    if(entry[1].startsWith('hoerverstehen-')||entry[1].startsWith('einmaleins-')){
-      safariGame={title:entry[0],file:entry[1],description:entry[1].startsWith('hoerverstehen-')?'Hörverständnis mit Audio':'Einmaleins: entdecken, üben und überprüfen'};
-      safariGameOrigin=safariSubject;
-      showSelectedGame();
-      return;
-    }
+    // Every verified HTML game in the subject/topic catalog can be launched,
+    // including newly created games not yet present in ORIGINAL_GAMES.
+    // Restrict paths to a plain filename to prevent navigation outside /original/spiele/.
+    if(!/^[a-z0-9][a-z0-9-]*\.html$/.test(entry[1]))return;
     const existing=Object.values(ORIGINAL_GAMES).flat().find(g=>g.file===entry[1]);
-    if(!existing)return;
-    safariGame=existing;safariGameOrigin=safariSubject;
+    safariGame=existing||{
+      title:entry[0],
+      file:entry[1],
+      description:'Üben, überprüfen und aus den Aufgaben lernen'
+    };
+    safariGameOrigin=safariSubject;
     showSelectedGame();
   }
   function showSelectedGame(){

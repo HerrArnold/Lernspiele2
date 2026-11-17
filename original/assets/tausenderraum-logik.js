@@ -38,13 +38,13 @@
  function newWalk(rng=Math.random){
   for(let attempt=0;attempt<1000;attempt++){
    let start=1+Math.floor(rng()*1000),n=start,path=[];
-   const specialAt=Math.floor(rng()*4);
+   // A page-jump appears on about half of the four-step exercises.
+   // Other routes consist only of ordinary one-cell arrows.
+   const specialAt=rng()<0.5?Math.floor(rng()*4):-1;
    for(let i=0;i<4;i++){
     let valid=Object.keys(arrows).filter(symbol=>move(n,symbol)!==null);
-    if(i===specialAt){
-     const special=valid.filter(symbol=>symbol==='▶'||symbol==='◀');
-     if(special.length)valid=special;
-    }
+    valid=valid.filter(symbol=>i===specialAt?(symbol==='▶'||symbol==='◀'):(symbol!=='▶'&&symbol!=='◀'));
+    if(!valid.length)break;
     const step=pick(valid,rng);
     if(!step)break;
     path.push(step);n=move(n,step);

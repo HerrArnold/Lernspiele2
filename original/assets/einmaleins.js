@@ -53,7 +53,7 @@ function hint(n){
 }
 function makeQuestions(){
  if(config.kind==='test')return random(config.rows.flatMap(row=>random(Array.from({length:10},(_,i)=>i+1)).slice(0,3).map(n=>({row,n}))));
- if(config.kind==='mix')return random(config.rows.flatMap(row=>Array.from({length:10},(_,i)=>({row,n:i+1})))).slice(0,config.total);
+ if(config.kind==='mix')return random(config.rows.flatMap(row=>random(Array.from({length:10},(_,i)=>({row,n:i+1}))).slice(0,Math.ceil(config.total/config.rows.length)))).slice(0,config.total);
  const firsts=[2,5,9];
  const numbers=[...firsts,...random(Array.from({length:10},(_,i)=>i+1).filter(n=>!firsts.includes(n)))];
  while(numbers.length<config.total)numbers.push(1+Math.floor(Math.random()*10));
@@ -63,9 +63,9 @@ function updateStats(){if(!stats)return;$('progress').textContent=`Richtig: ${co
 function renderIntro(){intro.classList.remove('hidden');play.classList.add('hidden');finish.classList.add('hidden');intro.innerHTML=introBlock(config,config.exampleN||6);$('start').addEventListener('click',start);}
 function start(){questions=makeQuestions();index=0;correct=0;hearts=3;seen=[];intro.classList.add('hidden');finish.classList.add('hidden');play.classList.remove('hidden');updateStats();renderQuestion();}
 function tauschHinweis(q){
- const merkReihen=[2,5,10];
+ const merkReihen=config.kind==='bridge'?[2,3,4,5,6,7,8,9,10]:[2,5,10];
  if(merkReihen.includes(q.row)||!merkReihen.includes(q.n))return '';
- return '<div class="tausch-hinweis" role="note"><span aria-hidden="true">💡</span><span><strong>Tauschaufgabe:</strong> '+q.row+' × '+q.n+' = '+q.n+' × '+q.row+'. Die <strong>'+q.n+'er-Reihe</strong> ist eine Merkaufgabe. So geht es oft leichter!</span></div>';
+ return '<div class="tausch-hinweis" role="note"><span aria-hidden="true">💡</span><span><strong>Tauschaufgabe:</strong> '+q.row+' × '+q.n+' = '+q.n+' × '+q.row+'. Nutze die <strong>'+q.n+'er-Reihe</strong>, wenn du diese Aufgabe bereits kennst. So geht es oft leichter!</span></div>';
 }
 function renderQuestion(){answered=false;hintOpen=false;const q=questions[index];$('question-count').textContent=`Aufgabe ${index+1} von ${questions.length}`;$('bar').style.width=`${index/questions.length*100}%`; $('question').innerHTML=`<div class="calc-line"><span>${q.row}</span><span>×</span><span>${q.n}</span><span>=</span><input id="answer" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="?" aria-label="Ergebnis eingeben"></div>`+tauschHinweis(q);
  $('feedback').textContent='';$('feedback').className='answer-feedback';$('next').classList.add('hidden');$('check').classList.remove('hidden');$('check').disabled=false;

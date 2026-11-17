@@ -64,7 +64,7 @@ function renderIntro(){intro.classList.remove('hidden');play.classList.add('hidd
 function start(){questions=makeQuestions();index=0;correct=0;hearts=3;seen=[];intro.classList.add('hidden');finish.classList.add('hidden');play.classList.remove('hidden');updateStats();renderQuestion();}
 function tauschHinweis(q){
  const merkReihen=config.kind==='bridge'?[2,3,4,5,6,7,8,9,10]:[2,5,10];
- if(merkReihen.includes(q.row)||!merkReihen.includes(q.n))return '';
+ if((config.kind!=='bridge'&&merkReihen.includes(q.row))||!merkReihen.includes(q.n)||q.row===q.n)return '';
  return '<div class="tausch-hinweis" role="note"><span aria-hidden="true">💡</span><span><strong>Tauschaufgabe:</strong> '+q.row+' × '+q.n+' = '+q.n+' × '+q.row+'. Nutze die <strong>'+q.n+'er-Reihe</strong>, wenn du diese Aufgabe bereits kennst. So geht es oft leichter!</span></div>';
 }
 function renderQuestion(){answered=false;hintOpen=false;const q=questions[index];$('question-count').textContent=`Aufgabe ${index+1} von ${questions.length}`;$('bar').style.width=`${index/questions.length*100}%`; $('question').innerHTML=`<div class="calc-line"><span>${q.row}</span><span>×</span><span>${q.n}</span><span>=</span><input id="answer" type="text" inputmode="numeric" maxlength="3" autocomplete="off" placeholder="?" aria-label="Ergebnis eingeben"></div>`+tauschHinweis(q);

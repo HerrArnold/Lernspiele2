@@ -19,7 +19,9 @@
  const baobab=[
   ['Baobab-Baum','Unsere Klassentiere','animals'],
   ['Baobab-Baum','Adventskalender (noch nicht freigegeben)','advent'],
-  ['Baobab-Baum','Erlebnisse – Fotoübersicht','projects']
+  ['Baobab-Baum','Erlebnisse – Fotoübersicht','projects'],
+  ['Klassentiere','Tier-Memory','memory'],
+  ['Klassentiere','Tiernamen schreiben','spelling']
  ];
  function catalog(){
   const entries=[];
@@ -35,6 +37,7 @@
   }
   for(const [group,title,content] of oase)entries.push({area:'oasis',group,topic:group,title,content});
   for(const [group,title,content] of baobab)entries.push({area:'baobab',group,topic:group,title,content});
+  for(const a of root.LernSafariBaobabAnimals||[])entries.push({area:'baobab',group:'Klassentiere',topic:'Klassentiere',title:a.name+' – Steckbrief und Quiz',content:'animal:'+a.id});
   const ids=new Set();
   return entries.filter(x=>{const k=x.area+'|'+x.content;if(ids.has(k))return false;ids.add(k);return true;});
  }
@@ -57,13 +60,15 @@
   }
   for(const v of raw.answerCounts||[]){
    if(typeof v.username!=='string')continue;
-   const x=ensure(v.username,gameArea(v.game),v.game);
+   const area=gameArea(v.game),content=area==='baobab'&&String(v.game).startsWith('tierwelt-')?'animal:'+String(v.game).slice(9):v.game==='tier-namen'?'spelling':v.game==='tier-memory'?'memory':v.game;
+   const x=ensure(v.username,area,content);
    x.answers=Math.max(0,Number(v.answers)||0);
   }
   const ordered=(raw.completions||[]).slice().sort((a,b)=>String(a.happened_at||'').localeCompare(String(b.happened_at||''))||Number(a.id||0)-Number(b.id||0));
   for(const v of ordered){
    if(typeof v.username!=='string')continue;
-   const x=ensure(v.username,gameArea(v.game),v.game);
+   const area=gameArea(v.game),content=area==='baobab'&&String(v.game).startsWith('tierwelt-')?'animal:'+String(v.game).slice(9):v.game==='tier-namen'?'spelling':v.game==='tier-memory'?'memory':v.game;
+   const x=ensure(v.username,area,content);
    const score=roundScore(v);
    if(score===null)continue;
    x.runs.push(score);x.first=x.runs[0];x.best=Math.max(...x.runs);
@@ -73,7 +78,7 @@
  function gameArea(game){
   const g=String(game||'');
   if(g.startsWith('oase-')||g.startsWith('schach-')||g.startsWith('pokemon-pocket'))return 'oasis';
-  if(g.startsWith('baobab-'))return 'baobab';
+  if(g.startsWith('baobab-')||g.startsWith('tierwelt-')||g==='tier-namen'||g==='tier-memory')return 'baobab';
   return 'lagoon';
  }
  function band(percent){

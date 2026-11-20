@@ -50,7 +50,7 @@
   const lookup=new Map();
   const ensure=(name,area,content)=>{
    const k=name+'|'+area+'|'+content;
-   if(!lookup.has(k))lookup.set(k,{user:name,area,content,opens:0,answers:0,runs:[],first:null,best:null});
+   if(!lookup.has(k))lookup.set(k,{user:name,area,content,opens:0,answers:0,runs:[],first:null,best:null,highscore:null});
    return lookup.get(k);
   };
   for(const v of raw.visits||[]){
@@ -63,6 +63,16 @@
    const area=gameArea(v.game),content=area==='baobab'&&String(v.game).startsWith('tierwelt-')?'animal:'+String(v.game).slice(9):v.game==='tier-namen'?'spelling':v.game==='tier-memory'?'memory':v.game;
    const x=ensure(v.username,area,content);
    x.answers=Math.max(0,Number(v.answers)||0);
+  }
+  // Historical raw highscores from the former progress report remain visible as points.
+  // A highscore is NOT automatically a percentage or proof of a completed round.
+  for(const h of raw.highscores||[]){
+   if(typeof h.username!=='string')continue;
+   const score=Number(h.score);
+   if(!Number.isFinite(score)||score<0)continue;
+   const area=gameArea(h.game),content=area==='baobab'&&String(h.game).startsWith('tierwelt-')?'animal:'+String(h.game).slice(9):h.game==='tier-namen'?'spelling':h.game==='tier-memory'?'memory':h.game;
+   const entry=ensure(h.username,area,content);
+   entry.highscore=Math.max(entry.highscore??0,score);
   }
   const ordered=(raw.completions||[]).slice().sort((a,b)=>String(a.happened_at||'').localeCompare(String(b.happened_at||''))||Number(a.id||0)-Number(b.id||0));
   for(const v of ordered){
@@ -88,20 +98,22 @@
   return 'ls-matrix-red';
  }
  function cell(x){
-  if(!x||(!x.opens&&!x.answers&&!x.runs.length))return '<td class="ls-matrix-empty" title="Noch keine Daten">–</td>';
+  if(!x||(!x.opens&&!x.answers&&!x.runs.length&&x.highscore===null))return '<td class="ls-matrix-empty" title="Noch keine Daten">–</td>';
   let label=x.runs.length?
    '<strong>'+x.runs.length+'×</strong><small>1.: '+x.first+'% · Best: '+x.best+'%</small>':
-   '<strong>'+x.opens+' Aufruf'+(x.opens===1?'':'e')+'</strong><small>'+ (x.answers?x.answers+' Einzelprüfungen · ':'')+'keine abgeschlossene Wertung</small>';
+   '<strong>'+(x.opens?x.opens+' Aufruf'+(x.opens===1?'':'e'):x.answers?x.answers+' Einzelprüfungen':'Historischer Highscore')+'</strong><small>'+ (x.answers&&x.opens?x.answers+' Einzelprüfungen · ':'')+'keine abgeschlossene Wertung</small>';
   if(x.runs.length&&x.opens)label+='<small>'+x.opens+' Aufrufe</small>';
+  if(x.highscore!==null)label+='<small>⭐ '+x.highscore+' Punkte (Highscore)</small>';
   return '<td class="ls-matrix-cell '+band(x.best)+'" title="'+esc(x.runs.length?'Bester Durchlauf: '+x.best+' Prozent':'Keine bewertbare Gesamtauswertung')+'">'+label+'</td>';
  }
  function detail(x){
-  if(!x||(!x.opens&&!x.answers&&!x.runs.length))return '<td class="ls-matrix-empty">–</td>';
+  if(!x||(!x.opens&&!x.answers&&!x.runs.length&&x.highscore===null))return '<td class="ls-matrix-empty">–</td>';
   return '<td class="ls-matrix-cell '+band(x.best)+'">'+
-   '<strong>'+(x.runs.length?x.runs.length+' abgeschlossene Durchläufe':x.opens+' Aufrufe')+'</strong>'+
+   '<strong>'+(x.runs.length?x.runs.length+' abgeschlossene Durchläufe':x.opens?x.opens+' Aufrufe':x.answers?x.answers+' Einzelprüfungen':'Historischer Highscore')+'</strong>'+
    '<small>Erster Durchlauf: '+(x.first===null?'–':x.first+'%')+'</small>'+
    '<small>Bester Durchlauf: '+(x.best===null?'–':x.best+'%')+'</small>'+
-   '<small>'+x.opens+' Aufrufe · '+x.answers+' gespeicherte Einzelprüfungen</small></td>';
+   '<small>'+x.opens+' Aufrufe · '+x.answers+' gespeicherte Einzelprüfungen</small>'+
+   (x.highscore===null?'':'<small>⭐ Highscore: '+x.highscore+' Punkte</small>')+'</td>';
  }
  function mount({host,call}){
   host.innerHTML='<div class="ls-matrix-head"><p>📊 Was haben die Tiere ausprobiert? Grün bedeutet mindestens 80 % im besten vollständigen Durchlauf, Gelb 50–79 %, Rot unter 50 %. Unbewertete Inhalte bleiben neutral.</p>'+
@@ -110,7 +122,7 @@
    '<label>Ansicht<select data-lm-view><option value="all">Ganze Klasse</option><option value="one">Einzelnes Tier</option></select></label>'+
    '<label data-lm-child-wrap hidden>Tierkonto<select data-lm-child></select></label>'+
    '<button type="button" class="pd-secondary" data-lm-refresh>🔄 Ergebnisse abfragen</button></div>'+
-   '<p class="ls-matrix-note">Die Tabelle wird nur beim Öffnen und auf Knopfdruck aktualisiert. Ein Aufruf ist kein gelöster Durchlauf; Prozentwerte erscheinen nur für tatsächlich gespeicherte Gesamtauswertungen.</p></div>'+
+   '<p class="ls-matrix-note">Die Tabelle wird nur beim Öffnen und auf Knopfdruck aktualisiert. Frühere Spielpunkte und Highscores erscheinen ebenfalls. Ein Highscore allein beweist keinen abgeschlossenen Durchlauf und wird nicht in Prozent umgerechnet.</p></div>'+
    '<div data-lm-content role="status" aria-live="polite">Noch keine Abfrage durchgeführt.</div>';
   const $=q=>host.querySelector(q);
   const area=$('[data-lm-area]'),subject=$('[data-lm-subject]'),subjectWrap=$('[data-lm-subject-wrap]');

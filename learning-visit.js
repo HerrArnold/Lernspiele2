@@ -3,7 +3,7 @@
 (function(root){
  let queued=Promise.resolve();
  function track(area,content){
-  if(root.state?.role!=='cloudflare-child')return;
+  if(typeof state==='undefined'||state.role!=='cloudflare-child')return;
   if(!['lagoon','oasis','baobab'].includes(area))return;
   if(typeof content!=='string'||!/^[-a-z0-9:]{2,90}$/.test(content))return;
   let token='';

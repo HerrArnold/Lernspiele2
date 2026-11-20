@@ -231,7 +231,7 @@
      const messageMount=document.createElement('div');
      messageMount.id='cloudTeacherPostMount';
      host.appendChild(messageMount);
-     window.LernSafariExtras.adminPanel({host:messageMount,call,kids});
+     const trigger=document.createElement('button');trigger.type='button';trigger.className='pd-secondary';trigger.textContent='✉️ Nachrichtenverwaltung laden';messageMount.append(trigger);trigger.onclick=()=>{trigger.remove();window.LernSafariExtras.adminPanel({host:messageMount,call,kids});};
    }
    // Explicit teacher verification is available only when the upgraded Worker
    // includes a server-confirmed verified list. Legacy Worker: never fake approval.

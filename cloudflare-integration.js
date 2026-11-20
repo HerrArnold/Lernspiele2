@@ -172,7 +172,7 @@
      plan=p;
      if(!window.LernSafariExtras)throw Error('Logbuchansicht nicht geladen');
      window.LernSafariExtras.logbook({
-       host,plan:p,highscores,messages:post.available===true?post.messages:[],
+       host,plan:p,highscores,messages:post.available===true?post.messages:[],call,
        onOpen:target=>openTarget(String(target||'')),
        onDone:(id,completed)=>call('/assignment-done',{method:'POST',body:{id,completed}}),
        onRefresh:renderChildLogbook

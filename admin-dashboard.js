@@ -94,6 +94,7 @@
    if(name==='mathplan')mathPlanControl?.refresh();
    // Live activity is fetched only after an explicit click.
    if(name==='agenda')renderAgendaEditor();
+   if(name==='memories')openMemories();
    // Messaging is checked only if the teacher explicitly opens it.
   }
   deck.querySelectorAll('[data-admin-section]').forEach(b=>b.addEventListener('click',()=>open(b.dataset.adminSection)));
@@ -258,10 +259,16 @@
     }catch(_){status.textContent='Live-Aktivität noch nicht freigeschaltet: Cloudflare muss den geschützten Aktivitätsdienst bereitstellen.'}
   }
   livePanel.querySelector('#adminLiveReload').onclick=renderLiveActivity;
-  if(sections.memories&&root.LernSafariProjects?.adminMount){
-    const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';sections.memories.append(projectMount);
-    root.LernSafariProjects.adminMount({mount:projectMount,call});
-  }
+  // Photo albums can contain large image payloads. Do not load them every
+  // time Flamingo opens the dashboard; mount only when «Erinnerungen» is chosen.
+  let memoriesMounted=false;
+  const openMemories=()=>{
+   if(memoriesMounted||!sections.memories||!root.LernSafariProjects?.adminMount)return;
+   memoriesMounted=true;
+   const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';
+   sections.memories.append(projectMount);
+   root.LernSafariProjects.adminMount({mount:projectMount,call});
+  };
   // Built-in teacher agenda: edits the existing authenticated Worker endpoint
   // with the SAME payload shape as the existing original/admin agenda editor.
   let agendaOffset=0,agendaLoaded=[],agendaEditing=null,agendaLoadSeq=0;

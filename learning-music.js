@@ -89,5 +89,28 @@
   document.addEventListener('play',e=>{
     if(e.target instanceof HTMLMediaElement && e.target!==audio && !audio.paused)audio.pause();
   },true);
+  // Hörspiele innerhalb der Lern-Lagune werden in einem same-origin iframe angezeigt.
+  // 'play' aus einem iframe erreicht den Eltern-DOM nicht, darum separat registrieren.
+  const boundFrames=new WeakSet();
+  function watchFrames(){
+    document.querySelectorAll('iframe').forEach(frame=>{
+      if(boundFrames.has(frame))return;
+      boundFrames.add(frame);
+      const listen=()=>{
+        try{
+          const innerDoc=frame.contentDocument;
+          if(!innerDoc)return;
+          innerDoc.addEventListener('play',event=>{
+            if(event.target instanceof HTMLMediaElement && !audio.paused)audio.pause();
+          },true);
+        }catch(_){ /* fremde iframe-Inhalte bleiben isoliert */ }
+      };
+      frame.addEventListener('load',listen);
+      listen();
+    });
+  }
+  const frameObserver=new MutationObserver(watchFrames);
+  frameObserver.observe(document.body,{childList:true,subtree:true});
+  watchFrames();
   paint();
 })();

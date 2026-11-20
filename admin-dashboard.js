@@ -262,53 +262,6 @@
     const projectMount=document.createElement('div');projectMount.id='adminProjectsMount';sections.memories.append(projectMount);
     root.LernSafariProjects.adminMount({mount:projectMount,call});
   }
-  let messageServiceAvailable=false;
-  async function checkMessagesAvailability(){
-    const status=messagePanel.querySelector('#adminMessageStatus');
-    status.textContent='Geschützte Nachrichtenfunktion wird geprüft …';
-    try{
-      const data=await call('/admin-messages',{admin:true});
-      if(data.available!==true||!Array.isArray(data.messages))throw Error('Keine Nachrichten-API');
-      messageServiceAvailable=true;
-      messagePanel.querySelector('#adminMessageSend').disabled=false;
-      status.textContent='Nachrichten können sicher über Cloudflare versendet werden.';
-      const list=messagePanel.querySelector('#adminSentMessages');
-      list.innerHTML='<h5>Zuletzt versendet</h5>'+(data.messages.length?
-        '<div class="admin-sent-list">'+data.messages.slice(0,20).map(m=>'<article><strong>'+html(m.subject)+'</strong><span>'+html(m.audience==='all'?'Ganze Klasse':m.recipient||'Ein Kind')+'</span><small>'+html(m.created_at||'')+'</small></article>').join('')+'</div>':
-        '<p>Es wurden noch keine Nachrichten versendet.</p>');
-    }catch(_){
-      messageServiceAvailable=false;
-      messagePanel.querySelector('#adminMessageSend').disabled=true;
-      status.textContent='Senden noch nicht möglich: Die Cloudflare-Nachrichten-API ist nicht aktiviert. Du kannst den Text weiterhin kopieren.';
-    }
-  }
-  messagePanel.querySelector('#adminMessageSend').onclick=async()=>{
-    if(!messageServiceAvailable)return;
-    const recipient=messagePanel.querySelector('#adminMessageRecipient').value;
-    const subject=messagePanel.querySelector('#adminMessageSubject').value.trim();
-    const body=messagePanel.querySelector('#adminMessageText').value.trim();
-    const status=messagePanel.querySelector('#adminMessageStatus');
-    if(!subject||!body){status.textContent='Bitte Betreff und Nachricht eingeben.';return;}
-    const audience=recipient==='all'?'all':'child';
-    const label=recipient==='all'?'die ganze Klasse':recipient;
-    if(!confirm('Nachricht wirklich an '+label+' senden?'))return;
-    const button=messagePanel.querySelector('#adminMessageSend');button.disabled=true;
-    try{
-      const result=await call('/admin-messages',{method:'POST',admin:true,body:{audience,recipient:audience==='child'?recipient:undefined,subject,body}});
-      if(result.ok!==true)throw Error('Keine Serverbestätigung');
-      status.textContent='✅ Nachricht wurde auf Cloudflare gespeichert und ist für '+label+' sichtbar.';
-      messagePanel.querySelector('#adminMessageSubject').value='';
-      messagePanel.querySelector('#adminMessageText').value='';
-      await checkMessagesAvailability();
-    }catch(err){status.textContent='Nicht gesendet: '+html(err.message||err);button.disabled=false;}
-  };
-  messagePanel.querySelector('#adminMessageCopy').onclick=async()=>{
-    const subject=messagePanel.querySelector('#adminMessageSubject').value.trim(),body=messagePanel.querySelector('#adminMessageText').value.trim();
-    if(!body){messagePanel.querySelector('#adminMessageStatus').textContent='Bitte zuerst einen Nachrichtentext eingeben.';return}
-    try{await navigator.clipboard.writeText((subject?subject+'\n\n':'')+body);messagePanel.querySelector('#adminMessageStatus').textContent='Text kopiert – noch nicht versendet.'}
-    catch(_){messagePanel.querySelector('#adminMessageStatus').textContent='Kopieren im Browser nicht erlaubt. Du kannst den Text markieren und kopieren.'}
-  };
-  messagePanel.querySelector('#adminMessageLegacy').onclick=()=>host.querySelector('#cloudOpenLegacy')?.click();
   // Built-in teacher agenda: edits the existing authenticated Worker endpoint
   // with the SAME payload shape as the existing original/admin agenda editor.
   let agendaOffset=0,agendaLoaded=[],agendaEditing=null,agendaLoadSeq=0;

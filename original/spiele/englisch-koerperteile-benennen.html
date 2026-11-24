@@ -25,9 +25,9 @@ const CARDS=[
 ['elbow','elbow'],['neck','neck'],['knee','knee'],['teeth','teeth']];
 const $=id=>document.getElementById(id);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-let cards=[],start=0,selected=null,done=new Set(),wrong=new Set(),correct=0,played=0;
+let cards=[],start=0,selected=null,done=new Set(),wrong=new Set(),correct=0,firstTry=0;
 function record(item){try{window.SafariTelemetry?.record(item)}catch(_){}}
-function begin(){cards=shuffle(CARDS.map(([id,title])=>({id,title})));start=0;correct=0;played=0;$('finish').hidden=true;$('again').hidden=true;round()}
+function begin(){cards=shuffle(CARDS.map(([id,title])=>({id,title})));start=0;correct=0;firstTry=0;$('finish').hidden=true;$('again').hidden=true;round()}
 function round(){selected=null;done=new Set();wrong=new Set();$('next').hidden=true;$('pics').innerHTML='';$('names').innerHTML='';
 const list=cards.slice(start,start+5);$('round').textContent='Runde '+(Math.floor(start/5)+1)+' / '+Math.ceil(cards.length/5);
 $('points').textContent=correct+' / '+cards.length+' Paare';$('bar').style.width=(correct/cards.length*100)+'%';$('message').textContent='Wähle ein Bild.';
@@ -41,7 +41,7 @@ function chooseImage(id){if(done.has(id))return;selected=id;document.querySelect
 function chooseWord(id){if(done.has(id))return;if(!selected){$('message').textContent='Wähle zuerst ein Bild.';return}
 const pic=selected;selected=null;document.querySelectorAll('.card').forEach(b=>b.classList.remove('active'));
 if(pic!==id){wrong.add(pic);$('message').className='message wrong';$('message').textContent='Noch nicht richtig. Versuche es mit einem anderen Wort.';return}
-done.add(id);correct++;$('message').className='message good';$('message').textContent='✓ Richtig: '+id+'!';
+done.add(id);correct++;if(!wrong.has(id))firstTry++;$('message').className='message good';$('message').textContent='✓ Richtig: '+id+'!';
 document.querySelectorAll('.card,.name').forEach(b=>{if(b.dataset.id===id){b.classList.add('solved');b.disabled=true}});
 $('points').textContent=correct+' / '+cards.length+' Paare';$('bar').style.width=(correct/cards.length*100)+'%';
 record({task:'Körperteil '+id,correct:!wrong.has(id),correctCount:wrong.has(id)?0:1,total:1,answer:id,expected:id,details:wrong.has(id)?'Nach einem Fehler richtig zugeordnet':'Beim ersten Versuch richtig'});
@@ -49,7 +49,7 @@ if(done.size===Math.min(5,cards.length-start)){
 start+=done.size;
 if(start<cards.length){$('next').hidden=false;$('message').textContent='Super! Alle Paare dieser Runde gefunden.'}
 else{ $('finish').hidden=false;$('finish').innerHTML='<strong>Geschafft! Du hast alle '+cards.length+' Körperteile zugeordnet.</strong><p>Spiele nochmals, um die Wörter zu festigen.</p>';$('again').hidden=false;
-const earned=cards.length-wrong.size;record({task:'Körperteile benennen Abschluss',correct:earned===cards.length,correctCount:earned,total:cards.length,answer:earned+'/'+cards.length,expected:cards.length+'/'+cards.length});}
+const earned=firstTry;record({task:'Körperteile benennen Abschluss',correct:earned===cards.length,correctCount:earned,total:cards.length,answer:earned+'/'+cards.length,expected:cards.length+'/'+cards.length});}
 }
 }
 $('next').onclick=round;$('again').onclick=begin;begin();
